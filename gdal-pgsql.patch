@@ -1,0 +1,11 @@
+--- gdal-1.1.7/configure.in.orig	Mon Jun 17 22:31:00 2002
++++ gdal-1.1.7/configure.in	Mon Jun 17 22:36:25 2002
+@@ -482,7 +482,7 @@
+ 
+   HAVE_PG=yes
+   PG_LIB="-L`$PG_CONFIG --libdir` -lpq"
+-  PG_INC="-I`$PG_CONFIG --includedir`"
++  PG_INC="-I`$PG_CONFIG --includedir` -I`$PG_CONFIG --includedir-server`"
+ 
+   AC_MSG_RESULT([yes])
+ 
