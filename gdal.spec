@@ -95,6 +95,8 @@ Modu³ Pythona GDAL.
 %patch2 -p1
 %patch3 -p1
 
+%{__perl} -pi -e "s@lib/python@%{_lib}/python@" aclocal.m4
+
 %build
 %{__autoconf}
 %configure \
