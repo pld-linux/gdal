@@ -56,7 +56,7 @@ mo¿liwo¶ci dla danych wektorowych.
 Summary:	GDAL library header files
 Summary(pl):	Pliki nag³ówkowe biblioteki GDAL
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 GDAL library header files.
@@ -68,7 +68,7 @@ Pliki nag³ówkowe biblioteki GDAL.
 Summary:	GDAL static libraries
 Summary(pl):	Statyczne biblioteki GDAL
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 GDAL static libraries.
@@ -80,7 +80,7 @@ Statyczne biblioteki GDAL.
 Summary:	GDAL Python module
 Summary(pl):	Modu³ Pythona GDAL
 Group:		Libraries/Python
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description -n python-gdal
 GDAL Python module.
@@ -98,6 +98,7 @@ Modu³ Pythona GDAL.
 %build
 %{__autoconf}
 %configure \
+	--with-pymoddir=%{py_sitedir} \
 	--with-xerces \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
