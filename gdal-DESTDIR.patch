@@ -106,18 +106,18 @@
 -	    do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; \
 +	    do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; \
  	done
---- gdal-1.2.0/pymod/GNUmakefile.orig	2004-02-25 08:48:17.000000000 +0100
-+++ gdal-1.2.0/pymod/GNUmakefile	2004-04-07 21:59:49.741241272 +0200
-@@ -40,9 +40,9 @@
+--- gdal-1.2.6/pymod/GNUmakefile.orig	2005-01-31 23:07:02.000000000 +0100
++++ gdal-1.2.6/pymod/GNUmakefile	2005-03-28 23:55:02.370967240 +0200
+@@ -45,9 +45,9 @@
  
  # special care is taken so that python scripts are installed as executables
- install:	$(GDALMODULE).$(SO_EXT)
+ install:	$(GDALMODULE_SO)
 -	$(INSTALL_DIR) $(INST_PYMOD)
--	$(INSTALL_LIB) $(GDALMODULE).$(SO_EXT) $(INST_PYMOD)
+-	$(INSTALL_LIB) $(GDALMODULE_SO) $(INST_PYMOD)
 -	for f in $(PY_COMMANDS) ; do $(INSTALL) $$f $(INST_BIN) ; done
 -	for f in $(PY_MODULES) ; do $(INSTALL_DATA) $$f $(INST_PYMOD) ; done
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_PYMOD)
-+	$(INSTALL_LIB) $(GDALMODULE).$(SO_EXT) $(DESTDIR)$(INST_PYMOD)
++	$(INSTALL_LIB) $(GDALMODULE_SO) $(DESTDIR)$(INST_PYMOD)
 +	for f in $(PY_COMMANDS) ; do $(INSTALL) $$f $(DESTDIR)$(INST_BIN) ; done
 +	for f in $(PY_MODULES) ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_PYMOD) ; done
  	# ugh! spurius relinking leaves a file owned by root into .libs/.
@@ -173,3 +173,27 @@
 -	for f in $(MAN1_FILES) ; do $(INSTALL_DATA) $$f $(INST_MAN)/man1 ; done
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_MAN)/man1
 +	for f in $(MAN1_FILES) ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_MAN)/man1 ; done
+--- gdal-1.2.6/frmts/vrt/GNUmakefile.orig	2005-01-24 19:09:57.000000000 +0100
++++ gdal-1.2.6/frmts/vrt/GNUmakefile	2005-03-29 00:56:45.822956960 +0200
+@@ -19,4 +19,4 @@
+ $(OBJ) $(O_OBJ):	vrtdataset.h
+ 
+ install:
+-	$(INSTALL_DATA) vrtdataset.h $(INST_INCLUDE)
++	$(INSTALL_DATA) vrtdataset.h $(DESTDIR)$(INST_INCLUDE)
+--- gdal-1.2.6/frmts/mem/GNUmakefile.orig	2005-01-24 19:09:57.000000000 +0100
++++ gdal-1.2.6/frmts/mem/GNUmakefile	2005-03-29 01:59:50.803552448 +0200
+@@ -15,4 +15,4 @@
+ install-obj:	$(O_OBJ)
+ 
+ install:
+-	$(INSTALL_DATA) memdataset.h $(INST_INCLUDE)
++	$(INSTALL_DATA) memdataset.h $(DESTDIR)$(INST_INCLUDE)
+--- gdal-1.2.6/frmts/raw/GNUmakefile.orig	2005-01-24 19:09:57.000000000 +0100
++++ gdal-1.2.6/frmts/raw/GNUmakefile	2005-03-29 09:59:16.200547408 +0200
+@@ -21,4 +21,4 @@
+ $(OBJ) $(O_OBJ):	rawdataset.h
+ 
+ install:
+-	$(INSTALL_DATA) rawdataset.h $(INST_INCLUDE)
++	$(INSTALL_DATA) rawdataset.h $(DESTDIR)$(INST_INCLUDE)

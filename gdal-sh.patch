@@ -1,17 +1,5 @@
---- gdal-1.2.5/configure.in.orig	2005-01-16 03:01:31.252567000 +0100
-+++ gdal-1.2.5/configure.in	2005-01-16 03:09:32.131462448 +0100
-@@ -1111,9 +1111,9 @@
-       AC_MSG_ERROR([--with-mysql argument is a not an executable file.  It should be the path to the mysql_config script, often somewhere like /usr/local/bin/mysql_config.])
-   fi
- 
--  MYSQL_VERSION="`$MYSQL_CONFIG --version`"
-+  MYSQL_VERSION="`$MYSQL_CONFIG --version | cut -d . -f 1`"
- 
--  if test ${MYSQL_VERSION:0:1} -ge 4 ; then
-+  if test ${MYSQL_VERSION} -ge 4 ; then
-       HAVE_MYSQL=yes
-       MYSQL_LIB="`$MYSQL_CONFIG --libs`"
-       MYSQL_INC="`$MYSQL_CONFIG --include`"
+--- gdal-1.2.6/configure.in.orig	2005-01-16 03:01:31.252567000 +0100
++++ gdal-1.2.6/configure.in	2005-01-16 03:09:32.131462448 +0100
 @@ -1388,7 +1388,8 @@
  if test "$GEOS_CONFIG" != "no" ; then
  
