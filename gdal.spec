@@ -51,7 +51,7 @@ vector data.
 GDAL to biblioteka konwertuj±ca miêdzy formatami rastrowych danych
 dotycz±cych powierzchni Ziemi, udostêpniona na licencji Open Source.
 Jako biblioteka udostêpnia aplikacjom jeden abstrakcyjny model danych
-do wszystkich obs³ugiwanych formatów. Powi±zana z nia biblioteka OGR
+do wszystkich obs³ugiwanych formatów. Powi±zana z ni± biblioteka OGR
 (której ¼ród³a s± do³±czone do drzewa ¼róde³ GDAL) daje podobne
 mo¿liwo¶ci dla danych wektorowych.
 
