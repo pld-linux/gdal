@@ -5,18 +5,20 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.2.3
-Release:	3
+Version:	1.2.5
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	6fe5b737e3ab323a34dea7578cc7fc9b
+# Source0-md5:	2e3e651be6b4f42486e99ef39c17ffb1
 Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
+Patch2:		%{name}-sh.patch
 URL:		http://www.remotesensing.org/gdal/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
 BuildRequires:	doxygen
+BuildRequires:	geos-devel >= 2.0
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	jasper-devel
 BuildRequires:	libgeotiff-devel >= 1.2.1
@@ -34,6 +36,7 @@ BuildRequires:	rpm-pythonprov
 BuildRequires:	unixODBC-devel
 BuildRequires:	xerces-c-devel >= 2.2.0
 BuildRequires:	zlib-devel >= 1.1.4
+Requires:	geos >= 2.0
 Requires:	libgeotiff >= 1.2.1
 Requires:	libtiff >= 3.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -60,6 +63,7 @@ Summary(pl):	Pliki nag³ówkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
+Requires:	geos-devel >= 2.0
 Requires:	hdf-devel >= 4.0
 Requires:	jasper-devel
 Requires:	libgeotiff-devel >= 1.2.1
@@ -109,6 +113,7 @@ Modu³ Pythona GDAL.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__perl} -pi -e "s@lib/python@%{_lib}/python@" aclocal.m4
 
@@ -120,8 +125,7 @@ Modu³ Pythona GDAL.
 	--with-xerces \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
-	--without-grass \
-	--without-geos
+	--without-grass
 
 %{__make}
 
