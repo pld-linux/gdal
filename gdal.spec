@@ -2,7 +2,6 @@
 # TODO:
 # - consider using GRASS (or GDAL in GRASS? build trap possible)
 #
-%include	/usr/lib/rpm/macros.python
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
