@@ -5,12 +5,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.2.5
-Release:	2
+Version:	1.2.6
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	2e3e651be6b4f42486e99ef39c17ffb1
+# Source0-md5:	410e581874ce2b94bfa00deb9f2087f6
 Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
 Patch2:		%{name}-sh.patch
@@ -23,7 +23,7 @@ BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	jasper-devel
 BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
-BuildRequires:	libpng-devel >= 1.0.6
+BuildRequires:	libpng-devel >= 2:1.2.8
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 3.6.0
 BuildRequires:	libungif-devel >= 4.0
@@ -37,6 +37,7 @@ BuildRequires:	xerces-c-devel >= 2.2.0
 BuildRequires:	zlib-devel >= 1.1.4
 Requires:	geos >= 2.0
 Requires:	libgeotiff >= 1.2.1
+Requires:	libpng >= 2:1.2.8
 Requires:	libtiff >= 3.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -67,7 +68,7 @@ Requires:	hdf-devel >= 4.0
 Requires:	jasper-devel
 Requires:	libgeotiff-devel >= 1.2.1
 Requires:	libjpeg-devel
-Requires:	libpng-devel >= 1.0.6
+Requires:	libpng-devel >= 2:1.2.8
 Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 3.6.0
 Requires:	libungif-devel
