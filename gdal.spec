@@ -97,6 +97,7 @@ Summary:	GDAL Python module
 Summary(pl):	Modu³ Pythona GDAL
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
+%pyrequires_eq	python-libs
 
 %description -n python-gdal
 GDAL Python module.
