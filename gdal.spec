@@ -6,7 +6,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
 Version:	1.2.5
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
@@ -32,7 +32,6 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	python-devel
-BuildRequires:	rpm-pythonprov
 BuildRequires:	unixODBC-devel
 BuildRequires:	xerces-c-devel >= 2.2.0
 BuildRequires:	zlib-devel >= 1.1.4
