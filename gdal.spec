@@ -43,7 +43,7 @@ single abstract data model to the calling application for all
 supported formats. The related OGR library (which lives within the
 GDAL source tree) provides a similar capability for simple features
 vector data.
-	    
+
 %description -l pl
 GDAL to biblioteka konwertuj±ca miêdzy formatami rastrowych danych
 dotycz±cych powierzchni Ziemi, udostêpniona na licencji Open Source.
