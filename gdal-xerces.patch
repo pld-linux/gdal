@@ -1,0 +1,10 @@
+--- gdal-1.1.8/ogr/ogrsf_frmts/gml/gmlreaderp.h.orig	Wed Mar  6 21:08:02 2002
++++ gdal-1.1.8/ogr/ogrsf_frmts/gml/gmlreaderp.h	Sun Jan 26 14:37:19 2003
+@@ -46,6 +46,7 @@
+ 
+ #include "gmlreader.h"
+ 
++#undef INFINITY
+ #include <dom/DOMString.hpp>
+ #include <util/PlatformUtils.hpp>
+ #include <sax2/DefaultHandler.hpp>
