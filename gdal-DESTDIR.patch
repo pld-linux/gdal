@@ -1,107 +1,152 @@
---- gdal-1.1.9/GNUmakefile.orig	Wed Mar 27 22:41:45 2002
-+++ gdal-1.1.9/GNUmakefile	Mon Jun 17 22:45:44 2002
-@@ -114,10 +114,10 @@
- install:	lib install-actions
+--- gdal-1.2.0/GNUmakefile.orig	2004-02-24 15:55:47.000000000 +0100
++++ gdal-1.2.0/GNUmakefile	2004-04-07 21:58:20.463813504 +0200
+@@ -123,8 +123,8 @@
  
- install-actions:
+ install-docs:
+ 	(cd ogr; $(MAKE) install-docs)
+-	$(INSTALL_DIR) $(INST_DOCS)/gdal
+-	cp html/*.* $(INST_DOCS)/gdal
++	$(INSTALL_DIR) $(DESTDIR)$(INST_DOCS)/gdal
++	cp html/*.* $(DESTDIR)$(INST_DOCS)/gdal
+ 
+ web-update:	docs
+ 	cp html/*.* $(WEB_DIR)
+@@ -132,9 +132,9 @@
+ install:	default install-actions
+ 
+ install-actions: install-lib
 -	$(INSTALL_DIR) $(INST_BIN)
 -	$(INSTALL_DIR) $(INST_DATA)
--	$(INSTALL_DIR) $(INST_LIB)
 -	$(INSTALL_DIR) $(INST_INCLUDE)
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_BIN)
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_DATA)
-+	$(INSTALL_DIR) $(DESTDIR)$(INST_LIB)
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_INCLUDE)
  	(cd port; $(MAKE) install)
  	(cd gcore; $(MAKE) install)
  	(cd frmts; $(MAKE) install)
-@@ -126,9 +126,9 @@
+@@ -145,14 +145,14 @@
  ifneq ($(PYTHON),no)
  	(cd pymod; $(MAKE) install)
  endif
--	$(INSTALL_DATA) $(GDAL_LIB) $(INST_LIB)
-+	$(INSTALL_DATA) $(GDAL_LIB) $(DESTDIR)$(INST_LIB)
- ifeq ($(HAVE_LD_SHARED),yes)
--	$(INSTALL_DATA) $(GDAL_SLIB) $(INST_LIB)
-+	$(INSTALL) $(GDAL_SLIB) $(DESTDIR)$(INST_LIB)
- endif
 -	for f in data/*.* ; do $(INSTALL_DATA) $$f $(INST_DATA) ; done
+-	$(LIBTOOL_FINISH) $(INST_LIB)
 +	for f in data/*.* ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_DATA) ; done
++	$(LIBTOOL_FINISH) $(DESTDIR)$(INST_LIB)
  
---- gdal-1.1.9/ogr/GNUmakefile.orig	Fri Mar 29 00:54:26 2002
-+++ gdal-1.1.9/ogr/GNUmakefile	Mon Jun 17 22:46:38 2002
-@@ -123,18 +123,18 @@
+ ifeq ($(HAVE_LIBTOOL),yes)
+ 
+ install-lib:
+-	$(INSTALL_DIR) $(INST_LIB)
+-	for f in $(LIBGDAL-yes) ; do $(INSTALL_LIB) $$f $(INST_LIB) ; done
++	$(INSTALL_DIR) $(DESTDIR)$(INST_LIB)
++	for f in $(LIBGDAL-yes) ; do $(INSTALL_LIB) $$f $(DESTDIR)$(INST_LIB) ; done
+ 
+ else
+ 
+@@ -162,21 +162,21 @@
+ GDAL_SLIB_B	=	$(notdir $(GDAL_SLIB))
+ 
+ install-lib:
+-	$(INSTALL_DIR) $(INST_LIB)
+-	rm -f $(INST_LIB)/$(GDAL_SLIB_B)
+-	rm -f $(INST_LIB)/$(GDAL_SLIB_B).$(GDAL_VER_MAJOR)
+-	rm -f $(INST_LIB)/$(GDAL_SLIB_B).$(GDAL_VER)
+-	$(INSTALL_LIB) $(GDAL_SLIB) $(INST_LIB)/$(GDAL_SLIB_B).$(GDAL_VER)
+-	(cd $(INST_LIB) ; \
++	$(INSTALL_DIR) $(DESTDIR)$(INST_LIB)
++	rm -f $(DESTDIR)$(INST_LIB)/$(GDAL_SLIB_B)
++	rm -f $(DESTDIR)$(INST_LIB)/$(GDAL_SLIB_B).$(GDAL_VER_MAJOR)
++	rm -f $(DESTDIR)$(INST_LIB)/$(GDAL_SLIB_B).$(GDAL_VER)
++	$(INSTALL_LIB) $(GDAL_SLIB) $(DESTDIR)$(INST_LIB)/$(GDAL_SLIB_B).$(GDAL_VER)
++	(cd $(DESTDIR)$(INST_LIB) ; \
+ 	 ln -s $(GDAL_SLIB_B).$(GDAL_VER_MAJOR) $(GDAL_SLIB_B))
+-	(cd $(INST_LIB) ; \
++	(cd $(DESTDIR)$(INST_LIB) ; \
+ 	 ln -s $(GDAL_SLIB_B).$(GDAL_VER) $(GDAL_SLIB_B).$(GDAL_VER_MAJOR))
+ 
+ else
+ 
+ install-lib:
+-	$(INSTALL_DIR) $(INST_LIB)
+-	$(INSTALL_LIB) $(GDAL_LIB) $(INST_LIB)
++	$(INSTALL_DIR) $(DESTDIR)$(INST_LIB)
++	$(INSTALL_LIB) $(GDAL_LIB) $(DESTDIR)$(INST_LIB)
+ 
+ endif # HAVE_LD_SHARED=no 
+ 
+--- gdal-1.2.0/ogr/GNUmakefile.orig	2004-02-21 16:36:44.000000000 +0100
++++ gdal-1.2.0/ogr/GNUmakefile	2004-04-07 21:59:04.108178552 +0200
+@@ -74,8 +74,8 @@
+ 	cp ogrsf_frmts/ogr_formats.html html
+ 
+ install-docs:
+-	$(INSTALL_DIR) $(INST_DOCS)/ogr
+-	cp html/* $(INST_DOCS)/ogr
++	$(INSTALL_DIR) $(DESTDIR)$(INST_DOCS)/ogr
++	cp html/* $(DESTDIR)$(INST_DOCS)/ogr
+ 
+ gdalso:	$(GDAL_SLIB)
+ 
+@@ -115,14 +115,14 @@
  
  ifeq ($(OGR_ENABLED),yes)
  install-full:	apps
 -	$(INSTALL) ogr2ogr $(INST_BIN)
 -	$(INSTALL) ogrinfo $(INST_BIN)
 -	$(INSTALL) ogrtindex $(INST_BIN)
--	$(INSTALL_DATA) $(OGRFRMTS_LIB) $(INST_LIB)
 +	$(INSTALL) ogr2ogr $(DESTDIR)$(INST_BIN)
 +	$(INSTALL) ogrinfo $(DESTDIR)$(INST_BIN)
 +	$(INSTALL) ogrtindex $(DESTDIR)$(INST_BIN)
-+	$(INSTALL_DATA) $(OGRFRMTS_LIB) $(DESTDIR)$(INST_LIB)
  else
  install-full:
  endif
  
- install:	$(OGR_LIB) install-full
+ install:	install-full
  	for f in $(INST_H_FILES) ; \
 -	    do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; \
 +	    do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; \
  	done
--	$(INSTALL_DATA) $(OGR_LIB) $(INST_LIB)
-+	$(INSTALL_DATA) $(OGR_LIB) $(DESTDIR)$(INST_LIB)
- 
- 
---- gdal-1.1.9/pymod/GNUmakefile.orig	2003-06-04 23:57:36.000000000 +0200
-+++ gdal-1.1.9/pymod/GNUmakefile	2003-07-19 17:38:20.000000000 +0200
-@@ -30,13 +30,13 @@
+--- gdal-1.2.0/pymod/GNUmakefile.orig	2004-02-25 08:48:17.000000000 +0100
++++ gdal-1.2.0/pymod/GNUmakefile	2004-04-07 21:59:49.741241272 +0200
+@@ -40,9 +40,9 @@
  
  # special care is taken so that python scripts are installed as executables
- install:	$(GDALMODULE)
+ install:	$(GDALMODULE).$(SO_EXT)
 -	$(INSTALL_DIR) $(INST_PYMOD)
--	$(INSTALL_DATA) $(GDALMODULE) $(INST_PYMOD)
+-	$(INSTALL_LIB) $(GDALMODULE).$(SO_EXT) $(INST_PYMOD)
+-	for f in $(PY_COMMANDS) ; do $(INSTALL) $$f $(INST_BIN) ; done
+-	for f in $(PY_MODULES) ; do $(INSTALL_DATA) $$f $(INST_PYMOD) ; done
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_PYMOD)
-+	$(INSTALL_DATA) $(GDALMODULE) $(DESTDIR)$(INST_PYMOD)
- 	for f in *.py ; do \
- 	    if egrep '\#\!.*python' $$f > /dev/null ; then \
--		$(INSTALL) $$f $(INST_PYMOD) ; \
-+		$(INSTALL) $$f $(DESTDIR)$(INST_PYMOD) ; \
- 	    else \
--		$(INSTALL_DATA) $$f $(INST_PYMOD) ; \
-+		$(INSTALL_DATA) $$f $(DESTDIR)$(INST_PYMOD) ; \
- 	    fi \
- 	done
++	$(INSTALL_LIB) $(GDALMODULE).$(SO_EXT) $(DESTDIR)$(INST_PYMOD)
++	for f in $(PY_COMMANDS) ; do $(INSTALL) $$f $(DESTDIR)$(INST_BIN) ; done
++	for f in $(PY_MODULES) ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_PYMOD) ; done
+ 	# ugh! spurius relinking leaves a file owned by root into .libs/.
+ 	rm -f .libs/*.soT
+--- gdal-1.2.0/port/GNUmakefile.orig	2003-12-28 18:25:00.000000000 +0100
++++ gdal-1.2.0/port/GNUmakefile	2004-04-07 22:00:08.007464384 +0200
+@@ -25,7 +25,7 @@
+ 	$(RM) *.o $(LIB)
  
---- gdal-1.1.9/port/GNUmakefile.orig	Wed Jan 23 21:45:16 2002
-+++ gdal-1.1.9/port/GNUmakefile	Mon Jun 17 22:48:41 2002
-@@ -33,8 +33,8 @@
- 	$(RANLIB) $(LIB)
- 
- install:	$(LIB)
+ install:
 -	for f in *.h ; do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; done
--	$(INSTALL_DATA) cpl.a $(INST_LIB)
 +	for f in *.h ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; done
-+	$(INSTALL_DATA) cpl.a $(DESTDIR)$(INST_LIB)
  
- xmlreformat:	xmlreformat.o $(LIB)
- 	$(CXX) $(CXXFLAGS) xmlreformat.o $(LIB) -o xmlreformat
---- gdal-1.1.9/alg/GNUmakefile.orig	Thu Mar 15 04:17:34 2001
-+++ gdal-1.1.9/alg/GNUmakefile	Mon Jun 17 22:49:24 2002
-@@ -19,7 +19,7 @@
- 	$(CXX) -c $(GDAL_INCLUDE) $(CXXFLAGS) $*.cpp -o $*.o
+ xmlreformat:	xmlreformat.o 
+ 	$(CXX) $(CXXFLAGS) xmlreformat.o $(CONFIG_LIBS) -o xmlreformat
+--- gdal-1.2.0/alg/GNUmakefile.orig	2003-12-16 12:13:25.000000000 +0100
++++ gdal-1.2.0/alg/GNUmakefile	2004-04-07 21:55:34.476047480 +0200
+@@ -22,7 +22,7 @@
+ 	(cd ..; $(MAKE) docs)
  
  install:
 -	for f in *.h ; do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; done
 +	for f in *.h ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; done
  
  lib:	$(OBJ)
- (cd .. ; $(MAKE) force-lib)
---- gdal-1.1.7/apps/GNUmakefile.orig	Wed Nov  7 04:49:16 2001
-+++ gdal-1.1.7/apps/GNUmakefile	Mon Jun 17 22:50:06 2002
-@@ -86,6 +86,6 @@
+ 	(cd .. ; $(MAKE) force-lib)
+--- gdal-1.2.0/apps/GNUmakefile.orig	2004-02-21 15:31:38.000000000 +0100
++++ gdal-1.2.0/apps/GNUmakefile	2004-04-07 21:55:34.478047176 +0200
+@@ -92,6 +92,6 @@
  
  
  install: default
@@ -110,11 +155,21 @@
 +	for f in $(BIN_LIST) ; do $(INSTALL) $$f $(DESTDIR)$(INST_BIN) ; done
 +	$(INSTALL) gdal-config-inst $(DESTDIR)$(INST_BIN)/gdal-config
  
---- gdal-1.1.9/gcore/GNUmakefile.orig	Wed Nov 21 04:16:47 2001
-+++ gdal-1.1.9/gcore/GNUmakefile	Mon Jun 17 22:50:30 2002
-@@ -26,4 +26,4 @@
- 	$(CXX) -c $(GDAL_INCLUDE) $(CXXFLAGS) $*.cpp -o $*.o
+--- gdal-1.2.0/gcore/GNUmakefile.orig	2003-12-16 12:13:46.000000000 +0100
++++ gdal-1.2.0/gcore/GNUmakefile	2004-04-07 21:55:34.479047024 +0200
+@@ -31,4 +31,4 @@
+ 		$*.cpp -o $*.o
  
  install:
 -	for f in *.h ; do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; done
 +	for f in *.h ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; done
+--- gdal-1.2.0/man/GNUmakefile.orig	2004-02-20 18:26:13.000000000 +0100
++++ gdal-1.2.0/man/GNUmakefile	2004-04-07 22:01:23.370007536 +0200
+@@ -5,5 +5,5 @@
+ include ../GDALmake.opt
+ 
+ install:
+-	$(INSTALL_DIR) $(INST_MAN)/man1
+-	for f in $(MAN1_FILES) ; do $(INSTALL_DATA) $$f $(INST_MAN)/man1 ; done
++	$(INSTALL_DIR) $(DESTDIR)$(INST_MAN)/man1
++	for f in $(MAN1_FILES) ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_MAN)/man1 ; done
