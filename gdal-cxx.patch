@@ -1,0 +1,13 @@
+--- gdal-1.2.3/ogr/ogrgeometry.cpp.orig	2004-09-16 20:29:21.000000000 +0200
++++ gdal-1.2.3/ogr/ogrgeometry.cpp	2005-01-09 21:10:59.603504104 +0100
+@@ -1390,8 +1390,8 @@
+ 
+     if( poGeosGeom != NULL )
+     {
+-        geos::ConvexHull oCHull( poGeosGeom );
+-        geos::Geometry *poHullGeosGeom;
++        typename geos::ConvexHull oCHull( poGeosGeom );
++        typename geos::Geometry *poHullGeosGeom;
+ 
+         poHullGeosGeom = oCHull.getConvexHull();
+ 
