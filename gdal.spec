@@ -20,18 +20,23 @@ BuildRequires:	cfitsio-devel
 BuildRequires:	doxygen
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	jasper-devel
-BuildRequires:	libgeotiff-devel
+BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 1.0.6
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 3.6.0
 BuildRequires:	libungif-devel >= 4.0
+BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	python-devel
 BuildRequires:	rpm-pythonprov
+BuildRequires:	unixODBC-devel
 BuildRequires:	xerces-c-devel >= 2.2.0
 BuildRequires:	zlib-devel >= 1.1.4
+Requires:	libgeotiff >= 1.2.1
+Requires:	libtiff >= 3.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -55,6 +60,20 @@ Summary:	GDAL library header files
 Summary(pl):	Pliki nag³ówkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	cfitsio-devel
+Requires:	hdf-devel >= 4.0
+Requires:	jasper-devel
+Requires:	libgeotiff-devel >= 1.2.1
+Requires:	libjpeg-devel
+Requires:	libpng-devel >= 1.0.6
+Requires:	libstdc++-devel
+Requires:	libtiff-devel >= 3.6.0
+Requires:	libungif-devel
+Requires:	netcdf-devel
+Requires:	ogdi-devel >= 3.1
+Requires:	postgresql-devel
+Requires:	unixODBC-devel
+Requires:	xerces-c-devel >= 2.2.0
 
 %description devel
 GDAL library header files.
