@@ -6,16 +6,14 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.1.9
-Release:	2
+Version:	1.2.0
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	2183e206affc7bf25e0d33459ccb8572
+# Source0-md5:	7882b50cfe4c991d0ab9f89542a1767d
 Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
-Patch2:		%{name}-soname.patch
-Patch3:		%{name}-xerces.patch
 URL:		http://www.remotesensing.org/gdal/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
@@ -92,14 +90,13 @@ Modu³ Pythona GDAL.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %{__perl} -pi -e "s@lib/python@%{_lib}/python@" aclocal.m4
 
 %build
 %{__autoconf}
 %configure \
+	--datadir=%{_datadir}/gdal \
 	--with-pymoddir=%{py_sitedir} \
 	--with-xerces \
 	--with-xerces-inc=/usr/include/xercesc \
@@ -118,6 +115,8 @@ rm -rf $RPM_BUILD_ROOT
 
 mv -f ogr/html html/org
 
+rm -f $RPM_BUILD_ROOT%{py_sitedir}/*.{la,a}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -128,14 +127,20 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc ChangeLog NEWS
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/libgdal.*.so
+%exclude %{_bindir}/gdal-config
+%attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
 %{_datadir}/gdal
+%{_mandir}/man1/*
+%exclude %{_mandir}/man1/gdal-config.1*
 
 %files devel
 %defattr(644,root,root,755)
 %doc html/*
+%attr(755,root,root) %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so
+%{_libdir}/libgdal.la
 %{_includedir}/*.h
+%{_mandir}/man1/gdal-config.1*
 
 %files static
 %defattr(644,root,root,755)
