@@ -1,28 +1,21 @@
---- gdal-1.1.8/GNUmakefile.orig	Sun Jan 26 12:36:20 2003
-+++ gdal-1.1.8/GNUmakefile	Sun Jan 26 13:39:08 2003
-@@ -10,7 +10,7 @@
- force-lib:	
- 	$(AR) r $(GDAL_LIB) $(GDAL_OBJ)
- 	$(RANLIB) $(GDAL_LIB)
--	$(LD_SHARED) $(GDAL_OBJ) $(GDAL_LIBS) $(LIBS) -o $(GDAL_SLIB)
-+	$(LD_SHARED) -Wl,-soname=libgdal.$(GDAL_VER).$(SO_EXT) $(GDAL_OBJ) $(GDAL_LIBS) $(LIBS) -o $(GDAL_SLIB)
+--- gdal-1.1.9/GDALmake.opt.in.orig	2003-06-27 21:55:06.000000000 +0200
++++ gdal-1.1.9/GDALmake.opt.in	2003-07-19 17:56:43.000000000 +0200
+@@ -80,7 +80,7 @@
+ GDAL_LIB	= 	$(GDAL_ROOT)/gdal.a
+ GDAL_SLIB	=	$(GDAL_ROOT)/libgdal.$(GDAL_VER).$(SO_EXT)
+ GDAL_SLIB_LINK	=	-L$(GDAL_ROOT) -lgdal.$(GDAL_VER)
+-#GDAL_SLIB_SONAME = 	-Wl,-soname,libgdal.so.$(sover)
++GDAL_SLIB_SONAME = 	-Wl,-soname,libgdal.$(GDAL_VER).$(SO_EXT)
  
- #	If you really want proper SO files that will work in /usr/lib
- # 	Try replacing the above command with something like this:
-@@ -23,7 +23,7 @@
- 	$(RANLIB) $(GDAL_LIB)
- 
- $(GDAL_SLIB):	$(GDAL_LIB) $(GDALA_DEP)
--	$(LD_SHARED) $(GDAL_OBJ) $(GDAL_LIBS) $(LIBS) -o $(GDAL_SLIB)
-+	$(LD_SHARED) -Wl,-soname=libgdal.$(GDAL_VER).$(SO_EXT) $(GDAL_OBJ) $(GDAL_LIBS) $(LIBS) -o $(GDAL_SLIB)
- 
- check-lib:
- 	$(MAKE) $(GDAL_LIB)
+ OGR_LIB		=	$(GDAL_ROOT)/ogr/ogr.a
+ CPL_LIB		=	$(GDAL_ROOT)/port/cpl.a
+--- gdal-1.1.9/GNUmakefile.orig	2003-07-19 17:48:20.000000000 +0200
++++ gdal-1.1.9/GNUmakefile	2003-07-19 17:53:27.000000000 +0200
 @@ -143,6 +143,7 @@
- 	$(INSTALL) $(GDAL_LIB) $(DESTDIR)$(INST_LIB)
+ 	$(INSTALL_DATA) $(GDAL_LIB) $(DESTDIR)$(INST_LIB)
  ifeq ($(HAVE_LD_SHARED),yes)
  	$(INSTALL) $(GDAL_SLIB) $(DESTDIR)$(INST_LIB)
 +	ln -sf $(GDAL_SLIB) $(DESTDIR)$(INST_LIB)/libgdal.so
  endif
- 	for f in data/*.* ; do $(INSTALL) -m 0644 $$f $(DESTDIR)$(INST_DATA) ; done
+ 	for f in data/*.* ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_DATA) ; done
  

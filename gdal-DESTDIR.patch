@@ -1,5 +1,5 @@
---- gdal-1.1.8/GNUmakefile.orig	Wed Mar 27 22:41:45 2002
-+++ gdal-1.1.8/GNUmakefile	Mon Jun 17 22:45:44 2002
+--- gdal-1.1.9/GNUmakefile.orig	Wed Mar 27 22:41:45 2002
++++ gdal-1.1.9/GNUmakefile	Mon Jun 17 22:45:44 2002
 @@ -114,10 +114,10 @@
  install:	lib install-actions
  
@@ -13,79 +13,92 @@
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_LIB)
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_INCLUDE)
  	(cd port; $(MAKE) install)
- 	(cd core; $(MAKE) install)
+ 	(cd gcore; $(MAKE) install)
  	(cd frmts; $(MAKE) install)
 @@ -126,9 +126,9 @@
  ifneq ($(PYTHON),no)
  	(cd pymod; $(MAKE) install)
  endif
--	$(INSTALL) $(GDAL_LIB) $(INST_LIB)
-+	$(INSTALL) $(GDAL_LIB) $(DESTDIR)$(INST_LIB)
+-	$(INSTALL_DATA) $(GDAL_LIB) $(INST_LIB)
++	$(INSTALL_DATA) $(GDAL_LIB) $(DESTDIR)$(INST_LIB)
  ifeq ($(HAVE_LD_SHARED),yes)
--	$(INSTALL) $(GDAL_SLIB) $(INST_LIB)
+-	$(INSTALL_DATA) $(GDAL_SLIB) $(INST_LIB)
 +	$(INSTALL) $(GDAL_SLIB) $(DESTDIR)$(INST_LIB)
  endif
--	for f in data/*.* ; do $(INSTALL) -m 0644 $$f $(INST_DATA) ; done
-+	for f in data/*.* ; do $(INSTALL) -m 0644 $$f $(DESTDIR)$(INST_DATA) ; done
+-	for f in data/*.* ; do $(INSTALL_DATA) $$f $(INST_DATA) ; done
++	for f in data/*.* ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_DATA) ; done
  
---- gdal-1.1.7/ogr/GNUmakefile.orig	Fri Mar 29 00:54:26 2002
-+++ gdal-1.1.7/ogr/GNUmakefile	Mon Jun 17 22:46:38 2002
-@@ -123,16 +123,16 @@
+--- gdal-1.1.9/ogr/GNUmakefile.orig	Fri Mar 29 00:54:26 2002
++++ gdal-1.1.9/ogr/GNUmakefile	Mon Jun 17 22:46:38 2002
+@@ -123,18 +123,18 @@
  
  ifeq ($(OGR_ENABLED),yes)
- install-full:	ogrinfo ogr2ogr ogrtindex
+ install-full:	apps
 -	$(INSTALL) ogr2ogr $(INST_BIN)
 -	$(INSTALL) ogrinfo $(INST_BIN)
 -	$(INSTALL) ogrtindex $(INST_BIN)
--	$(INSTALL) $(OGRFRMTS_LIB) $(INST_LIB)
+-	$(INSTALL_DATA) $(OGRFRMTS_LIB) $(INST_LIB)
 +	$(INSTALL) ogr2ogr $(DESTDIR)$(INST_BIN)
 +	$(INSTALL) ogrinfo $(DESTDIR)$(INST_BIN)
 +	$(INSTALL) ogrtindex $(DESTDIR)$(INST_BIN)
-+	$(INSTALL) $(OGRFRMTS_LIB) $(DESTDIR)$(INST_LIB)
++	$(INSTALL_DATA) $(OGRFRMTS_LIB) $(DESTDIR)$(INST_LIB)
  else
  install-full:
  endif
  
  install:	$(OGR_LIB) install-full
--	for f in $(INST_H_FILES) ; do $(INSTALL) $$f $(INST_INCLUDE) ; done
--	$(INSTALL) $(OGR_LIB) $(INST_LIB)
-+	for f in $(INST_H_FILES) ; do $(INSTALL) $$f $(DESTDIR)$(INST_INCLUDE) ; done
-+	$(INSTALL) $(OGR_LIB) $(DESTDIR)$(INST_LIB)
+ 	for f in $(INST_H_FILES) ; \
+-	    do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; \
++	    do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; \
+ 	done
+-	$(INSTALL_DATA) $(OGR_LIB) $(INST_LIB)
++	$(INSTALL_DATA) $(OGR_LIB) $(DESTDIR)$(INST_LIB)
  
  
---- gdal-1.1.7/pymod/GNUmakefile.orig	Sat Sep 15 04:51:29 2001
-+++ gdal-1.1.7/pymod/GNUmakefile	Mon Jun 17 22:48:07 2002
-@@ -30,5 +30,5 @@
+--- gdal-1.1.9/pymod/GNUmakefile.orig	2003-06-04 23:57:36.000000000 +0200
++++ gdal-1.1.9/pymod/GNUmakefile	2003-07-19 17:38:20.000000000 +0200
+@@ -30,13 +30,13 @@
  
- 
- install:
+ # special care is taken so that python scripts are installed as executables
+ install:	$(GDALMODULE)
 -	$(INSTALL_DIR) $(INST_PYMOD)
--	for f in *.py $(GDALMODULE) ; do $(INSTALL) $$f $(INST_PYMOD) ; done
+-	$(INSTALL_DATA) $(GDALMODULE) $(INST_PYMOD)
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_PYMOD)
-+	for f in *.py $(GDALMODULE) ; do $(INSTALL) $$f $(DESTDIR)$(INST_PYMOD) ; done
---- gdal-1.1.7/port/GNUmakefile.orig	Wed Jan 23 21:45:16 2002
-+++ gdal-1.1.7/port/GNUmakefile	Mon Jun 17 22:48:41 2002
++	$(INSTALL_DATA) $(GDALMODULE) $(DESTDIR)$(INST_PYMOD)
+ 	for f in *.py ; do \
+ 	    if egrep '\#\!.*python' $$f > /dev/null ; then \
+-		$(INSTALL) $$f $(INST_PYMOD) ; \
++		$(INSTALL) $$f $(DESTDIR)$(INST_PYMOD) ; \
+ 	    else \
+-		$(INSTALL_DATA) $$f $(INST_PYMOD) ; \
++		$(INSTALL_DATA) $$f $(DESTDIR)$(INST_PYMOD) ; \
+ 	    fi \
+ 	done
+ 
+--- gdal-1.1.9/port/GNUmakefile.orig	Wed Jan 23 21:45:16 2002
++++ gdal-1.1.9/port/GNUmakefile	Mon Jun 17 22:48:41 2002
 @@ -33,8 +33,8 @@
  	$(RANLIB) $(LIB)
  
  install:	$(LIB)
--	for f in *.h ; do $(INSTALL) $$f $(INST_INCLUDE) ; done
--	$(INSTALL) cpl.a $(INST_LIB)
-+	for f in *.h ; do $(INSTALL) $$f $(DESTDIR)$(INST_INCLUDE) ; done
-+	$(INSTALL) cpl.a $(DESTDIR)$(INST_LIB)
+-	for f in *.h ; do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; done
+-	$(INSTALL_DATA) cpl.a $(INST_LIB)
++	for f in *.h ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; done
++	$(INSTALL_DATA) cpl.a $(DESTDIR)$(INST_LIB)
  
  xmlreformat:	xmlreformat.o $(LIB)
--	$(CXX) $(CXXFLAGS) xmlreformat.o $(LIB) -o xmlreformat
-\ No newline at end of file
-+	$(CXX) $(CXXFLAGS) xmlreformat.o $(LIB) -o xmlreformat
---- gdal-1.1.7/alg/GNUmakefile.orig	Thu Mar 15 04:17:34 2001
-+++ gdal-1.1.7/alg/GNUmakefile	Mon Jun 17 22:49:24 2002
-@@ -19,4 +19,4 @@
+ 	$(CXX) $(CXXFLAGS) xmlreformat.o $(LIB) -o xmlreformat
+--- gdal-1.1.9/alg/GNUmakefile.orig	Thu Mar 15 04:17:34 2001
++++ gdal-1.1.9/alg/GNUmakefile	Mon Jun 17 22:49:24 2002
+@@ -19,7 +19,7 @@
  	$(CXX) -c $(GDAL_INCLUDE) $(CXXFLAGS) $*.cpp -o $*.o
  
  install:
--	for f in *.h ; do $(INSTALL) $$f $(INST_INCLUDE) ; done
-+	for f in *.h ; do $(INSTALL) $$f $(DESTDIR)$(INST_INCLUDE) ; done
+-	for f in *.h ; do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; done
++	for f in *.h ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; done
+ 
+ lib:	$(OBJ)
+ (cd .. ; $(MAKE) force-lib)
 --- gdal-1.1.7/apps/GNUmakefile.orig	Wed Nov  7 04:49:16 2001
 +++ gdal-1.1.7/apps/GNUmakefile	Mon Jun 17 22:50:06 2002
 @@ -86,6 +86,6 @@
@@ -97,11 +110,11 @@
 +	for f in $(BIN_LIST) ; do $(INSTALL) $$f $(DESTDIR)$(INST_BIN) ; done
 +	$(INSTALL) gdal-config-inst $(DESTDIR)$(INST_BIN)/gdal-config
  
---- gdal-1.1.7/core/GNUmakefile.orig	Wed Nov 21 04:16:47 2001
-+++ gdal-1.1.7/core/GNUmakefile	Mon Jun 17 22:50:30 2002
+--- gdal-1.1.9/gcore/GNUmakefile.orig	Wed Nov 21 04:16:47 2001
++++ gdal-1.1.9/gcore/GNUmakefile	Mon Jun 17 22:50:30 2002
 @@ -26,4 +26,4 @@
  	$(CXX) -c $(GDAL_INCLUDE) $(CXXFLAGS) $*.cpp -o $*.o
  
  install:
--	for f in *.h ; do $(INSTALL) $$f $(INST_INCLUDE) ; done
-+	for f in *.h ; do $(INSTALL) $$f $(DESTDIR)$(INST_INCLUDE) ; done
+-	for f in *.h ; do $(INSTALL_DATA) $$f $(INST_INCLUDE) ; done
++	for f in *.h ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_INCLUDE) ; done

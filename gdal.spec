@@ -6,20 +6,20 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.1.8
+Version:	1.1.9
 Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	e6f02c0ba706b7387203e8b4ef03945b
-Patch0:		%{name}-acfix.patch
-Patch1:		%{name}-pgsql.patch
-Patch2:		%{name}-DESTDIR.patch
-Patch3:		%{name}-soname.patch
-Patch4:		%{name}-xerces.patch
+# Source0-md5:	2183e206affc7bf25e0d33459ccb8572
+Patch0:		%{name}-pgsql.patch
+Patch1:		%{name}-DESTDIR.patch
+Patch2:		%{name}-soname.patch
+Patch3:		%{name}-xerces.patch
 URL:		http://www.remotesensing.org/gdal/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
+BuildRequires:	doxygen
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	jasper-devel
 BuildRequires:	libgeotiff-devel
@@ -94,7 +94,6 @@ Modu³ Pythona GDAL.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 %build
 %{__autoconf}
@@ -106,10 +105,15 @@ Modu³ Pythona GDAL.
 
 %{__make}
 
+%{__make} docs
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+
+mv -f ogr/html html/org
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -119,13 +123,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog NEWS html/*.{html,gif,png,css}
+%doc ChangeLog NEWS
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/libgdal.*.so
 %{_datadir}/gdal
 
 %files devel
 %defattr(644,root,root,755)
+%doc html/*
 %attr(755,root,root) %{_libdir}/libgdal.so
 %{_includedir}/*.h
 
