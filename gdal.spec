@@ -11,6 +11,7 @@ Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
+# Source0-md5:	e6f02c0ba706b7387203e8b4ef03945b
 Patch0:		%{name}-acfix.patch
 Patch1:		%{name}-pgsql.patch
 Patch2:		%{name}-DESTDIR.patch
