@@ -31,7 +31,7 @@ BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	python-devel
 BuildRequires:	rpm-pythonprov
-BuildRequires:	xerces-c-devel = 1.7.0
+BuildRequires:	xerces-c-devel >= 2.2.0
 BuildRequires:	zlib-devel >= 1.1.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -100,7 +100,7 @@ Modu³ Pythona GDAL.
 %configure \
 	--with-xerces \
 	--with-xerces-inc=/usr/include/xercesc \
-	--with-xerces-lib="-lxerces-c1_7_0" \
+	--with-xerces-lib="-lxerces-c" \
 	--without-grass
 
 %{__make}
