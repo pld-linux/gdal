@@ -1,0 +1,11 @@
+--- gdal-1.2.1/frmts/hdf4/hdf-eos/HDFEOSVersion.h.orig	2004-06-19 23:35:08.000000000 +0200
++++ gdal-1.2.1/frmts/hdf4/hdf-eos/HDFEOSVersion.h	2004-06-27 02:33:45.726947888 +0200
+@@ -4,7 +4,7 @@
+    on a file containing these strings */
+  
+ #define  HDFEOSd_BANNER  "@(#)## =================  HDFEOS  ================"
+-#ifdef LINUX
++#ifdef __linux__
+ #define  HDFEOSd_HDFEOS_VER  "@(#)## HDFEOS Version: "HDFEOSVERSION1
+ #define  HDFEOSd_DATE    "@(#)## Build date: "__DATE__" @ "__TIME__
+ #else
