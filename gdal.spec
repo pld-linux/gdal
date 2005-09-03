@@ -13,6 +13,7 @@ Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
 # Source0-md5:	fbf4e137c9d0f64f5a70273e555bf777
 Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
+Patch2:		%{name}-dods.patch
 URL:		http://www.remotesensing.org/gdal/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
@@ -20,6 +21,8 @@ BuildRequires:	doxygen
 BuildRequires:	geos-devel >= 2.0
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	jasper-devel
+BuildRequires:	libcsf-devel
+BuildRequires:	libdap-devel >= 3.5
 BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 2:1.2.8
@@ -31,6 +34,7 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	python-devel
+BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	unixODBC-devel
 BuildRequires:	xerces-c-devel >= 2.2.0
 BuildRequires:	zlib-devel >= 1.1.4
@@ -65,6 +69,8 @@ Requires:	cfitsio-devel
 Requires:	geos-devel >= 2.0
 Requires:	hdf-devel >= 4.0
 Requires:	jasper-devel
+Requires:	libcsf-devel
+Requires:	libdap-devel >= 3.5
 Requires:	libgeotiff-devel >= 1.2.1
 Requires:	libjpeg-devel
 Requires:	libpng-devel >= 2:1.2.8
@@ -74,6 +80,7 @@ Requires:	libungif-devel
 Requires:	netcdf-devel
 Requires:	ogdi-devel >= 3.1
 Requires:	postgresql-devel
+Requires:	sqlite3-devel >= 3
 Requires:	unixODBC-devel
 Requires:	xerces-c-devel >= 2.2.0
 
@@ -112,6 +119,7 @@ Modu³ Pythona GDAL.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__perl} -pi -e "s@lib/python@%{_lib}/python@" aclocal.m4
 
@@ -119,7 +127,9 @@ Modu³ Pythona GDAL.
 %{__autoconf}
 %configure \
 	--datadir=%{_datadir}/gdal \
+	--with-dods-root=/usr \
 	--with-pymoddir=%{py_sitedir} \
+	--with-sqlite \
 	--with-xerces \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
