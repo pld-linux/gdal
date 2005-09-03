@@ -1,0 +1,14 @@
+--- gdal-1.3.0/configure.in.orig	2005-09-03 13:07:50.228591000 +0200
++++ gdal-1.3.0/configure.in	2005-09-03 15:46:35.931464216 +0200
+@@ -1396,9 +1396,11 @@
+     if test -x $DODS_BIN/opendap-config ; then 
+       dnl OPeNDAP 3.4 and earlier lack opendap-config, but use it if avail.
+       LIBS="$LIBS `$DODS_BIN/opendap-config --libs`"
++      DODS_INC="`$DODS_BIN/opendap-config --cflags`"
+     elif test -x $DODS_BIN/dap-config ; then 
+       dnl OPeNDAP 3.4 and earlier lack opendap-config, but use it if avail.
+       LIBS="$LIBS `$DODS_BIN/dap-config --libs`"
++      DODS_INC="`$DODS_BIN/dap-config --cflags`"
+     else
+       dnl Otherwise try to put things together in a more primitive way.
+       LIBS="$LIBS -L$DODS_LIB -ldap++ -lpthread -lrx"
