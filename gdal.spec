@@ -1,16 +1,12 @@
-#
-# TODO:
-# - consider using GRASS (or GDAL in GRASS? build trap possible)
-#
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.3.0
+Version:	1.3.1
 Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	fbf4e137c9d0f64f5a70273e555bf777
+# Source0-md5:	7ff1ceff745ee011793e1f860c02c172
 Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
 Patch2:		%{name}-dods.patch
@@ -124,6 +120,7 @@ Modu³ Pythona GDAL.
 %{__perl} -pi -e "s@lib/python@%{_lib}/python@" aclocal.m4
 
 %build
+# disable grass/libgrass here, it can be built from separate gdal-grass package
 %{__autoconf}
 %configure \
 	--datadir=%{_datadir}/gdal \
@@ -133,7 +130,8 @@ Modu³ Pythona GDAL.
 	--with-xerces \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
-	--without-grass
+	--without-grass \
+	--without-libgrass
 
 %{__make}
 
