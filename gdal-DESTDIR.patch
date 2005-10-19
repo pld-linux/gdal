@@ -1,6 +1,6 @@
---- gdal-1.2.0/GNUmakefile.orig	2004-02-24 15:55:47.000000000 +0100
-+++ gdal-1.2.0/GNUmakefile	2004-04-07 21:58:20.463813504 +0200
-@@ -123,8 +123,8 @@
+--- gdal-1.3.1/GNUmakefile.orig	2005-09-16 17:47:29.000000000 +0200
++++ gdal-1.3.1/GNUmakefile	2005-10-19 21:59:38.015231792 +0200
+@@ -132,8 +132,8 @@
  
  install-docs:
  	(cd ogr; $(MAKE) install-docs)
@@ -11,7 +11,7 @@
  
  web-update:	docs
  	cp html/*.* $(WEB_DIR)
-@@ -132,9 +132,9 @@
+@@ -141,9 +141,9 @@
  install:	default install-actions
  
  install-actions: install-lib
@@ -24,10 +24,10 @@
  	(cd port; $(MAKE) install)
  	(cd gcore; $(MAKE) install)
  	(cd frmts; $(MAKE) install)
-@@ -145,14 +145,14 @@
- ifneq ($(PYTHON),no)
+@@ -155,14 +155,14 @@
  	(cd pymod; $(MAKE) install)
  endif
+ 	(cd swig; $(MAKE) install)
 -	for f in data/*.* ; do $(INSTALL_DATA) $$f $(INST_DATA) ; done
 -	$(LIBTOOL_FINISH) $(INST_LIB)
 +	for f in data/*.* ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_DATA) ; done
@@ -43,7 +43,7 @@
  
  else
  
-@@ -162,21 +162,21 @@
+@@ -172,21 +172,21 @@
  GDAL_SLIB_B	=	$(notdir $(GDAL_SLIB))
  
  install-lib:
@@ -197,3 +197,26 @@
  install:
 -	$(INSTALL_DATA) rawdataset.h $(INST_INCLUDE)
 +	$(INSTALL_DATA) rawdataset.h $(DESTDIR)$(INST_INCLUDE)
+--- gdal-1.3.1/swig/python/GNUmakefile.orig	2005-09-07 03:14:39.000000000 +0200
++++ gdal-1.3.1/swig/python/GNUmakefile	2005-10-19 22:00:54.027676144 +0200
+@@ -25,4 +25,4 @@
+ 	python setup.py build
+ 
+ install: generate
+-	python setup.py install --prefix=$(prefix)
++	python setup.py install --prefix=$(DESTDIR)$(prefix)
+--- gdal-1.3.1/swig/ruby/RubyMakefile.mk.orig	2005-10-02 00:01:29.000000000 +0200
++++ gdal-1.3.1/swig/ruby/RubyMakefile.mk	2005-10-19 22:02:19.063748696 +0200
+@@ -47,10 +47,10 @@
+ 	rm -frd $(INSTALL_DIR)
+ 
+ $(INSTALL_DIR):
+-	mkdir -v $(INSTALL_DIR)
++	mkdir -v $(DESTDIR)$(INSTALL_DIR)
+ 
+ install: $(INSTALL_DIR)
+-	cp *.so $(INSTALL_DIR)
++	cp *.so $(DESTDIR)$(INSTALL_DIR)
+ 
+ $(RUBY_MODULES): %.so: %_wrap.o
+ 	$(LD) $(LDFLAGS) $(LIBS) $(GDAL_LIB) $(RUBY_LIB) $< -o $@
