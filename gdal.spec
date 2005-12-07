@@ -2,7 +2,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
 Version:	1.3.1
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
@@ -117,7 +117,7 @@ Modu³ Pythona GDAL.
 %patch1 -p1
 %patch2 -p1
 
-%{__perl} -pi -e "s@lib/python@%{_lib}/python@" aclocal.m4
+%{__perl} -pi -e "s/PYLIB=lib/PYLIB=%{_lib}/" aclocal.m4
 
 %build
 # disable grass/libgrass here, it can be built from separate gdal-grass package
