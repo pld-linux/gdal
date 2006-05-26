@@ -16,6 +16,7 @@ BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
 BuildRequires:	doxygen
 BuildRequires:	geos-devel >= 2.0
+BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	jasper-devel
 BuildRequires:	libcsf-devel
@@ -25,7 +26,6 @@ BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 2:1.2.8
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 3.6.0
-BuildRequires:	libungif-devel >= 4.0
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	postgresql-devel
@@ -64,6 +64,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
 Requires:	geos-devel >= 2.0
+Requires:	giflib-devel
 Requires:	hdf-devel >= 4.0
 Requires:	jasper-devel
 Requires:	libcsf-devel
@@ -73,7 +74,6 @@ Requires:	libjpeg-devel
 Requires:	libpng-devel >= 2:1.2.8
 Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 3.6.0
-Requires:	libungif-devel
 Requires:	netcdf-devel
 Requires:	ogdi-devel >= 3.1
 Requires:	postgresql-devel
