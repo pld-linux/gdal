@@ -1,6 +1,6 @@
---- gdal-1.3.1/GNUmakefile.orig	2005-09-16 17:47:29.000000000 +0200
-+++ gdal-1.3.1/GNUmakefile	2005-10-19 21:59:38.015231792 +0200
-@@ -132,8 +132,8 @@
+--- gdal-1.3.2/GNUmakefile.orig	2006-03-24 17:51:56.000000000 +0100
++++ gdal-1.3.2/GNUmakefile	2006-05-29 07:38:45.280728750 +0200
+@@ -141,8 +141,8 @@
  
  install-docs:
  	(cd ogr; $(MAKE) install-docs)
@@ -11,7 +11,7 @@
  
  web-update:	docs
  	cp html/*.* $(WEB_DIR)
-@@ -141,9 +141,9 @@
+@@ -150,9 +150,9 @@
  install:	default install-actions
  
  install-actions: install-lib
@@ -24,10 +24,10 @@
  	(cd port; $(MAKE) install)
  	(cd gcore; $(MAKE) install)
  	(cd frmts; $(MAKE) install)
-@@ -155,14 +155,14 @@
- 	(cd pymod; $(MAKE) install)
- endif
+@@ -166,14 +166,14 @@
+ ifneq ($(BINDINGS),)
  	(cd swig; $(MAKE) install)
+ endif
 -	for f in data/*.* ; do $(INSTALL_DATA) $$f $(INST_DATA) ; done
 -	$(LIBTOOL_FINISH) $(INST_LIB)
 +	for f in data/*.* ; do $(INSTALL_DATA) $$f $(DESTDIR)$(INST_DATA) ; done
@@ -43,7 +43,7 @@
  
  else
  
-@@ -172,21 +172,21 @@
+@@ -183,21 +183,21 @@
  GDAL_SLIB_B	=	$(notdir $(GDAL_SLIB))
  
  install-lib:
@@ -74,20 +74,22 @@
  
  endif # HAVE_LD_SHARED=no 
  
---- gdal-1.2.0/ogr/GNUmakefile.orig	2004-02-21 16:36:44.000000000 +0100
-+++ gdal-1.2.0/ogr/GNUmakefile	2004-04-07 21:59:04.108178552 +0200
-@@ -74,8 +74,8 @@
- 	cp ogrsf_frmts/ogr_formats.html html
+--- gdal-1.3.2/ogr/GNUmakefile.orig	2006-03-24 17:51:57.000000000 +0100
++++ gdal-1.3.2/ogr/GNUmakefile	2006-05-29 07:39:20.254914500 +0200
+@@ -81,9 +81,9 @@
+ 	cp ogr_feature_style.html html
  
  install-docs:
 -	$(INSTALL_DIR) $(INST_DOCS)/ogr
 -	cp html/* $(INST_DOCS)/ogr
+-	cp ../doc/ogr/*.gif $(INST_DOCS)/ogr
 +	$(INSTALL_DIR) $(DESTDIR)$(INST_DOCS)/ogr
 +	cp html/* $(DESTDIR)$(INST_DOCS)/ogr
++	cp ../doc/ogr/*.gif $(DESTDIR)$(INST_DOCS)/ogr
  
  gdalso:	$(GDAL_SLIB)
  
-@@ -115,14 +115,14 @@
+@@ -123,14 +123,14 @@
  
  ifeq ($(OGR_ENABLED),yes)
  install-full:	apps
@@ -197,26 +199,29 @@
  install:
 -	$(INSTALL_DATA) rawdataset.h $(INST_INCLUDE)
 +	$(INSTALL_DATA) rawdataset.h $(DESTDIR)$(INST_INCLUDE)
---- gdal-1.3.1/swig/python/GNUmakefile.orig	2005-09-07 03:14:39.000000000 +0200
-+++ gdal-1.3.1/swig/python/GNUmakefile	2005-10-19 22:00:54.027676144 +0200
-@@ -25,4 +25,4 @@
+--- gdal-1.3.2/swig/python/GNUmakefile.orig	2006-03-24 17:51:58.000000000 +0100
++++ gdal-1.3.2/swig/python/GNUmakefile	2006-05-29 07:39:37.868015250 +0200
+@@ -24,4 +24,4 @@
  	python setup.py build
  
- install: generate
+ install:
 -	python setup.py install --prefix=$(prefix)
 +	python setup.py install --prefix=$(DESTDIR)$(prefix)
---- gdal-1.3.1/swig/ruby/RubyMakefile.mk.orig	2005-10-02 00:01:29.000000000 +0200
-+++ gdal-1.3.1/swig/ruby/RubyMakefile.mk	2005-10-19 22:02:19.063748696 +0200
-@@ -47,10 +47,10 @@
+--- gdal-1.3.2/swig/ruby/RubyMakefile.mk.orig	2006-01-14 02:48:46.000000000 +0100
++++ gdal-1.3.2/swig/ruby/RubyMakefile.mk	2006-05-29 07:40:11.162096000 +0200
+@@ -38,11 +38,11 @@
+ veryclean: clean
  	rm -frd $(INSTALL_DIR)
  
- $(INSTALL_DIR):
+-$(INSTALL_DIR):
 -	mkdir -v $(INSTALL_DIR)
++$(DESTDIR)$(INSTALL_DIR):
 +	mkdir -v $(DESTDIR)$(INSTALL_DIR)
  
- install: $(INSTALL_DIR)
--	cp *.so $(INSTALL_DIR)
-+	cp *.so $(DESTDIR)$(INSTALL_DIR)
+-install: $(INSTALL_DIR)
+-	$(INSTALL) $(RUBY_MODULES) $(INSTALL_DIR) 
++install: $(DESTDIR)$(INSTALL_DIR)
++	$(INSTALL) $(RUBY_MODULES) $(DESTDIR)$(INSTALL_DIR) 
  
  $(RUBY_MODULES): %.so: %_wrap.o
- 	$(LD) $(LDFLAGS) $(LIBS) $(GDAL_LIB) $(RUBY_LIB) $< -o $@
+ 	$(LD) $(LDFLAGS) $(LIBS) $(GDAL_SLIB_LINK) $(RUBY_LIB) $< -o $@

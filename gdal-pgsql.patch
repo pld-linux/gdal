@@ -1,11 +1,11 @@
---- gdal-1.3.0/configure.in        2005-09-01 13:48:13.006852880 +0200
-+++ gdal-1.3.0/configure.in.new    2005-09-01 13:51:53.766292344 +0200
-@@ -237,7 +237,7 @@
-
-   HAVE_PG=yes
-   LIBS="-L`$PG_CONFIG --libdir` -lpq $LIBS"
--  PG_INC="-I`$PG_CONFIG --includedir`"
-+  PG_INC="-I`$PG_CONFIG --includedir` -I`$PG_CONFIG --includedir-server`"
-
-   AC_MSG_RESULT([yes])
-
+--- gdal-1.3.2/configure.in.orig	2006-05-01 18:22:48.000000000 +0200
++++ gdal-1.3.2/configure.in	2006-05-29 01:24:48.086491750 +0200
+@@ -275,7 +275,7 @@
+   PG_EXTRA_DEC=""
+   AC_CHECK_LIB(pq,PQputCopyData,,PG_EXTRA_DEC=-DPG_PRE74,)
+ 
+-  PG_INC="-I`$PG_CONFIG --includedir` $PG_EXTRA_DEC"
++  PG_INC="-I`$PG_CONFIG --includedir` -I`$PG_CONFIG --includedir-server` $PG_EXTRA_DEC"
+ fi
+ 
+ AC_SUBST(HAVE_PG,$HAVE_PG)
