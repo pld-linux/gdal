@@ -1,12 +1,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.3.1
-Release:	5
+Version:	1.3.2
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	7ff1ceff745ee011793e1f860c02c172
+# Source0-md5:	67ed02dcea21e93f5e123bb0d322898a
 Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
 Patch2:		%{name}-dods.patch
@@ -157,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog NEWS
+%doc NEWS PROVENANCE.TXT
 %attr(755,root,root) %{_bindir}/*
 %exclude %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
