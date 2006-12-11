@@ -5,13 +5,13 @@ Version:	1.3.2
 Release:	1
 License:	BSD-like
 Group:		Libraries
-Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
 # Source0-md5:	67ed02dcea21e93f5e123bb0d322898a
 Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
 Patch2:		%{name}-dods.patch
 Patch3:		%{name}-gcc4.patch
-URL:		http://www.remotesensing.org/gdal/
+URL:		http://www.gdal.org/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
 BuildRequires:	doxygen
@@ -176,7 +176,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/*.a
+%{_libdir}/libgdal.a
 
 %files -n python-gdal
 %defattr(644,root,root,755)
