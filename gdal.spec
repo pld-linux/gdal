@@ -2,7 +2,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
 Version:	1.3.2
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
@@ -11,6 +11,7 @@ Patch0:		%{name}-pgsql.patch
 Patch1:		%{name}-DESTDIR.patch
 Patch2:		%{name}-dods.patch
 Patch3:		%{name}-gcc4.patch
+Patch4:		%{name}-ac.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
@@ -118,8 +119,7 @@ Modu³ Pythona GDAL.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-
-%{__perl} -pi -e "s/PYLIB=lib/PYLIB=%{_lib}/" aclocal.m4
+%patch4 -p1
 
 %build
 # disable grass/libgrass here, it can be built from separate gdal-grass package
@@ -147,6 +147,9 @@ rm -rf $RPM_BUILD_ROOT
 
 mv -f ogr/html html/org
 
+%py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
+%py_postclean
 rm -f $RPM_BUILD_ROOT%{py_sitedir}/*.{la,a}
 
 %clean
@@ -181,4 +184,4 @@ rm -rf $RPM_BUILD_ROOT
 %files -n python-gdal
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_gdalmodule.so
-%{py_sitedir}/*.py
+%{py_sitedir}/*.py[co]
