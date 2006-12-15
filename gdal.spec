@@ -1,8 +1,13 @@
+#
+# Conditional build:
+%bcond_without	odbc	# disable odbc support
+%bcond_without	xerces	# disable xerces support
+#
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
 Version:	1.3.2
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
@@ -33,8 +38,8 @@ BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	python-devel
 BuildRequires:	sqlite3-devel >= 3
-BuildRequires:	unixODBC-devel
-BuildRequires:	xerces-c-devel >= 2.2.0
+%{?with_odbc:BuildRequires:	unixODBC-devel}
+%{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
 Requires:	geos >= 2.0
 Requires:	libgeotiff >= 1.2.1
@@ -79,8 +84,8 @@ Requires:	netcdf-devel
 Requires:	ogdi-devel >= 3.1
 Requires:	postgresql-devel
 Requires:	sqlite3-devel >= 3
-Requires:	unixODBC-devel
-Requires:	xerces-c-devel >= 2.2.0
+%{?with_odbc:Requires:	unixODBC-devel}
+%{?with_xerces:Requires:	xerces-c-devel >= 2.2.0}
 
 %description devel
 GDAL library header files.
@@ -129,7 +134,7 @@ Modu³ Pythona GDAL.
 	--with-dods-root=/usr \
 	--with-pymoddir=%{py_sitedir} \
 	--with-sqlite \
-	--with-xerces \
+	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
