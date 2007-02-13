@@ -4,7 +4,7 @@
 %bcond_without	xerces	# disable xerces support
 #
 Summary:	Geospatial Data Abstraction Library
-Summary(pl.UTF-8):   Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
+Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.3.2
 Release:	3
@@ -65,7 +65,7 @@ możliwości dla danych wektorowych.
 
 %package devel
 Summary:	GDAL library header files
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki GDAL
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
@@ -95,7 +95,7 @@ Pliki nagłówkowe biblioteki GDAL.
 
 %package static
 Summary:	GDAL static libraries
-Summary(pl.UTF-8):   Statyczne biblioteki GDAL
+Summary(pl.UTF-8):	Statyczne biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -107,7 +107,7 @@ Statyczne biblioteki GDAL.
 
 %package -n python-gdal
 Summary:	GDAL Python module
-Summary(pl.UTF-8):   Moduł Pythona GDAL
+Summary(pl.UTF-8):	Moduł Pythona GDAL
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 %pyrequires_eq	python-libs
