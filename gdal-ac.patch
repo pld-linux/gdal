@@ -1,23 +1,3 @@
---- gdal-1.3.2/configure.in.orig	2006-12-11 23:03:29.053886000 +0100
-+++ gdal-1.3.2/configure.in	2006-12-11 23:08:09.409862968 +0100
-@@ -254,7 +254,7 @@
-   PG_LIB=
-   PG_INC=
- 
--  AC_MSG_RESULT([no])LIBZ
-+  AC_MSG_RESULT([no])
- 
- else
-   if test -d $PG_CONFIG ; then
-@@ -1517,7 +1517,7 @@
-     else
-         LIBS="$LIBS -L$with_sqlite/lib -lsqlite3"
-         SQLITE_INC="-I$with_sqlite/include"
--        AC_MSG_RESULT(setting DODS root directory to $with_sqlite)_
-+        AC_MSG_RESULT(setting DODS root directory to $with_sqlite)
-     fi
-     HAVE_SQLITE=yes
- fi
 --- gdal-1.3.2/m4/acinclude.m4.orig	2006-04-24 19:19:28.000000000 +0200
 +++ gdal-1.3.2/m4/acinclude.m4	2006-12-11 23:25:37.569594186 +0100
 @@ -452,10 +452,9 @@
