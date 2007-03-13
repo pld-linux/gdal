@@ -4,19 +4,16 @@
 %bcond_without	xerces	# disable xerces support
 #
 Summary:	Geospatial Data Abstraction Library
-Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczƒÖcych powierzchni Ziemi
+Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.3.2
-Release:	3
+Version:	1.4.0
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	67ed02dcea21e93f5e123bb0d322898a
-Patch0:		%{name}-pgsql.patch
-Patch1:		%{name}-DESTDIR.patch
-Patch2:		%{name}-dods.patch
-Patch3:		%{name}-gcc4.patch
-Patch4:		%{name}-ac.patch
+# Source0-md5:	a7a35243806f011d329b4f265a1e5fa0
+Patch0:		%{name}-dods.patch
+Patch1:		%{name}-ac.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
@@ -55,17 +52,17 @@ supported formats. The related OGR library (which lives within the
 GDAL source tree) provides a similar capability for simple features
 vector data.
 
-%description -l pl.UTF-8
-GDAL to biblioteka konwertujƒÖca miƒôdzy formatami rastrowych danych
-dotyczƒÖcych powierzchni Ziemi, udostƒôpniona na licencji Open Source.
-Jako biblioteka udostƒôpnia aplikacjom jeden abstrakcyjny model danych
-do wszystkich obs≈Çugiwanych format√≥w. PowiƒÖzana z niƒÖ biblioteka OGR
-(kt√≥rej ≈∫r√≥d≈Ça sƒÖ do≈ÇƒÖczone do drzewa ≈∫r√≥de≈Ç GDAL) daje podobne
-mo≈ºliwo≈õci dla danych wektorowych.
+%description -l pl
+GDAL to biblioteka konwertuj±ca miÍdzy formatami rastrowych danych
+dotycz±cych powierzchni Ziemi, udostÍpniona na licencji Open Source.
+Jako biblioteka udostÍpnia aplikacjom jeden abstrakcyjny model danych
+do wszystkich obs≥ugiwanych formatÛw. Powi±zana z ni± biblioteka OGR
+(ktÛrej ºrÛd≥a s± do≥±czone do drzewa ºrÛde≥ GDAL) daje podobne
+moøliwo∂ci dla danych wektorowych.
 
 %package devel
 Summary:	GDAL library header files
-Summary(pl.UTF-8):	Pliki nag≈Ç√≥wkowe biblioteki GDAL
+Summary(pl):	Pliki nag≥Ûwkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
@@ -90,24 +87,24 @@ Requires:	sqlite3-devel >= 3
 %description devel
 GDAL library header files.
 
-%description devel -l pl.UTF-8
-Pliki nag≈Ç√≥wkowe biblioteki GDAL.
+%description devel -l pl
+Pliki nag≥Ûwkowe biblioteki GDAL.
 
 %package static
 Summary:	GDAL static libraries
-Summary(pl.UTF-8):	Statyczne biblioteki GDAL
+Summary(pl):	Statyczne biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 GDAL static libraries.
 
-%description static -l pl.UTF-8
+%description static -l pl
 Statyczne biblioteki GDAL.
 
 %package -n python-gdal
 Summary:	GDAL Python module
-Summary(pl.UTF-8):	Modu≈Ç Pythona GDAL
+Summary(pl):	Modu≥ Pythona GDAL
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 %pyrequires_eq	python-libs
@@ -115,16 +112,13 @@ Requires:	%{name} = %{version}-%{release}
 %description -n python-gdal
 GDAL Python module.
 
-%description -n python-gdal -l pl.UTF-8
-Modu≈Ç Pythona GDAL.
+%description -n python-gdal -l pl
+Modu≥ Pythona GDAL.
 
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %build
 # disable grass/libgrass here, it can be built from separate gdal-grass package
