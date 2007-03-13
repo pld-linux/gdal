@@ -6,17 +6,14 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
 Name:		gdal
-Version:	1.3.2
-Release:	3
+Version:	1.4.0
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	67ed02dcea21e93f5e123bb0d322898a
-Patch0:		%{name}-pgsql.patch
-Patch1:		%{name}-DESTDIR.patch
-Patch2:		%{name}-dods.patch
-Patch3:		%{name}-gcc4.patch
-Patch4:		%{name}-ac.patch
+# Source0-md5:	a7a35243806f011d329b4f265a1e5fa0
+Patch0:		%{name}-dods.patch
+Patch1:		%{name}-ac.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
@@ -122,9 +119,6 @@ Modu³ Pythona GDAL.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %build
 # disable grass/libgrass here, it can be built from separate gdal-grass package
