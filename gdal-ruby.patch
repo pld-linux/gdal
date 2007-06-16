@@ -1,0 +1,20 @@
+--- gdal-1.4.1/swig/ruby/RubyMakefile.mk.orig	2007-04-10 17:16:43.000000000 +0200
++++ gdal-1.4.1/swig/ruby/RubyMakefile.mk	2007-06-16 19:54:08.240947303 +0200
+@@ -45,13 +45,13 @@
+ 	$(INSTALL) $(RUBY_MODULES) $(DESTDIR)$(INSTALL_DIR) 
+ 
+ $(RUBY_MODULES): %.so: %_wrap.o
+-	$(LD) $(LDFLAGS) $(LIBS) $(GDAL_SLIB_LINK) $(RUBY_LIB) $< -o $@
++	$(LD) $(GDAL_SLIB_LINK) $(LDFLAGS) $(LIBS) $(RUBY_LIB) $< -o $@
+ 
+ %.o: %.cpp
+-	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE)  -c $<
++	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE) -fPIC -c $<
+ 
+ %.o: %.cxx
+-	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE) -c $<
++	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE) -fPIC -c $<
+ 
+ %.o: %.c
+-	$(CC) $(CFLAGS) $(GDAL_INCLUDE)  $(RUBY_INCLUDE) -c $<
++	$(CC) $(CFLAGS) $(GDAL_INCLUDE)  $(RUBY_INCLUDE) -fPIC -c $<
