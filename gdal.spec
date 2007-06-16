@@ -11,7 +11,7 @@ Release:	0.1
 License:	BSD-like
 Group:		Libraries
 #Source0:	http://download.osgeo.org/gdal/%{name}-%{version}.tar.gz
-Source0:      ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
 # Source0-md5:	688cf651c6f6efc2851b12f2e9c2e0d1
 Patch0:		%{name}-dods.patch
 Patch1:		%{name}-ac.patch
