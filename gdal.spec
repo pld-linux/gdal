@@ -6,12 +6,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.4.0
-Release:	1
+Version:	1.4.1
+Release:	0.1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	a7a35243806f011d329b4f265a1e5fa0
+# Source0-md5:	688cf651c6f6efc2851b12f2e9c2e0d1
 Patch0:		%{name}-dods.patch
 Patch1:		%{name}-ac.patch
 URL:		http://www.gdal.org/
