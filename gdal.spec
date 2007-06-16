@@ -15,6 +15,8 @@ Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
 # Source0-md5:	688cf651c6f6efc2851b12f2e9c2e0d1
 Patch0:		%{name}-dods.patch
 Patch1:		%{name}-ac.patch
+Patch2:		%{name}-perl.patch
+Patch3:		%{name}-ruby.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
@@ -32,10 +34,14 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 3.6.0
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
+BuildRequires:	perl-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
+BuildRequires:	python-Numeric-devel
 BuildRequires:	python-devel
+BuildRequires:	ruby-devel
 BuildRequires:	sqlite3-devel >= 3
+BuildRequires:	swig-ruby
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
@@ -103,6 +109,19 @@ GDAL static libraries.
 %description static -l pl.UTF-8
 Statyczne biblioteki GDAL.
 
+%package -n perl-gdal
+Summary:	Perl bindings for GDAL
+Summary(pl.UTF-8):	Wiązania Perla do pakietu GDAL
+Group:		Development/Languages/Perl
+Requires:	%{name} = %{version}-%{release}
+
+%description -n perl-gdal
+Perl bindings for GDAL - Geo::GDAL, Geo::OGR and Geo::OSR modules.
+
+%description -n perl-gdal -l pl.UTF-8
+Wiązania Perla do pakietu GDAL - moduły Geo::GDAL, Geo::OGR,
+Geo::OSR.
+
 %package -n python-gdal
 Summary:	GDAL Python module
 Summary(pl.UTF-8):	Moduł Pythona GDAL
@@ -116,10 +135,26 @@ GDAL Python module.
 %description -n python-gdal -l pl.UTF-8
 Moduł Pythona GDAL.
 
+%package -n ruby-gdal
+Summary:	Ruby bindings for GDAL
+Summary(pl.UTF-8):	Wiązania języka Ruby do pakietu GDAL
+Group:		Development/Languages
+Requires:	%{name} = %{version}-%{release}
+%{?ruby_mod_ver_requires_eq}
+
+%description -n ruby-gdal
+Ruby bindings for GDAL - gdal, gdalconst, ogr and osr modules.
+
+%description -n ruby-gdal -l pl.UTF-8
+Wiązania języka Ruby do pakietu GDAL - moduły gdal, gdalconst, ogr
+i osr.
+
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
 # disable grass/libgrass here, it can be built from separate gdal-grass package
@@ -127,15 +162,21 @@ Moduł Pythona GDAL.
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
+	--with-perl \
 	--with-pymoddir=%{py_sitedir} \
+	--with-ruby \
 	--with-sqlite \
 	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
 	--without-libgrass
-
+# --with-ngpython disables traditional python binding
+# --with-php needs Zend API update
 %{__make}
+
+%{__make} -C swig build \
+	OPTIMIZE="%{rpmcflags}"
 
 %{__make} docs
 
@@ -181,7 +222,37 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libgdal.a
 
+%files -n perl-gdal
+%defattr(644,root,root,755)
+%dir %{perl_vendorarch}/Geo
+%{perl_vendorarch}/Geo/GDAL.pm
+%dir %{perl_vendorarch}/Geo/GDAL
+%{perl_vendorarch}/Geo/GDAL/Const.pm
+%{perl_vendorarch}/Geo/OGR.pm
+%{perl_vendorarch}/Geo/OSR.pm
+%dir %{perl_vendorarch}/auto/Geo
+%dir %{perl_vendorarch}/auto/Geo/GDAL
+%{perl_vendorarch}/auto/Geo/GDAL/GDAL.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/GDAL.so
+%dir %{perl_vendorarch}/auto/Geo/GDAL/Const
+%{perl_vendorarch}/auto/Geo/GDAL/Const/Const.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/Const/Const.so
+%dir %{perl_vendorarch}/auto/Geo/OGR
+%{perl_vendorarch}/auto/Geo/OGR/OGR.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/OGR/OGR.so
+%dir %{perl_vendorarch}/auto/Geo/OSR
+%{perl_vendorarch}/auto/Geo/OSR/OSR.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
+
 %files -n python-gdal
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_gdalmodule.so
 %{py_sitedir}/*.py[co]
+
+%files -n ruby-gdal
+%defattr(644,root,root,755)
+%dir %{ruby_sitearchdir}/gdal
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/gdal.so
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/gdalconst.so
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/ogr.so
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/osr.so
