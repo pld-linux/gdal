@@ -42,6 +42,7 @@ BuildRequires:	python-devel
 %{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
 %{?with_ruby:BuildRequires:	swig-ruby}
+BuildRequires:	swig-python
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
