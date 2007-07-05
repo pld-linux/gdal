@@ -2,21 +2,21 @@
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
 %bcond_without	xerces	# disable xerces support
+%bcond_without	ruby	# disable ruby support
 #
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.4.1
+Version:	1.4.2
 Release:	1
 License:	BSD-like
 Group:		Libraries
 #Source0:	http://download.osgeo.org/gdal/%{name}-%{version}.tar.gz
 Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	688cf651c6f6efc2851b12f2e9c2e0d1
+# Source0-md5:	dedf5ff6a766e85b9a2b5c54c1c59221
 Patch0:		%{name}-dods.patch
-Patch1:		%{name}-ac.patch
-Patch2:		%{name}-perl.patch
-Patch3:		%{name}-ruby.patch
+Patch1:		%{name}-perl.patch
+Patch2:		%{name}-ruby.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
@@ -37,11 +37,11 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
-BuildRequires:	python-Numeric-devel
+BuildRequires:	python-numpy-devel
 BuildRequires:	python-devel
-BuildRequires:	ruby-devel
+%{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
-BuildRequires:	swig-ruby
+%{?with_ruby:BuildRequires:	swig-ruby}
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
@@ -154,7 +154,6 @@ i osr.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 %build
 # disable grass/libgrass here, it can be built from separate gdal-grass package
@@ -164,14 +163,15 @@ i osr.
 	--with-dods-root=/usr \
 	--with-perl \
 	--with-pymoddir=%{py_sitedir} \
-	--with-ruby \
+	%{?with_ruby:--with-ruby} \
 	--with-sqlite \
 	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
-	--without-libgrass
-# --with-ngpython disables traditional python binding
+	--without-libgrass \
+	--with-ngpython
+# ngpython seems to be compatibile with old python bindings
 # --with-php needs Zend API update
 %{__make}
 
@@ -246,9 +246,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python-gdal
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/_gdalmodule.so
+%attr(755,root,root) %{py_sitedir}/*.so
 %{py_sitedir}/*.py[co]
+%{py_sitedir}/*.egg-info
 
+%if %{with ruby}
 %files -n ruby-gdal
 %defattr(644,root,root,755)
 %dir %{ruby_sitearchdir}/gdal
@@ -256,3 +258,4 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_sitearchdir}/gdal/gdalconst.so
 %attr(755,root,root) %{ruby_sitearchdir}/gdal/ogr.so
 %attr(755,root,root) %{ruby_sitearchdir}/gdal/osr.so
+%endif
