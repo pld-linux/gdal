@@ -11,8 +11,7 @@ Version:	1.4.2
 Release:	1
 License:	BSD-like
 Group:		Libraries
-#Source0:	http://download.osgeo.org/gdal/%{name}-%{version}.tar.gz
-Source0:	ftp://ftp.gdal.org/gdal/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
 # Source0-md5:	dedf5ff6a766e85b9a2b5c54c1c59221
 Patch0:		%{name}-dods.patch
 Patch1:		%{name}-perl.patch
