@@ -36,12 +36,12 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
-BuildRequires:	python-numpy-devel
-BuildRequires:	python-devel
+BuildRequires:	python-numpy-devel >= 1.0.0
+BuildRequires:	python-devel >= 1:2.5
 %{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
 %{?with_ruby:BuildRequires:	swig-ruby}
-BuildRequires:	swig-python
+BuildRequires:	swig-python >= 1.3
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
@@ -246,9 +246,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python-gdal
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/*.so
-%{py_sitedir}/*.py[co]
-%{py_sitedir}/*.egg-info
+%attr(755,root,root) %{py_sitedir}/_gdal.so
+%attr(755,root,root) %{py_sitedir}/_gdalconst.so
+%attr(755,root,root) %{py_sitedir}/_gdal_array.so
+%attr(755,root,root) %{py_sitedir}/_ogr.so
+%attr(755,root,root) %{py_sitedir}/_osr.so
+%{py_sitedir}/gdal.py[co]
+%{py_sitedir}/gdalconst.py[co]
+%{py_sitedir}/gdalnumeric.py[co]
+%{py_sitedir}/gdal_array.py[co]
+%{py_sitedir}/ogr.py[co]
+%{py_sitedir}/osr.py[co]
+%{py_sitedir}/Gdal_Wrapper-*.egg-info
 
 %if %{with ruby}
 %files -n ruby-gdal
