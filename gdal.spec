@@ -1,17 +1,23 @@
+# TODO: fix LDFLAGS passing (to use as-needed)
+#
+# Conditional build:
+%bcond_without	odbc	# disable odbc support
+%bcond_without	xerces	# disable xerces support
+%bcond_without	ruby	# disable ruby support
+#
 Summary:	Geospatial Data Abstraction Library
-Summary(pl):	Biblioteka abstrakcji danych dotycz±cych powierzchni Ziemi
+Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczÄ…cych powierzchni Ziemi
 Name:		gdal
-Version:	1.3.1
-Release:	5
+Version:	1.4.3
+Release:	1
 License:	BSD-like
 Group:		Libraries
-Source0:	ftp://ftp.remotesensing.org/pub/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	7ff1ceff745ee011793e1f860c02c172
-Patch0:		%{name}-pgsql.patch
-Patch1:		%{name}-DESTDIR.patch
-Patch2:		%{name}-dods.patch
-Patch3:		%{name}-gcc4.patch
-URL:		http://www.remotesensing.org/gdal/
+Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
+# Source0-md5:	d2b0d428edab7895aa53c7d827094a09
+Patch0:		%{name}-dods.patch
+Patch1:		%{name}-perl.patch
+Patch2:		%{name}-ruby.patch
+URL:		http://www.gdal.org/
 BuildRequires:	autoconf
 BuildRequires:	cfitsio-devel
 BuildRequires:	doxygen
@@ -28,12 +34,17 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 3.6.0
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
+BuildRequires:	perl-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
-BuildRequires:	python-devel
+BuildRequires:	python-numpy-devel >= 1.0.0
+BuildRequires:	python-devel >= 1:2.5
+%{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
-BuildRequires:	unixODBC-devel
-BuildRequires:	xerces-c-devel >= 2.2.0
+%{?with_ruby:BuildRequires:	swig-ruby}
+BuildRequires:	swig-python >= 1.3
+%{?with_odbc:BuildRequires:	unixODBC-devel}
+%{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
 Requires:	geos >= 2.0
 Requires:	libgeotiff >= 1.2.1
@@ -49,17 +60,17 @@ supported formats. The related OGR library (which lives within the
 GDAL source tree) provides a similar capability for simple features
 vector data.
 
-%description -l pl
-GDAL to biblioteka konwertuj±ca miêdzy formatami rastrowych danych
-dotycz±cych powierzchni Ziemi, udostêpniona na licencji Open Source.
-Jako biblioteka udostêpnia aplikacjom jeden abstrakcyjny model danych
-do wszystkich obs³ugiwanych formatów. Powi±zana z ni± biblioteka OGR
-(której ¼ród³a s± do³±czone do drzewa ¼róde³ GDAL) daje podobne
-mo¿liwo¶ci dla danych wektorowych.
+%description -l pl.UTF-8
+GDAL to biblioteka konwertujÄ…ca miÄ™dzy formatami rastrowych danych
+dotyczÄ…cych powierzchni Ziemi, udostÄ™pniona na licencji Open Source.
+Jako biblioteka udostÄ™pnia aplikacjom jeden abstrakcyjny model danych
+do wszystkich obsÅ‚ugiwanych formatÃ³w. PowiÄ…zana z niÄ… biblioteka OGR
+(ktÃ³rej ÅºrÃ³dÅ‚a sÄ… doÅ‚Ä…czone do drzewa ÅºrÃ³deÅ‚ GDAL) daje podobne
+moÅ¼liwoÅ›ci dla danych wektorowych.
 
 %package devel
 Summary:	GDAL library header files
-Summary(pl):	Pliki nag³ówkowe biblioteki GDAL
+Summary(pl.UTF-8):	Pliki nagÅ‚Ã³wkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
@@ -78,30 +89,43 @@ Requires:	netcdf-devel
 Requires:	ogdi-devel >= 3.1
 Requires:	postgresql-devel
 Requires:	sqlite3-devel >= 3
-Requires:	unixODBC-devel
-Requires:	xerces-c-devel >= 2.2.0
+%{?with_odbc:Requires:	unixODBC-devel}
+%{?with_xerces:Requires:	xerces-c-devel >= 2.2.0}
 
 %description devel
 GDAL library header files.
 
-%description devel -l pl
-Pliki nag³ówkowe biblioteki GDAL.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe biblioteki GDAL.
 
 %package static
 Summary:	GDAL static libraries
-Summary(pl):	Statyczne biblioteki GDAL
+Summary(pl.UTF-8):	Statyczne biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 GDAL static libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczne biblioteki GDAL.
+
+%package -n perl-gdal
+Summary:	Perl bindings for GDAL
+Summary(pl.UTF-8):	WiÄ…zania Perla do pakietu GDAL
+Group:		Development/Languages/Perl
+Requires:	%{name} = %{version}-%{release}
+
+%description -n perl-gdal
+Perl bindings for GDAL - Geo::GDAL, Geo::OGR and Geo::OSR modules.
+
+%description -n perl-gdal -l pl.UTF-8
+WiÄ…zania Perla do pakietu GDAL - moduÅ‚y Geo::GDAL, Geo::OGR,
+Geo::OSR.
 
 %package -n python-gdal
 Summary:	GDAL Python module
-Summary(pl):	Modu³ Pythona GDAL
+Summary(pl.UTF-8):	ModuÅ‚ Pythona GDAL
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 %pyrequires_eq	python-libs
@@ -109,17 +133,28 @@ Requires:	%{name} = %{version}-%{release}
 %description -n python-gdal
 GDAL Python module.
 
-%description -n python-gdal -l pl
-Modu³ Pythona GDAL.
+%description -n python-gdal -l pl.UTF-8
+ModuÅ‚ Pythona GDAL.
+
+%package -n ruby-gdal
+Summary:	Ruby bindings for GDAL
+Summary(pl.UTF-8):	WiÄ…zania jÄ™zyka Ruby do pakietu GDAL
+Group:		Development/Languages
+Requires:	%{name} = %{version}-%{release}
+%{?ruby_mod_ver_requires_eq}
+
+%description -n ruby-gdal
+Ruby bindings for GDAL - gdal, gdalconst, ogr and osr modules.
+
+%description -n ruby-gdal -l pl.UTF-8
+WiÄ…zania jÄ™zyka Ruby do pakietu GDAL - moduÅ‚y gdal, gdalconst, ogr
+i osr.
 
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-
-%{__perl} -pi -e "s/PYLIB=lib/PYLIB=%{_lib}/" aclocal.m4
 
 %build
 # disable grass/libgrass here, it can be built from separate gdal-grass package
@@ -127,15 +162,22 @@ Modu³ Pythona GDAL.
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
+	--with-perl \
 	--with-pymoddir=%{py_sitedir} \
+	%{?with_ruby:--with-ruby} \
 	--with-sqlite \
-	--with-xerces \
+	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
-	--without-libgrass
-
+	--without-libgrass \
+	--with-ngpython
+# ngpython seems to be compatibile with old python bindings
+# --with-php needs Zend API update
 %{__make}
+
+%{__make} -C swig build \
+	OPTIMIZE="%{rpmcflags}"
 
 %{__make} docs
 
@@ -147,6 +189,9 @@ rm -rf $RPM_BUILD_ROOT
 
 mv -f ogr/html html/org
 
+%py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
+%py_postclean
 rm -f $RPM_BUILD_ROOT%{py_sitedir}/*.{la,a}
 
 %clean
@@ -157,7 +202,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog NEWS
+%doc NEWS PROVENANCE.TXT
 %attr(755,root,root) %{_bindir}/*
 %exclude %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
@@ -176,9 +221,51 @@ rm -rf $RPM_BUILD_ROOT
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/*.a
+%{_libdir}/libgdal.a
+
+%files -n perl-gdal
+%defattr(644,root,root,755)
+%dir %{perl_vendorarch}/Geo
+%{perl_vendorarch}/Geo/GDAL.pm
+%dir %{perl_vendorarch}/Geo/GDAL
+%{perl_vendorarch}/Geo/GDAL/Const.pm
+%{perl_vendorarch}/Geo/OGR.pm
+%{perl_vendorarch}/Geo/OSR.pm
+%dir %{perl_vendorarch}/auto/Geo
+%dir %{perl_vendorarch}/auto/Geo/GDAL
+%{perl_vendorarch}/auto/Geo/GDAL/GDAL.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/GDAL.so
+%dir %{perl_vendorarch}/auto/Geo/GDAL/Const
+%{perl_vendorarch}/auto/Geo/GDAL/Const/Const.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/Const/Const.so
+%dir %{perl_vendorarch}/auto/Geo/OGR
+%{perl_vendorarch}/auto/Geo/OGR/OGR.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/OGR/OGR.so
+%dir %{perl_vendorarch}/auto/Geo/OSR
+%{perl_vendorarch}/auto/Geo/OSR/OSR.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
 
 %files -n python-gdal
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/_gdalmodule.so
-%{py_sitedir}/*.py
+%attr(755,root,root) %{py_sitedir}/_gdal.so
+%attr(755,root,root) %{py_sitedir}/_gdalconst.so
+%attr(755,root,root) %{py_sitedir}/_gdal_array.so
+%attr(755,root,root) %{py_sitedir}/_ogr.so
+%attr(755,root,root) %{py_sitedir}/_osr.so
+%{py_sitedir}/gdal.py[co]
+%{py_sitedir}/gdalconst.py[co]
+%{py_sitedir}/gdalnumeric.py[co]
+%{py_sitedir}/gdal_array.py[co]
+%{py_sitedir}/ogr.py[co]
+%{py_sitedir}/osr.py[co]
+%{py_sitedir}/Gdal_Wrapper-*.egg-info
+
+%if %{with ruby}
+%files -n ruby-gdal
+%defattr(644,root,root,755)
+%dir %{ruby_sitearchdir}/gdal
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/gdal.so
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/gdalconst.so
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/ogr.so
+%attr(755,root,root) %{ruby_sitearchdir}/gdal/osr.so
+%endif
