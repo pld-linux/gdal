@@ -1,3 +1,4 @@
+# TODO: fix LDFLAGS passing (to use as-needed)
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
