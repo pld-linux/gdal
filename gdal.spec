@@ -187,7 +187,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-mv -f ogr/html html/org
+rm -rf _html
+cp -a html _html
+cp -a ogr/html _html/ogr
 
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
@@ -212,7 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%doc html/*
+%doc _html/*
 %attr(755,root,root) %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so
 %{_libdir}/libgdal.la
