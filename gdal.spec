@@ -37,7 +37,7 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
-BuildRequires:	python-numpy-devel >= 1.0.0
+BuildRequires:	python-numpy-devel >= 1:1.0.0
 BuildRequires:	python-devel >= 1:2.5
 %{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
