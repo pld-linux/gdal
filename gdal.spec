@@ -9,7 +9,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.4.3
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
@@ -35,14 +35,14 @@ BuildRequires:	libtiff-devel >= 3.6.0
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
-BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
-BuildRequires:	python-numpy-devel >= 1:1.0.0
+BuildRequires:	postgresql-devel
 BuildRequires:	python-devel >= 1:2.4
+BuildRequires:	python-numpy-devel >= 1:1.0.0
 %{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
-%{?with_ruby:BuildRequires:	swig-ruby}
 BuildRequires:	swig-python >= 1.3
+%{?with_ruby:BuildRequires:	swig-ruby}
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
@@ -120,8 +120,7 @@ Requires:	%{name} = %{version}-%{release}
 Perl bindings for GDAL - Geo::GDAL, Geo::OGR and Geo::OSR modules.
 
 %description -n perl-gdal -l pl.UTF-8
-Wiązania Perla do pakietu GDAL - moduły Geo::GDAL, Geo::OGR,
-Geo::OSR.
+Wiązania Perla do pakietu GDAL - moduły Geo::GDAL, Geo::OGR, Geo::OSR.
 
 %package -n python-gdal
 Summary:	GDAL Python module
@@ -147,8 +146,8 @@ Requires:	%{name} = %{version}-%{release}
 Ruby bindings for GDAL - gdal, gdalconst, ogr and osr modules.
 
 %description -n ruby-gdal -l pl.UTF-8
-Wiązania języka Ruby do pakietu GDAL - moduły gdal, gdalconst, ogr
-i osr.
+Wiązania języka Ruby do pakietu GDAL - moduły gdal, gdalconst, ogr i
+osr.
 
 %prep
 %setup -q
@@ -195,13 +194,22 @@ rm -rf _html
 cp -a html _html
 cp -a ogr/html _html/ogr
 
-# well. this seems some legacy wrapper, but we install as somebody put it to files section
-install swig/python/gdalnumeric.py $RPM_BUILD_ROOT%{py_sitedir}
-
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
 %py_postclean
 rm -f $RPM_BUILD_ROOT%{py_sitedir}/*.{la,a}
+
+%{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/GDAL/.packlist
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/GDAL/Const/.packlist
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OGR/.packlist
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OSR/.packlist
+
+# some doxygen trash
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/GDAL.dox
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/GDAL/Const.dox
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OGR.dox
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OSR.dox
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -215,6 +223,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %exclude %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgdal.so.1
 %{_datadir}/gdal
 %{_mandir}/man1/*
 %exclude %{_mandir}/man1/gdal-config.1*
