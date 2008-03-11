@@ -37,7 +37,7 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	postgresql-backend-devel
-BuildRequires:	python-numpy-devel >= 1.0.0
+BuildRequires:	python-numpy-devel >= 1:1.0.0
 BuildRequires:	python-devel >= 1:2.4
 %{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
@@ -258,13 +258,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/_gdal.so
 %attr(755,root,root) %{py_sitedir}/_gdalconst.so
-#%attr(755,root,root) %{py_sitedir}/_gdal_array.so
+%attr(755,root,root) %{py_sitedir}/_gdal_array.so
 %attr(755,root,root) %{py_sitedir}/_ogr.so
 %attr(755,root,root) %{py_sitedir}/_osr.so
 %{py_sitedir}/gdal.py[co]
 %{py_sitedir}/gdalconst.py[co]
 %{py_sitedir}/gdalnumeric.py[co]
-#%{py_sitedir}/gdal_array.py[co]
+%{py_sitedir}/gdal_array.py[co]
 %{py_sitedir}/ogr.py[co]
 %{py_sitedir}/osr.py[co]
 
