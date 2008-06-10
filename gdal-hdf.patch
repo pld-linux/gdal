@@ -1,0 +1,64 @@
+--- gdal-1.5.1/frmts/hdf5/hdf5dataset.cpp.orig	2007-08-17 23:26:29.000000000 +0200
++++ gdal-1.5.1/frmts/hdf5/hdf5dataset.cpp	2008-06-06 07:01:12.366555065 +0200
+@@ -29,6 +29,8 @@
+  * DEALINGS IN THE SOFTWARE.
+  ****************************************************************************/
+ 
++#define H5_USE_16_API
++
+ #include "hdf5.h"
+ 
+ #include "gdal_priv.h"
+--- gdal-1.5.1/frmts/hdf5/hdf5imagedataset.cpp.orig	2008-01-22 15:45:12.000000000 +0100
++++ gdal-1.5.1/frmts/hdf5/hdf5imagedataset.cpp	2008-06-06 07:01:41.984244557 +0200
+@@ -26,6 +26,8 @@
+  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+  * DEALINGS IN THE SOFTWARE.
+  ****************************************************************************/
++#define H5_USE_16_API
++
+ #include "hdf5.h"
+ 
+ #include "gdal_pam.h"
+--- gdal-1.5.1/frmts/hdf4/hdf4dataset.h.orig	2007-10-13 18:37:17.000000000 +0200
++++ gdal-1.5.1/frmts/hdf4/hdf4dataset.h	2008-06-06 17:58:27.989863164 +0200
+@@ -51,7 +51,7 @@ typedef enum			// Types of data products
+     SEAWIFS_L2,			// SeaWiFS Level-2 Data
+     SEAWIFS_L3,			// SeaWiFS Level-3 Standard Mapped Image
+     HYPERION_L1,                // Hyperion L1 Data Product
+-    UNKNOWN
++    SUB_UNKNOWN
+ } HDF4SubdatasetType;
+ 
+ /************************************************************************/
+--- gdal-1.5.1/frmts/hdf4/hdf4dataset.cpp.orig	2007-10-13 18:37:17.000000000 +0200
++++ gdal-1.5.1/frmts/hdf4/hdf4dataset.cpp	2008-06-06 17:58:39.670528807 +0200
+@@ -740,7 +740,7 @@ GDALDataset *HDF4Dataset::Open( GDALOpen
+ 
+     else
+     {
+-	poDS->iSubdatasetType = UNKNOWN;
++	poDS->iSubdatasetType = SUB_UNKNOWN;
+ 	poDS->pszSubdatasetType = "UNKNOWN";
+     }
+ 
+--- gdal-1.5.1/frmts/hdf4/hdf4imagedataset.cpp.orig	2008-02-14 16:25:46.000000000 +0100
++++ gdal-1.5.1/frmts/hdf4/hdf4imagedataset.cpp	2008-06-06 17:58:59.479660179 +0200
+@@ -2290,7 +2290,7 @@ GDALDataset *HDF4ImageDataset::Open( GDA
+     else if( EQUAL( papszSubdatasetName[1], "HYPERION_L1" ) )
+         poDS->iSubdatasetType= HYPERION_L1;
+     else
+-        poDS->iSubdatasetType = UNKNOWN;
++        poDS->iSubdatasetType = SUB_UNKNOWN;
+ 
+     // Is our file still here?
+     if ( !Hishdf( poDS->pszFilename ) )
+@@ -2919,7 +2919,7 @@ GDALDataset *HDF4ImageDataset::Open( GDA
+ /* -------------------------------------------------------------------- */
+ /*	Generic SDS							*/
+ /* -------------------------------------------------------------------- */
+-      case UNKNOWN:
++      case SUB_UNKNOWN:
+       {
+ 
+           // This is a coastwatch convention.
