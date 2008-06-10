@@ -1,11 +1,11 @@
---- gdal-1.4.1/swig/perl/GNUmakefile.orig	2007-04-10 17:16:46.000000000 +0200
-+++ gdal-1.4.1/swig/perl/GNUmakefile	2007-06-16 19:40:39.158840342 +0200
-@@ -26,7 +26,7 @@
- 	if [ -f OSR.pm ]; then mv OSR.pm lib/Geo; fi
+--- gdal-1.5.1/swig/perl/GNUmakefile.orig	2007-12-03 21:59:25.000000000 +0100
++++ gdal-1.5.1/swig/perl/GNUmakefile	2008-06-05 21:12:26.429445475 +0200
+@@ -30,7 +30,7 @@
  
  Makefile_Geo__GDAL:
--	PREFIX=${INST_PREFIX} perl Makefile.PL
-+	PREFIX=${INST_PREFIX} perl Makefile.PL INSTALLDIRS=vendor
+ #	PREFIX=${INST_PREFIX} perl Makefile.PL
+-	perl Makefile.PL
++	perl Makefile.PL INSTALLDIRS=vendor
  
  build: Makefile_Geo__GDAL
- 	make -f Makefile_Geo__GDAL
+ 	$(MAKE) -f Makefile_Geo__GDAL

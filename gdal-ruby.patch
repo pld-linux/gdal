@@ -1,20 +1,40 @@
---- gdal-1.4.1/swig/ruby/RubyMakefile.mk.orig	2007-04-10 17:16:43.000000000 +0200
-+++ gdal-1.4.1/swig/ruby/RubyMakefile.mk	2007-06-16 19:54:08.240947303 +0200
-@@ -45,13 +45,13 @@
+--- gdal-1.5.1/swig/ruby/RubyMakefile.mk.orig	2006-12-21 03:49:08.000000000 +0100
++++ gdal-1.5.1/swig/ruby/RubyMakefile.mk	2008-06-06 21:48:10.535282314 +0200
+@@ -17,7 +17,7 @@
+ 
+ include $(GDAL_ROOT)/GDALmake.opt
+ 
+-RUBY_MODULES = gdal.so ogr.so gdalconst.so osr.so
++RUBY_MODULES = gdal.la ogr.la gdalconst.la osr.la
+ RUBY_INCLUDE_DIR := $(shell ruby -rrbconfig -e "puts Config::CONFIG['archdir']")
+ RUBY_LIB_DIR := $(shell ruby -rrbconfig -e "puts Config::CONFIG['libdir']")
+ RUBY_SO_NAME := $(shell ruby -rrbconfig -e "puts Config::CONFIG['RUBY_SO_NAME']")
+@@ -25,7 +25,7 @@
+ INSTALL_DIR := $(RUBY_EXTENSIONS_DIR)/gdal
+ 
+ RUBY_INCLUDE = -I$(RUBY_INCLUDE_DIR)
+-LDFLAGS += -shared -L$(RUBY_LIB_DIR)
++LDFLAGS += -shared -module -avoid-version -rpath $(INSTALL_DIR) -L$(RUBY_LIB_DIR)
+ RUBY_LIB := -l$(RUBY_SO_NAME)
+ 
+ build: $(RUBY_MODULES)
+@@ -44,14 +44,14 @@
+ install: $(INSTALL_DIR)
  	$(INSTALL) $(RUBY_MODULES) $(DESTDIR)$(INSTALL_DIR) 
  
- $(RUBY_MODULES): %.so: %_wrap.o
+-$(RUBY_MODULES): %.so: %_wrap.o
 -	$(LD) $(LDFLAGS) $(LIBS) $(GDAL_SLIB_LINK) $(RUBY_LIB) $< -o $@
++$(RUBY_MODULES): %.la: %_wrap.lo
 +	$(LD) $(GDAL_SLIB_LINK) $(LDFLAGS) $(LIBS) $(RUBY_LIB) $< -o $@
  
- %.o: %.cpp
--	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE)  -c $<
-+	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE) -fPIC -c $<
+-%.o: %.cpp
++%.lo: %.cpp
+ 	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE)  -c $<
  
- %.o: %.cxx
--	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE) -c $<
-+	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE) -fPIC -c $<
+-%.o: %.cxx
++%.lo: %.cxx
+ 	$(CXX) $(CFLAGS) $(GDAL_INCLUDE) $(RUBY_INCLUDE) -c $<
  
- %.o: %.c
--	$(CC) $(CFLAGS) $(GDAL_INCLUDE)  $(RUBY_INCLUDE) -c $<
-+	$(CC) $(CFLAGS) $(GDAL_INCLUDE)  $(RUBY_INCLUDE) -fPIC -c $<
+-%.o: %.c
++%.lo: %.c
+ 	$(CC) $(CFLAGS) $(GDAL_INCLUDE)  $(RUBY_INCLUDE) -c $<
