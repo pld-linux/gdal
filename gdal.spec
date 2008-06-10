@@ -1,4 +1,4 @@
-# TODO: fix LDFLAGS passing (to use as-needed)
+# TODO: csharp, java
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
@@ -8,22 +8,28 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.4.3
-Release:	3
+Version:	1.5.1
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	d2b0d428edab7895aa53c7d827094a09
+# Source0-md5:	76b53917142c5e9ad2d0ac20fb99890b
 Patch0:		%{name}-dods.patch
 Patch1:		%{name}-perl.patch
 Patch2:		%{name}-ruby.patch
+Patch3:		%{name}-asneeded.patch
+Patch4:		%{name}-ogdi.patch
+Patch5:		%{name}-hdf.patch
 URL:		http://www.gdal.org/
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.52
+BuildRequires:	automake
 BuildRequires:	cfitsio-devel
 BuildRequires:	doxygen
+BuildRequires:	expat-devel >= 1.95.0
 BuildRequires:	geos-devel >= 2.0
 BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.0
+BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
 BuildRequires:	libcsf-devel
 BuildRequires:	libdap-devel >= 3.5
@@ -32,6 +38,7 @@ BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 2:1.2.8
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 3.6.0
+BuildRequires:	libtool
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
@@ -74,9 +81,11 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
+Requires:	expat-devel >= 1.95.0
 Requires:	geos-devel >= 2.0
 Requires:	giflib-devel
 Requires:	hdf-devel >= 4.0
+Requires:	hdf5-devel
 Requires:	jasper-devel
 Requires:	libcsf-devel
 Requires:	libdap-devel >= 3.5
@@ -90,7 +99,7 @@ Requires:	ogdi-devel >= 3.1
 Requires:	postgresql-devel
 Requires:	sqlite3-devel >= 3
 %{?with_odbc:Requires:	unixODBC-devel}
-%{?with_xerces:Requires:	xerces-c-devel >= 2.2.0}
+%{?with_xerces:Requires:	xerces-c-devel >= 2.7.0}
 
 %description devel
 GDAL library header files.
@@ -154,40 +163,51 @@ osr.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+
+# need to regenerate (old ones don't support perl 5.10)
+rm swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
 
 %build
-# $PYTHON_INCLUDES is set only with --with-python, but we have --with-ngpython,
+# $PYTHON_INCLUDES is set only with --with-ogpython, but we have --with-python,
 # and $PYTHON_INCLUDES is needed to detect numpy properly
 export PYTHON_INCLUDES=-I%{py_incdir}
 
-# disable grass/libgrass here, it can be built from separate gdal-grass package
+%{__libtoolize}
+cp -f /usr/share/automake/config.* .
+%{__aclocal} -I m4
 %{__autoconf}
+# disable grass/libgrass here, it can be built from separate gdal-grass package
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
+	--with-hide-internal-symbols \
 	--with-perl \
-	--with-pymoddir=%{py_sitedir} \
+	--with-python \
 	%{?with_ruby:--with-ruby} \
-	--with-sqlite \
+	--with-sqlite3 \
 	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
-	--without-libgrass \
-	--with-ngpython
-# ngpython seems to be compatibile with old python bindings
+	--without-libgrass
 # --with-php needs Zend API update
-%{__make}
+# java broken, no configure option
+# csharp builds, but has no configure option
 
-%{__make} -C swig build \
-	OPTIMIZE="%{rpmcflags}"
+# regenerate where needed
+%{__make} -C swig/perl generate
+
+%{__make}
 
 %{__make} docs
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} install install-man \
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -rf _html
@@ -197,7 +217,6 @@ cp -a ogr/html _html/ogr
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
 %py_postclean
-rm -f $RPM_BUILD_ROOT%{py_sitedir}/*.{la,a}
 
 %{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/GDAL/.packlist
@@ -210,6 +229,8 @@ rm -f $RPM_BUILD_ROOT%{py_sitedir}/*.{la,a}
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/GDAL/Const.dox
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OGR.dox
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OSR.dox
+
+%{__rm} $RPM_BUILD_ROOT%{ruby_sitearchdir}/gdal/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -265,18 +286,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n python-gdal
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/_gdal.so
-%attr(755,root,root) %{py_sitedir}/_gdalconst.so
-%attr(755,root,root) %{py_sitedir}/_gdal_array.so
-%attr(755,root,root) %{py_sitedir}/_ogr.so
-%attr(755,root,root) %{py_sitedir}/_osr.so
 %{py_sitedir}/gdal.py[co]
 %{py_sitedir}/gdalconst.py[co]
 %{py_sitedir}/gdalnumeric.py[co]
-%{py_sitedir}/gdal_array.py[co]
 %{py_sitedir}/ogr.py[co]
 %{py_sitedir}/osr.py[co]
-%{py_sitedir}/Gdal_Wrapper-*.egg-info
+%{py_sitedir}/GDAL-*.egg-info
+%dir %{py_sitedir}/osgeo
+%attr(755,root,root) %{py_sitedir}/osgeo/_gdal.so
+%attr(755,root,root) %{py_sitedir}/osgeo/_gdal_array.so
+%attr(755,root,root) %{py_sitedir}/osgeo/_gdalconst.so
+%attr(755,root,root) %{py_sitedir}/osgeo/_ogr.so
+%attr(755,root,root) %{py_sitedir}/osgeo/_osr.so
+%{py_sitedir}/osgeo/*.py[co]
 
 %if %{with ruby}
 %files -n ruby-gdal
