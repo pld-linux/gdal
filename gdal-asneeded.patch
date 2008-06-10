@@ -1,0 +1,44 @@
+--- gdal-1.5.1/m4/ax_xerces.m4.orig	2007-12-07 01:26:11.000000000 +0100
++++ gdal-1.5.1/m4/ax_xerces.m4	2008-06-05 22:45:13.942715785 +0200
+@@ -116,8 +116,8 @@
+         saved_CPPFLAGS="$CPPFLAGS"
+         CPPFLAGS="$CPPFLAGS -I$xerces_include_dir -I$xerces_include_dir2"
+ 
+-        saved_LDFLAGS="$LDFLAGS"
+-        LDFLAGS="$LDFLAGS $xerces_lib_flags"
++        saved_LIBS="$LIBS"
++        LIBS="$LIBS $xerces_lib_flags"
+ 
+         dnl
+         dnl Check Xerces headers
+@@ -180,7 +180,7 @@
+         fi
+ 
+         CPPFLAGS="$saved_CPPFLAGS"
+-        LDFLAGS="$saved_LDFLAGS"
++        LIBS="$saved_LIBS"
+     fi
+ 
+     AC_MSG_CHECKING([for Xerces C++ Parser])
+--- gdal-1.5.1/m4/ax_expat.m4.orig	2007-12-07 01:26:11.000000000 +0100
++++ gdal-1.5.1/m4/ax_expat.m4	2008-06-05 22:48:23.869539098 +0200
+@@ -114,8 +114,8 @@
+         saved_CPPFLAGS="$CPPFLAGS"
+         CPPFLAGS="$CPPFLAGS -I$expat_include_dir"
+ 
+-        saved_LDFLAGS="$LDFLAGS"
+-        LDFLAGS="$LDFLAGS $expat_lib_flags"
++        saved_LIBS="$LIBS"
++        LIBS="$LIBS $expat_lib_flags"
+ 
+         dnl
+         dnl Check Expat headers
+@@ -175,7 +175,7 @@
+         fi
+ 
+         CPPFLAGS="$saved_CPPFLAGS"
+-        LDFLAGS="$saved_LDFLAGS"
++        LIBS="$saved_LIBS"
+     fi
+ 
+     AC_MSG_CHECKING([for Expat XML Parser])
