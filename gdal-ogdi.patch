@@ -1,0 +1,26 @@
+--- gdal-1.5.1/configure.in.orig	2008-06-05 21:13:18.624424000 +0200
++++ gdal-1.5.1/configure.in	2008-06-05 22:51:48.869222202 +0200
+@@ -869,19 +869,19 @@
+ 
+ elif test "$with_ogdi" = "yes" -o "$with_ogdi" = "" ; then
+ 
+-  AC_CHECK_LIB(ogdi31,cln_GetLayerCapabilities,HAVE_OGDI=yes,HAVE_OGDI=no,)
++  AC_CHECK_LIB(ogdi,cln_GetLayerCapabilities,HAVE_OGDI=yes,HAVE_OGDI=no,)
+ 
+   if test "$HAVE_OGDI" = "yes" ; then   
+-    LIBS="-logdi31 $LIBS"
++    LIBS="-logdi $LIBS"
+   fi
+ 
+ else
+ 
+   HAVE_OGDI=yes
+-  LIBS="-L$with_ogdi -L$with_ogdi/lib -logdi31 $LIBS"
++  LIBS="-L$with_ogdi -L$with_ogdi/lib -logdi $LIBS"
+   OGDI_INCLUDE="-I$with_ogdi -I$with_ogdi/include"
+ 
+-  echo "using libogdi31 from $with_ogdi."
++  echo "using libogdi from $with_ogdi."
+ 
+ fi
+ 
