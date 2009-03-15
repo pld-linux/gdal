@@ -8,18 +8,17 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.5.2
-Release:	4
+Version:	1.5.4
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	1939de5fe43d12884d85fa5d7797e3c2
+# Source0-md5:	d5e411b6f11bd1f144af67d2045d2606
 Patch0:		%{name}-dods.patch
 Patch1:		%{name}-perl.patch
 Patch2:		%{name}-ruby.patch
 Patch3:		%{name}-asneeded.patch
 Patch4:		%{name}-ogdi.patch
-Patch5:		%{name}-hdf.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
@@ -165,7 +164,6 @@ osr.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 rm swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
@@ -198,16 +196,16 @@ cp -f /usr/share/automake/config.* .
 # csharp builds, but has no configure option
 
 # regenerate where needed
-%{__make} -C swig/perl generate
+%{__make} -j1 -C swig/perl generate
 
-%{__make}
+%{__make} -j1
 
-%{__make} docs
+%{__make} -j1 docs
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install install-man \
+%{__make} -j1 install install-man \
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -rf _html
