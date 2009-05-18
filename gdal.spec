@@ -9,7 +9,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.5.4
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
@@ -19,6 +19,7 @@ Patch1:		%{name}-perl.patch
 Patch2:		%{name}-ruby.patch
 Patch3:		%{name}-asneeded.patch
 Patch4:		%{name}-ogdi.patch
+Patch5:		%{name}-python_install.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
@@ -228,7 +229,9 @@ cp -a ogr/html _html/ogr
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OGR.dox
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OSR.dox
 
+%if %{with ruby}
 %{__rm} $RPM_BUILD_ROOT%{ruby_sitearchdir}/gdal/*.la
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
