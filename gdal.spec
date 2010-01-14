@@ -46,10 +46,14 @@ BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	python-devel >= 1:2.5
 BuildRequires:	python-numpy-devel >= 1:1.0.0
+BuildRequires:	rpm-pythonprov
 %{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sqlite3-devel >= 3
+BuildRequires:	swig-perl
 BuildRequires:	swig-python >= 1.3
 %{?with_ruby:BuildRequires:	swig-ruby}
+BuildRequires:	texlive-dvips
+BuildRequires:	texlive-latex
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
