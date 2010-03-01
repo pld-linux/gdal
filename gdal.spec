@@ -9,7 +9,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.6.1
-Release:	4
+Release:	5
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
@@ -52,8 +52,13 @@ BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	swig-perl
 BuildRequires:	swig-python >= 1.3
 %{?with_ruby:BuildRequires:	swig-ruby}
+%if "%{pld_release}" == "ti"
+BuildRequires:	tetex-format-latex
+BuildRequires:	tetex-dvips
+%else
 BuildRequires:	texlive-dvips
 BuildRequires:	texlive-latex
+%endif
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
