@@ -1,24 +1,27 @@
---- gdal-1.5.1/swig/ruby/RubyMakefile.mk.orig	2006-12-21 03:49:08.000000000 +0100
-+++ gdal-1.5.1/swig/ruby/RubyMakefile.mk	2008-06-06 21:48:10.535282314 +0200
-@@ -17,7 +17,7 @@
+diff -dur gdal-1.7.2.orig/swig/ruby/RubyMakefile.mk gdal-1.7.2/swig/ruby/RubyMakefile.mk
+--- gdal-1.7.2.orig/swig/ruby/RubyMakefile.mk	2010-04-24 01:22:08.000000000 +0200
++++ gdal-1.7.2/swig/ruby/RubyMakefile.mk	2010-06-12 11:15:23.000000000 +0200
+@@ -17,15 +17,15 @@
  
  include $(GDAL_ROOT)/GDALmake.opt
  
 -RUBY_MODULES = gdal.so ogr.so gdalconst.so osr.so
+-RUBY_INCLUDE_DIR := $(shell ruby -rrbconfig -e "puts Config::CONFIG['archdir']")
++RUBY_INCLUDE_DIR := $(shell ruby -rrbconfig -e "puts Config::CONFIG['rubyhdrdir']")
 +RUBY_MODULES = gdal.la ogr.la gdalconst.la osr.la
- RUBY_INCLUDE_DIR := $(shell ruby -rrbconfig -e "puts Config::CONFIG['archdir']")
  RUBY_LIB_DIR := $(shell ruby -rrbconfig -e "puts Config::CONFIG['libdir']")
  RUBY_SO_NAME := $(shell ruby -rrbconfig -e "puts Config::CONFIG['RUBY_SO_NAME']")
-@@ -25,7 +25,7 @@
+ RUBY_EXTENSIONS_DIR := $(shell ruby -rrbconfig -e "puts Config::CONFIG['sitearchdir']")
  INSTALL_DIR := $(RUBY_EXTENSIONS_DIR)/gdal
  
- RUBY_INCLUDE = -I$(RUBY_INCLUDE_DIR)
--LDFLAGS += -shared -L$(RUBY_LIB_DIR)
-+LDFLAGS += -shared -module -avoid-version -rpath $(INSTALL_DIR) -L$(RUBY_LIB_DIR)
+-RUBY_INCLUDE = -I$(RUBY_INCLUDE_DIR)
++RUBY_INCLUDE = -I$(RUBY_INCLUDE_DIR) -I$(RUBY_INCLUDE_DIR)/$(shell ruby -rrbconfig -e "puts Config::CONFIG['arch']")
+-LDFLAGS += -Xcompiler -shared -L$(RUBY_LIB_DIR)
++LDFLAGS += -Xcompiler -shared -module -avoid-version -rpath $(INSTALL_DIR) -L$(RUBY_LIB_DIR)
  RUBY_LIB := -l$(RUBY_SO_NAME)
  
  build: $(RUBY_MODULES)
-@@ -44,14 +44,14 @@
+@@ -43,14 +43,14 @@
  install: $(INSTALL_DIR)
  	$(INSTALL) $(RUBY_MODULES) $(DESTDIR)$(INSTALL_DIR) 
  
@@ -38,3 +41,70 @@
 -%.o: %.c
 +%.lo: %.c
  	$(CC) $(CFLAGS) $(GDAL_INCLUDE)  $(RUBY_INCLUDE) -c $<
+diff -dur gdal-1.7.2.orig/swig/include/ruby/gdal_ruby.i gdal-1.7.2/swig/include/ruby/gdal_ruby.i
+--- gdal-1.7.2.orig/swig/include/ruby/gdal_ruby.i	2010-04-24 01:22:09.000000000 +0200
++++ gdal-1.7.2/swig/include/ruby/gdal_ruby.i	2010-06-12 14:21:11.000000000 +0200
+@@ -36,7 +36,7 @@
+     CPLXMLNode *psChild;
+     char       *pszText = NULL;
+ 
+-    nChildCount = RARRAY(rubyArray)->len - 2;
++    nChildCount = RARRAY_LEN(rubyArray) - 2;
+     if( nChildCount < 0 )
+     {
+ 		 rb_raise(rb_eRuntimeError, "Error in input XMLTree, child count is less than zero.");
+diff -dur gdal-1.7.2.orig/swig/include/ruby/typemaps_ruby.i gdal-1.7.2/swig/include/ruby/typemaps_ruby.i
+--- gdal-1.7.2.orig/swig/include/ruby/typemaps_ruby.i	2010-04-24 01:22:09.000000000 +0200
++++ gdal-1.7.2/swig/include/ruby/typemaps_ruby.i	2010-06-12 14:22:07.000000000 +0200
+@@ -147,7 +147,7 @@
+   Check_Type($input, T_ARRAY);
+ 
+   /* Get the length */
+-  int seq_size = RARRAY($input)->len;
++  int seq_size = RARRAY_LEN($input);
+   
+   if ( seq_size != $dim0 ) {
+     rb_raise(rb_eRangeError, "sequence must have length %i.", seq_size);
+@@ -225,7 +225,7 @@
+   Check_Type($input, T_ARRAY);
+ 
+   /* Get the length */
+-  $1 = RARRAY($input)->len;
++  $1 = RARRAY_LEN($input);
+   
+   /* Allocate space for the C array. */
+   $2 = (int*) malloc($1*sizeof(int));
+@@ -315,7 +315,7 @@
+   /* Check if is a list */
+   Check_Type($input, T_ARRAY);
+ 
+-  $1 = RARRAY($input)->len;
++  $1 = RARRAY_LEN($input);
+   tmpGCPList = (GDAL_GCP*) malloc($1*sizeof(GDAL_GCP));
+   $2 = tmpGCPList;
+ 
+@@ -386,7 +386,7 @@
+   /* is the provided object an array or a hash? */
+   if ( TYPE($input) == T_ARRAY) {
+     /* get the size of the array */
+-    int size = RARRAY($input)->len;
++    int size = RARRAY_LEN($input);
+     
+     for (int i = 0; i < size; i++) {
+       /* get the ruby object */
+@@ -489,7 +489,7 @@
+   /* Check if is a list */
+   Check_Type($input, T_ARRAY);
+ 
+-  int size = RARRAY($input)->len;
++  int size = RARRAY_LEN($input);
+   for (int i = 0; i < size; i++) {
+     VALUE item = rb_ary_entry($input, i);
+     char *pszItem = StringValuePtr(item);
+@@ -744,4 +744,4 @@
+ 	/* %typemap(out) GByte* */
+ 	
+ 	/* Stops insertion of default type map. */
+-}
+\ No newline at end of file
++}

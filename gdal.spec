@@ -1,4 +1,4 @@
-# TODO: csharp, java
+# TODO: csharp, java, mysql
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
@@ -8,18 +8,16 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.6.1
-Release:	6
+Version:	1.7.2
+Release:	0.1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	4059285a5cef41ff975ed0ec02a97009
-Patch0:		%{name}-dods.patch
-Patch1:		%{name}-perl.patch
-Patch2:		%{name}-ruby.patch
-Patch3:		%{name}-asneeded.patch
-Patch4:		%{name}-ogdi.patch
-Patch5:		%{name}-python_install.patch
+# Source0-md5:	05351f8cb61761ae579667e24a297fe6
+Patch0:		%{name}-perl.patch
+Patch1:		%{name}-ruby.patch
+Patch2:		%{name}-asneeded.patch
+Patch3:		%{name}-python_install.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
@@ -173,11 +171,13 @@ osr.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 rm swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
+# includes updated for Ruby 1.9
+rm swig/ruby/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
+
+rm -rf man
 
 %build
 # $PYTHON_INCLUDES is set only with --with-ogpython, but we have --with-python,
@@ -208,10 +208,13 @@ cp -f /usr/share/automake/config.* .
 
 # regenerate where needed
 %{__make} -j1 -C swig/perl generate
+%{__make} -j1 -C swig/ruby generate
 
 %{__make} -j1
 
 %{__make} -j1 docs
+
+%{__make} -j1 man
 
 %install
 rm -rf $RPM_BUILD_ROOT
