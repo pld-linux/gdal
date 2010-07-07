@@ -42,6 +42,7 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
+BuildRequires:	proj-devel
 BuildRequires:	python-devel >= 1:2.5
 BuildRequires:	python-numpy-devel >= 1:1.0.0
 BuildRequires:	rpm-pythonprov
