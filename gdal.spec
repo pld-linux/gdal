@@ -1,4 +1,5 @@
 # TODO: csharp, java, mysql
+#       use external pcidsk (http://home.gdal.org/projects/pcidsk/)?
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
@@ -18,19 +19,20 @@ Patch0:		%{name}-perl.patch
 Patch1:		%{name}-ruby.patch
 Patch2:		%{name}-asneeded.patch
 Patch3:		%{name}-python_install.patch
+Patch4:		%{name}-libdap.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
 BuildRequires:	doxygen
 BuildRequires:	expat-devel >= 1.95.0
-BuildRequires:	geos-devel >= 2.0
+BuildRequires:	geos-devel >= 2.2
 BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
 BuildRequires:	libcsf-devel
-BuildRequires:	libdap-devel >= 3.5
+BuildRequires:	libdap-devel >= 3.10
 BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 2:1.2.8
@@ -61,7 +63,7 @@ BuildRequires:	texlive-latex
 %{?with_odbc:BuildRequires:	unixODBC-devel}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
-Requires:	geos >= 2.0
+Requires:	geos >= 2.2
 Requires:	libgeotiff >= 1.2.1
 Requires:	libpng >= 2:1.2.8
 Requires:	libtiff >= 3.6.0
@@ -90,13 +92,13 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
 Requires:	expat-devel >= 1.95.0
-Requires:	geos-devel >= 2.0
+Requires:	geos-devel >= 2.2
 Requires:	giflib-devel
 Requires:	hdf-devel >= 4.0
 Requires:	hdf5-devel
 Requires:	jasper-devel
 Requires:	libcsf-devel
-Requires:	libdap-devel >= 3.5
+Requires:	libdap-devel >= 3.10
 Requires:	libgeotiff-devel >= 1.2.1
 Requires:	libjpeg-devel
 Requires:	libpng-devel >= 2:1.2.8
@@ -172,13 +174,14 @@ osr.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
-rm swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
+%{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
 # includes updated for Ruby 1.9
-rm swig/ruby/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
+%{__rm} swig/ruby/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
 
-rm -rf man
+%{__rm} -r man
 
 %build
 # $PYTHON_INCLUDES is set only with --with-ogpython, but we have --with-python,
@@ -256,13 +259,69 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc NEWS PROVENANCE.TXT
-%attr(755,root,root) %{_bindir}/*
-%exclude %{_bindir}/gdal-config
+%attr(755,root,root) %{_bindir}/epsg_tr.py
+%attr(755,root,root) %{_bindir}/esri2wkt.py
+%attr(755,root,root) %{_bindir}/gcps2vec.py
+%attr(755,root,root) %{_bindir}/gcps2wld.py
+%attr(755,root,root) %{_bindir}/gdal2tiles.py
+%attr(755,root,root) %{_bindir}/gdal2xyz.py
+%attr(755,root,root) %{_bindir}/gdal_contour
+%attr(755,root,root) %{_bindir}/gdal_fillnodata.py
+%attr(755,root,root) %{_bindir}/gdal_grid
+%attr(755,root,root) %{_bindir}/gdal_merge.py
+%attr(755,root,root) %{_bindir}/gdal_polygonize.py
+%attr(755,root,root) %{_bindir}/gdal_proximity.py
+%attr(755,root,root) %{_bindir}/gdal_rasterize
+%attr(755,root,root) %{_bindir}/gdal_retile.py
+%attr(755,root,root) %{_bindir}/gdal_sieve.py
+%attr(755,root,root) %{_bindir}/gdal_translate
+%attr(755,root,root) %{_bindir}/gdaladdo
+%attr(755,root,root) %{_bindir}/gdalbuildvrt
+%attr(755,root,root) %{_bindir}/gdalchksum.py
+%attr(755,root,root) %{_bindir}/gdaldem
+%attr(755,root,root) %{_bindir}/gdalenhance
+%attr(755,root,root) %{_bindir}/gdalident.py
+%attr(755,root,root) %{_bindir}/gdalimport.py
+%attr(755,root,root) %{_bindir}/gdalinfo
+%attr(755,root,root) %{_bindir}/gdalmanage
+%attr(755,root,root) %{_bindir}/gdaltindex
+%attr(755,root,root) %{_bindir}/gdaltransform
+%attr(755,root,root) %{_bindir}/gdalwarp
+%attr(755,root,root) %{_bindir}/mkgraticule.py
+%attr(755,root,root) %{_bindir}/nearblack
+%attr(755,root,root) %{_bindir}/ogr2ogr
+%attr(755,root,root) %{_bindir}/ogrinfo
+%attr(755,root,root) %{_bindir}/ogrtindex
+%attr(755,root,root) %{_bindir}/pct2rgb.py
+%attr(755,root,root) %{_bindir}/rgb2pct.py
+%attr(755,root,root) %{_bindir}/testepsg
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgdal.so.1
 %{_datadir}/gdal
-%{_mandir}/man1/*
-%exclude %{_mandir}/man1/gdal-config.1*
+%{_mandir}/man1/gdal2tiles.1*
+%{_mandir}/man1/gdal_contour.1*
+%{_mandir}/man1/gdal_fillnodata.1*
+%{_mandir}/man1/gdal_grid.1*
+%{_mandir}/man1/gdal_merge.1*
+%{_mandir}/man1/gdal_rasterize.1*
+%{_mandir}/man1/gdal_retile.1*
+%{_mandir}/man1/gdal_sieve.1*
+%{_mandir}/man1/gdal_translate.1*
+%{_mandir}/man1/gdal_utilities.1*
+%{_mandir}/man1/gdaladdo.1*
+%{_mandir}/man1/gdalbuildvrt.1*
+%{_mandir}/man1/gdaldem.1*
+%{_mandir}/man1/gdalinfo.1*
+%{_mandir}/man1/gdaltindex.1*
+%{_mandir}/man1/gdaltransform.1*
+%{_mandir}/man1/gdalwarp.1*
+%{_mandir}/man1/nearblack.1*
+%{_mandir}/man1/ogr2ogr.1*
+%{_mandir}/man1/ogr_utilities.1*
+%{_mandir}/man1/ogrinfo.1*
+%{_mandir}/man1/ogrtindex.1*
+%{_mandir}/man1/pct2rgb.1*
+%{_mandir}/man1/rgb2pct.1*
 
 %files devel
 %defattr(644,root,root,755)
@@ -270,7 +329,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so
 %{_libdir}/libgdal.la
-%{_includedir}/*.h
+%{_includedir}/cpl_*.h
+%{_includedir}/cplkeywordparser.h
+%{_includedir}/gdal*.h
+%{_includedir}/gvgcpfit.h
+%{_includedir}/memdataset.h
+%{_includedir}/ogr_*.h
+%{_includedir}/ogrsf_frmts.h
+%{_includedir}/rawdataset.h
+%{_includedir}/thinplatespline.h
+%{_includedir}/vrtdataset.h
 %{_mandir}/man1/gdal-config.1*
 
 %files static

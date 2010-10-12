@@ -1,0 +1,107 @@
+--- gdal-1.7.2/ogr/ogrsf_frmts/dods/ogrdodsdatasource.cpp.orig	2010-04-24 01:21:25.000000000 +0200
++++ gdal-1.7.2/ogr/ogrsf_frmts/dods/ogrdodsdatasource.cpp	2010-10-11 07:45:03.847736015 +0200
+@@ -150,7 +150,7 @@ int OGRDODSDataSource::Open( const char
+ 
+     try 
+     {
+-        poConnection = new AISConnect( oBaseURL );
++        poConnection = new Connect( oBaseURL );
+         version = poConnection->request_version();
+     } 
+     catch (Error &e) 
+--- gdal-1.7.2/ogr/ogrsf_frmts/dods/ogr_dods.h.orig	2010-04-24 01:21:25.000000000 +0200
++++ gdal-1.7.2/ogr/ogrsf_frmts/dods/ogr_dods.h	2010-10-11 07:45:35.795741882 +0200
+@@ -61,7 +61,7 @@
+ #include <Sequence.h>
+ #include <Grid.h>
+ 
+-#include <AISConnect.h>		
++#include <Connect.h>		
+ #include <DDS.h>
+ #include <DAS.h>
+ #include <BaseTypeFactory.h>
+@@ -122,7 +122,7 @@ class OGRDODSLayer : public OGRLayer
+     virtual int         ProvideDataDDS();
+     int                 bDataLoaded;
+ 
+-    AISConnect         *poConnection;
++    Connect            *poConnection;
+     DataDDS            *poDataDDS;
+ 
+     BaseType           *poTargetVar;
+@@ -300,7 +300,7 @@ class OGRDODSDataSource : public OGRData
+     void                AddLayer( OGRDODSLayer * );
+ 
+   public: // Just intended for read access by layer classes.
+-    AISConnect         *poConnection;
++    Connect            *poConnection;
+ 
+     DAS                 oDAS;
+     DDS                 *poDDS;
+--- gdal-1.7.2/ogr/ogrsf_frmts/dods/ogrdodslayer.cpp.orig	2010-04-24 01:21:25.000000000 +0200
++++ gdal-1.7.2/ogr/ogrsf_frmts/dods/ogrdodslayer.cpp	2010-10-11 07:45:57.947740205 +0200
+@@ -213,7 +213,7 @@ int OGRDODSLayer::ProvideDataDDS()
+     bDataLoaded = TRUE;
+     try
+     {
+-        poConnection = new AISConnect( poDS->oBaseURL );
++        poConnection = new Connect( poDS->oBaseURL );
+         CPLDebug( "DODS", "request_data(%s,%s)",
+                   poDS->oBaseURL.c_str(),
+                   (poDS->oProjection + poDS->oConstraints).c_str() );
+--- gdal-1.7.2/frmts/dods/dodsdataset2.cpp.orig	2010-04-24 01:21:55.000000000 +0200
++++ gdal-1.7.2/frmts/dods/dodsdataset2.cpp	2010-10-11 07:24:26.275734339 +0200
+@@ -50,7 +50,7 @@
+ #include <Sequence.h>
+ #include <Grid.h>
+ 
+-#include <AISConnect.h>		
++#include <Connect.h>		
+ #include <DDS.h>
+ #include <DAS.h>
+ #include <BaseTypeFactory.h>
+@@ -203,7 +203,7 @@ static int GetDimension( string oCE, con
+ class DODSDataset : public GDALDataset
+ {
+ private:
+-    AISConnect *poConnect; 	//< Virtual connection to the data source
++    Connect *poConnect; 	//< Virtual connection to the data source
+ 
+     string oURL;		//< data source URL
+     double adfGeoTransform[6];
+@@ -214,7 +214,7 @@ private:
+     DDS   *poDDS;
+     BaseTypeFactory *poBaseTypeFactory;
+ 
+-    AISConnect *connect_to_server() throw(Error);
++    Connect *connect_to_server() throw(Error);
+ 
+     static string      SubConstraint( string raw_constraint, 
+                                       string x_constraint, 
+@@ -242,7 +242,7 @@ public:
+     static GDALDataset *Open(GDALOpenInfo *);
+ 
+     /// Return the connection object
+-    AISConnect *GetConnect() { return poConnect; }
++    Connect *GetConnect() { return poConnect; }
+ 
+     /// Return the data source URL
+     string GetUrl() { return oURL; }
+@@ -339,7 +339,7 @@ DODSDataset::~DODSDataset()
+ /*                         connect_to_server()                          */
+ /************************************************************************/
+ 
+-AISConnect *
++Connect *
+ DODSDataset::connect_to_server() throw(Error)
+ {
+     // does the string start with 'http?'
+@@ -375,7 +375,7 @@ DODSDataset::connect_to_server() throw(E
+ /* -------------------------------------------------------------------- */
+ /*      Connect, and fetch version information.                         */
+ /* -------------------------------------------------------------------- */
+-    AISConnect *poConnection = new AISConnect(oURL);
++    Connect *poConnection = new Connect(oURL);
+     string version = poConnection->request_version();
+     /*    if (version.empty() || version.find("/3.") == string::npos)
+     {
