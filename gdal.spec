@@ -212,7 +212,7 @@ cp -f /usr/share/automake/config.* .
 
 # regenerate where needed
 %{__make} -j1 -C swig/perl generate
-%{__make} -j1 -C swig/ruby generate
+%{?with_ruby:%{__make} -j1 -C swig/ruby generate}
 
 %{__make} -j1
 
