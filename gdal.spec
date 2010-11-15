@@ -1,5 +1,4 @@
 # TODO: csharp, java, mysql
-#       use external pcidsk (http://home.gdal.org/projects/pcidsk/)?
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
@@ -9,12 +8,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.7.2
-Release:	5
+Version:	1.7.3
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	05351f8cb61761ae579667e24a297fe6
+# Source0-md5:	c4673970bd2285032de9ae9bbd82754a
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-ruby.patch
 Patch2:		%{name}-asneeded.patch
@@ -41,6 +40,7 @@ BuildRequires:	libtiff-devel >= 3.6.0
 BuildRequires:	libtool
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
+BuildRequires:	pcidsk-devel
 BuildRequires:	perl-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
@@ -106,6 +106,7 @@ Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 3.6.0
 Requires:	netcdf-devel
 Requires:	ogdi-devel >= 3.1
+Requires:	pcidsk-devel
 Requires:	postgresql-devel
 Requires:	sqlite3-devel >= 3
 %{?with_odbc:Requires:	unixODBC-devel}
@@ -189,7 +190,6 @@ osr.
 export PYTHON_INCLUDES=-I%{py_incdir}
 
 %{__libtoolize}
-cp -f /usr/share/automake/config.* .
 %{__aclocal} -I m4
 %{__autoconf}
 # disable grass/libgrass here, it can be built from separate gdal-grass package
@@ -197,6 +197,7 @@ cp -f /usr/share/automake/config.* .
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
 	--with-hide-internal-symbols \
+	--with-pcidsk=/usr \
 	--with-perl \
 	--with-python \
 	%{?with_ruby:--with-ruby} \
@@ -229,6 +230,14 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf _html
 cp -a html _html
 cp -a ogr/html _html/ogr
+
+install -d $RPM_BUILD_ROOT%{_mandir}/man3
+for f in BandProperty ColorAssociation CutlineTransformer DatasetProperty \
+	EnhanceCBInfo GDALAspectAlgData GDALColorReliefDataset GDALColorReliefRasterBand \
+	GDALGeneric3x3Dataset GDALGeneric3x3RasterBand GDALHillshadeAlgData \
+	GDALSlopeAlgData NamedColor ; do
+	mv $RPM_BUILD_ROOT%{_mandir}/man1/${f}.1 $RPM_BUILD_ROOT%{_mandir}/man3/${f}.3
+done
 
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
@@ -340,6 +349,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/thinplatespline.h
 %{_includedir}/vrtdataset.h
 %{_mandir}/man1/gdal-config.1*
+%{_mandir}/man3/BandProperty.3*
+%{_mandir}/man3/ColorAssociation.3*
+%{_mandir}/man3/CutlineTransformer.3*
+%{_mandir}/man3/DatasetProperty.3*
+%{_mandir}/man3/EnhanceCBInfo.3*
+%{_mandir}/man3/GDAL*.3*
+%{_mandir}/man3/NamedColor.3*
 
 %files static
 %defattr(644,root,root,755)
