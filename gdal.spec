@@ -231,14 +231,6 @@ rm -rf _html
 cp -a html _html
 cp -a ogr/html _html/ogr
 
-install -d $RPM_BUILD_ROOT%{_mandir}/man3
-for f in BandProperty ColorAssociation CutlineTransformer DatasetProperty \
-	EnhanceCBInfo GDALAspectAlgData GDALColorReliefDataset GDALColorReliefRasterBand \
-	GDALGeneric3x3Dataset GDALGeneric3x3RasterBand GDALHillshadeAlgData \
-	GDALSlopeAlgData NamedColor ; do
-	mv $RPM_BUILD_ROOT%{_mandir}/man1/${f}.1 $RPM_BUILD_ROOT%{_mandir}/man3/${f}.3
-done
-
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
 %py_postclean
@@ -349,13 +341,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/thinplatespline.h
 %{_includedir}/vrtdataset.h
 %{_mandir}/man1/gdal-config.1*
-%{_mandir}/man3/BandProperty.3*
-%{_mandir}/man3/ColorAssociation.3*
-%{_mandir}/man3/CutlineTransformer.3*
-%{_mandir}/man3/DatasetProperty.3*
-%{_mandir}/man3/EnhanceCBInfo.3*
-%{_mandir}/man3/GDAL*.3*
-%{_mandir}/man3/NamedColor.3*
 
 %files static
 %defattr(644,root,root,755)
