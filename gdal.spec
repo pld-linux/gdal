@@ -19,11 +19,12 @@ Patch1:		%{name}-ruby.patch
 Patch2:		%{name}-asneeded.patch
 Patch3:		%{name}-python_install.patch
 Patch4:		%{name}-libdap.patch
+Patch5:		%{name}-doxy.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
-BuildRequires:	doxygen
+BuildRequires:	doxygen >= 1.4.2
 BuildRequires:	expat-devel >= 1.95.0
 BuildRequires:	geos-devel >= 2.2
 BuildRequires:	giflib-devel >= 4.0
@@ -176,6 +177,7 @@ osr.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
