@@ -39,6 +39,8 @@ BuildRequires:	libpng-devel >= 2:1.2.8
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 3.6.0
 BuildRequires:	libtool
+BuildRequires:	libuuid-devel
+BuildRequires:	libxml2-devel
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	pcidsk-devel
