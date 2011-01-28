@@ -1,9 +1,11 @@
-diff -Nur gdal-1.6.1.orig/swig/perl/GNUmakefile gdal-1.6.1/swig/perl/GNUmakefile
---- gdal-1.6.1.orig/swig/perl/GNUmakefile	2008-09-13 12:49:45.000000000 +0100
-+++ gdal-1.6.1/swig/perl/GNUmakefile	2009-07-08 21:20:24.000000000 +0100
-@@ -46,4 +46,4 @@
- 	$(MAKE) -f Makefile_Geo__GDAL dist
+--- gdal-1.8.0/swig/perl/GNUmakefile.orig	2011-01-14 06:19:06.000000000 +0100
++++ gdal-1.8.0/swig/perl/GNUmakefile	2011-01-26 17:16:08.978356589 +0100
+@@ -26,7 +26,7 @@
+ gdal_wrap.cc: generate
  
  Makefile_Geo__GDAL:
--	perl Makefile.PL
+-	perl Makefile.PL INSTALL_BASE=$(INST_PREFIX)
 +	perl Makefile.PL INSTALLDIRS=vendor
+ 
+ test: build
+ 	$(MAKE) -f Makefile_Geo__GDAL test
