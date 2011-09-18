@@ -63,7 +63,7 @@ BuildRequires:	tetex-dvips
 BuildRequires:	texlive-dvips
 BuildRequires:	texlive-latex
 %endif
-%{?with_odbc:BuildRequires:	unixODBC-devel}
+%{?with_odbc:BuildRequires:	unixODBC-devel >= 2.2.15}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
 BuildRequires:	zlib-devel >= 1.1.4
 Requires:	geos >= 2.2
