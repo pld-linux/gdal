@@ -1,4 +1,6 @@
-# TODO: csharp, java, mysql
+# TODO:
+# - wait for newer pcidsk, switch to external again
+# - csharp, java, mysql
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
@@ -8,18 +10,18 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.7.3
-Release:	11
+Version:	1.8.0
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	c4673970bd2285032de9ae9bbd82754a
+# Source0-md5:	c762cdab0f7e51a677ba49278a8a263d
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-ruby.patch
 Patch2:		%{name}-asneeded.patch
 Patch3:		%{name}-python_install.patch
-Patch4:		%{name}-libdap.patch
-Patch5:		%{name}-doxy.patch
+Patch4:		%{name}-doxy.patch
+Patch5:		%{name}-libpng.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
@@ -37,13 +39,13 @@ BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
 BuildRequires:	libpng-devel >= 2:1.2.8
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtiff-devel >= 3.6.0
+BuildRequires:	libtiff-devel >= 4.0
 BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	netcdf-devel
 BuildRequires:	ogdi-devel >= 3.1
-BuildRequires:	pcidsk-devel
+#BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	perl-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
@@ -69,7 +71,7 @@ BuildRequires:	zlib-devel >= 1.1.4
 Requires:	geos >= 2.2
 Requires:	libgeotiff >= 1.2.1
 Requires:	libpng >= 2:1.2.8
-Requires:	libtiff >= 3.6.0
+Requires:	libtiff >= 4.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -106,10 +108,10 @@ Requires:	libgeotiff-devel >= 1.2.1
 Requires:	libjpeg-devel
 Requires:	libpng-devel >= 2:1.2.8
 Requires:	libstdc++-devel
-Requires:	libtiff-devel >= 3.6.0
+Requires:	libtiff-devel >= 4.0
 Requires:	netcdf-devel
 Requires:	ogdi-devel >= 3.1
-Requires:	pcidsk-devel
+#Requires:	pcidsk-devel > 0.3
 Requires:	postgresql-devel
 Requires:	sqlite3-devel >= 3
 %{?with_odbc:Requires:	unixODBC-devel}
@@ -197,11 +199,11 @@ export PYTHON_INCLUDES=-I%{py_incdir}
 %{__aclocal} -I m4
 %{__autoconf}
 # disable grass/libgrass here, it can be built from separate gdal-grass package
+# note: "WARNING: unrecognized options: --with-hide-internal-symbols" is caused by configure bug; option DOES take effect
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
 	--with-hide-internal-symbols \
-	--with-pcidsk=/usr \
 	--with-perl \
 	--with-python \
 	%{?with_ruby:--with-ruby} \
@@ -211,6 +213,7 @@ export PYTHON_INCLUDES=-I%{py_incdir}
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
 	--without-libgrass
+#	--with-pcidsk=/usr (needs > 0.3)
 # --with-php needs Zend API update
 # java broken, no configure option
 # csharp builds, but has no configure option
@@ -246,10 +249,8 @@ cp -a ogr/html _html/ogr
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OSR/.packlist
 
 # some doxygen trash
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/GDAL.dox
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/GDAL/Const.dox
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OGR.dox
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/OSR.dox
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/{GDAL.dox,GDAL/Const.dox,OGR.dox,OSR.dox}
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal_{fillnodata,sieve}.dox
 
 %if %{with ruby}
 %{__rm} $RPM_BUILD_ROOT%{ruby_sitearchdir}/gdal/*.la
@@ -271,6 +272,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdal2tiles.py
 %attr(755,root,root) %{_bindir}/gdal2xyz.py
 %attr(755,root,root) %{_bindir}/gdal_contour
+%attr(755,root,root) %{_bindir}/gdal_calc.py
 %attr(755,root,root) %{_bindir}/gdal_fillnodata.py
 %attr(755,root,root) %{_bindir}/gdal_grid
 %attr(755,root,root) %{_bindir}/gdal_merge.py
@@ -288,6 +290,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdalident.py
 %attr(755,root,root) %{_bindir}/gdalimport.py
 %attr(755,root,root) %{_bindir}/gdalinfo
+%attr(755,root,root) %{_bindir}/gdallocationinfo
 %attr(755,root,root) %{_bindir}/gdalmanage
 %attr(755,root,root) %{_bindir}/gdaltindex
 %attr(755,root,root) %{_bindir}/gdaltransform
@@ -317,6 +320,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/gdalbuildvrt.1*
 %{_mandir}/man1/gdaldem.1*
 %{_mandir}/man1/gdalinfo.1*
+%{_mandir}/man1/gdallocationinfo.1*
 %{_mandir}/man1/gdaltindex.1*
 %{_mandir}/man1/gdaltransform.1*
 %{_mandir}/man1/gdalwarp.1*

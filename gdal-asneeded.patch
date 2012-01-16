@@ -1,5 +1,5 @@
---- gdal-1.5.1/m4/ax_xerces.m4.orig	2007-12-07 01:26:11.000000000 +0100
-+++ gdal-1.5.1/m4/ax_xerces.m4	2008-06-05 22:45:13.942715785 +0200
+--- gdal-1.8.0/m4/ax_lib_xerces.m4.orig	2007-12-07 01:26:11.000000000 +0100
++++ gdal-1.8.0/m4/ax_lib_xerces.m4	2008-06-05 22:45:13.942715785 +0200
 @@ -116,8 +116,8 @@
          saved_CPPFLAGS="$CPPFLAGS"
          CPPFLAGS="$CPPFLAGS -I$xerces_include_dir -I$xerces_include_dir2"
