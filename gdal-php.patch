@@ -1,0 +1,11 @@
+--- gdal-1.9.0/swig/php/GNUmakefile.orig	2012-01-04 08:03:42.000000000 +0100
++++ gdal-1.9.0/swig/php/GNUmakefile	2012-01-21 10:52:29.873728130 +0100
+@@ -28,7 +28,7 @@
+ 
+ generate: ${WRAPPERS}
+ 
+-build: php_gdal.so
++build: $(all_libs)
+ 
+ # This directive should actually do an install.
+ install: build

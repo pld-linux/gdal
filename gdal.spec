@@ -1,60 +1,94 @@
 # TODO:
+# - podofo (--with-podofo)
+# - epsilon (--with-epsilon; BR: epsilon-devel from Enlightenment)
+# - libgta (http://gta.nongnu.org/libgta.html)
+# - spatialite (--with-spatialite; libspatialite: http://www.gaia-gis.it/gaia-sins/)
+# - freexl (http://www.gaia-gis.it/FreeXL/)
+# - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
+# - armadillo (--with-armadillo; http://arma.sourceforge.net/)
+# - openjpeg (? 1.4? needs opj_decode_tile_data symbol)
+# - libjpeg12 (needs patching to use system one)
+# - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
 # - csharp, java, mysql
+# - additional, proprietary(?) formats support:
+#   - FMEObjects (http://www.safe.com/support/support-resources/fme-downloads/)
+#   - ESRI FileGDBAPI (http://resources.arcgis.com/content/geodatabases/10.0/file-gdb-api)
+#   - ECW (http://www.erdas.com/products/ecw/ERDASECWJPEG2000SDK/Details.aspx)
+#   - Kakadu/JPEG2000 (http://www.kakadusoftware.com/)
+#   - MrSID (http://www.lizardtech.com/developer/)
+#   - MSG/EUMETSAT (http://www.eumetsat.int/Home/Main/DataAccess/SupportSoftwareTools/index.htm)
+#   - Oracle/OCI >= 10.0.1 (for georaster); Oracle/OCI >= 8.1.7 (as DB)
+#   - Ingres (--with-ingres=/path)
+#   - Informix DB
+#   - DWGdirect (members only? http://www.opendwg.org/)
+#   - ESRI SDE (http://www.esri.com/software/arcgis/arcsde/index.html)
+#   - OpenCL (--with-opencl; no free Linux implementation yet?)
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
 %bcond_without	xerces	# disable xerces support
-%bcond_without	ruby	# disable ruby support
+%bcond_without	java	# disable Java and MDB support
+%bcond_without	php	# disable PHP bindind
+%bcond_without	ruby	# disable ruby binding
 #
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.8.0
+Version:	1.9.0
 Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	c762cdab0f7e51a677ba49278a8a263d
+# Source0-md5:	1853f3d8eb5232ae030abe007840cade
 Patch0:		%{name}-perl.patch
-Patch1:		%{name}-ruby.patch
-Patch2:		%{name}-asneeded.patch
-Patch3:		%{name}-python_install.patch
-Patch4:		%{name}-doxy.patch
-Patch5:		%{name}-libpng.patch
+Patch1:		%{name}-python_install.patch
+Patch2:		%{name}-doxy.patch
+Patch3:		%{name}-sh.patch
+Patch4:		%{name}-php.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
+BuildRequires:	curl-devel
 BuildRequires:	doxygen >= 1.4.2
 BuildRequires:	expat-devel >= 1.95.0
-BuildRequires:	geos-devel >= 2.2
+BuildRequires:	geos-devel >= 2.2.0
 BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
+%{?with_java:BuildRequires:	jdk}
+%{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	libcsf-devel
 BuildRequires:	libdap-devel >= 3.10
 BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
+#BuildRequires:	libkml-devel >= 1.3.0
 BuildRequires:	libpng-devel >= 2:1.2.8
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 4.0
 BuildRequires:	libtool
 BuildRequires:	libuuid-devel
+BuildRequires:	libwebp-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	netcdf-devel
+BuildRequires:	netcdf-devel >= 4
 BuildRequires:	ogdi-devel >= 3.1
 #BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	perl-devel
-BuildRequires:	postgresql-backend-devel
-BuildRequires:	postgresql-devel
-BuildRequires:	proj-devel
+%{?with_php:BuildRequires:	php-devel}
+BuildRequires:	poppler-devel
+# ensure it's compiled with PQescapeStringConn support
+BuildRequires:	postgresql-backend-devel >= 8.1.4
+BuildRequires:	postgresql-devel >= 8.1.4
+BuildRequires:	proj-devel >= 4
 BuildRequires:	python-devel >= 1:2.5
 BuildRequires:	python-numpy-devel >= 1:1.0.0
+BuildRequires:	python-setuptools
 BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.344
 %{?with_ruby:BuildRequires:	ruby-devel}
-BuildRequires:	sqlite3-devel >= 3
+BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	swig-perl
 BuildRequires:	swig-python >= 1.3
 %{?with_ruby:BuildRequires:	swig-ruby}
@@ -66,9 +100,10 @@ BuildRequires:	texlive-dvips
 BuildRequires:	texlive-latex
 %endif
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.2.15}
-%{?with_xerces:BuildRequires:	xerces-c-devel >= 2.2.0}
+%{?with_xerces:BuildRequires:	xerces-c-devel >= 2.7.0}
+BuildRequires:	xz-devel
 BuildRequires:	zlib-devel >= 1.1.4
-Requires:	geos >= 2.2
+Requires:	geos >= 2.2.0
 Requires:	libgeotiff >= 1.2.1
 Requires:	libpng >= 2:1.2.8
 Requires:	libtiff >= 4.0
@@ -97,7 +132,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
 Requires:	expat-devel >= 1.95.0
-Requires:	geos-devel >= 2.2
+Requires:	geos-devel >= 2.2.0
 Requires:	giflib-devel
 Requires:	hdf-devel >= 4.0
 Requires:	hdf5-devel
@@ -109,11 +144,11 @@ Requires:	libjpeg-devel
 Requires:	libpng-devel >= 2:1.2.8
 Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 4.0
-Requires:	netcdf-devel
+Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
 #Requires:	pcidsk-devel > 0.3
 Requires:	postgresql-devel
-Requires:	sqlite3-devel >= 3
+Requires:	sqlite3-devel >= 3.0.0
 %{?with_odbc:Requires:	unixODBC-devel}
 %{?with_xerces:Requires:	xerces-c-devel >= 2.7.0}
 
@@ -146,6 +181,19 @@ Perl bindings for GDAL - Geo::GDAL, Geo::OGR and Geo::OSR modules.
 
 %description -n perl-gdal -l pl.UTF-8
 Wiązania Perla do pakietu GDAL - moduły Geo::GDAL, Geo::OGR, Geo::OSR.
+
+%package -n php-gdal
+Summary:	PHP bindings for GDAL library
+Summary(pl.UTF-8):	Wiązania PHP do biblioteki GDAL
+Group:		Development/Languages/PHP
+Requires:	%{name} = %{version}-%{release}
+%{?requires_php_extension}
+
+%description -n php-gdal
+PHP bindings for GDAL library
+
+%description -n php-gdal -l pl.UTF-8
+Wiązania PHP do biblioteki GDAL.
 
 %package -n python-gdal
 Summary:	GDAL Python module
@@ -181,41 +229,37 @@ osr.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
-# includes updated for Ruby 1.9
-%{__rm} swig/ruby/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
 
 %{__rm} -r man
 
 %build
-# $PYTHON_INCLUDES is set only with --with-ogpython, but we have --with-python,
-# and $PYTHON_INCLUDES is needed to detect numpy properly
-export PYTHON_INCLUDES=-I%{py_incdir}
-
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
 # disable grass/libgrass here, it can be built from separate gdal-grass package
-# note: "WARNING: unrecognized options: --with-hide-internal-symbols" is caused by configure bug; option DOES take effect
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
 	--with-hide-internal-symbols \
+	%{?with_java:--with-java=%{java_home}} \
+	--with-liblzma \
+	%{?with_java:--with-mdb} \
 	--with-perl \
+	%{?with_php:--with-php} \
+	--with-poppler \
 	--with-python \
 	%{?with_ruby:--with-ruby} \
 	--with-sqlite3 \
+	--with-webp \
 	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
 	--without-libgrass
 #	--with-pcidsk=/usr (needs > 0.3)
-# --with-php needs Zend API update
-# java broken, no configure option
 # csharp builds, but has no configure option
 
 # regenerate where needed
@@ -238,6 +282,22 @@ rm -rf _html
 cp -a html _html
 cp -a ogr/html _html/ogr
 
+%if %{with php}
+# missing in make install
+install -D swig/php/php_gdal.so $RPM_BUILD_ROOT%{php_extensiondir}/gdal.so
+install -D swig/php/php_gdalconst.so $RPM_BUILD_ROOT%{php_extensiondir}/gdalconst.so
+install -D swig/php/php_ogr.so $RPM_BUILD_ROOT%{php_extensiondir}/ogr.so
+install -D swig/php/php_osr.so $RPM_BUILD_ROOT%{php_extensiondir}/osr.so
+install -d $RPM_BUILD_ROOT%{php_sysconfdir}/conf.d
+cat <<'EOF' >$RPM_BUILD_ROOT%{php_sysconfdir}/conf.d/gdal.ini
+; Enable gdal extension module
+extension=gdal.so
+extension=gdalconst.so
+extension=ogr.so
+extension=osr.so
+EOF
+%endif
+
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
 %py_postclean
@@ -250,11 +310,8 @@ cp -a ogr/html _html/ogr
 
 # some doxygen trash
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/{GDAL.dox,GDAL/Const.dox,OGR.dox,OSR.dox}
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/check_dox.pl
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal_{fillnodata,sieve}.dox
-
-%if %{with ruby}
-%{__rm} $RPM_BUILD_ROOT%{ruby_sitearchdir}/gdal/*.la
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -292,6 +349,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdalinfo
 %attr(755,root,root) %{_bindir}/gdallocationinfo
 %attr(755,root,root) %{_bindir}/gdalmanage
+%attr(755,root,root) %{_bindir}/gdalsrsinfo
 %attr(755,root,root) %{_bindir}/gdaltindex
 %attr(755,root,root) %{_bindir}/gdaltransform
 %attr(755,root,root) %{_bindir}/gdalwarp
@@ -321,6 +379,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/gdaldem.1*
 %{_mandir}/man1/gdalinfo.1*
 %{_mandir}/man1/gdallocationinfo.1*
+%{_mandir}/man1/gdalsrsinfo.1*
 %{_mandir}/man1/gdaltindex.1*
 %{_mandir}/man1/gdaltransform.1*
 %{_mandir}/man1/gdalwarp.1*
@@ -375,6 +434,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{perl_vendorarch}/auto/Geo/OSR
 %{perl_vendorarch}/auto/Geo/OSR/OSR.bs
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
+
+%if %{with php}
+%files -n php-gdal
+%defattr(644,root,root,755)
+%config(noreplace) %verify(not md5 mtime size) %{php_sysconfdir}/conf.d/gdal.ini
+%attr(755,root,root) %{php_extensiondir}/gdal.so
+%attr(755,root,root) %{php_extensiondir}/gdalconst.so
+%attr(755,root,root) %{php_extensiondir}/ogr.so
+%attr(755,root,root) %{php_extensiondir}/osr.so
+%endif
 
 %files -n python-gdal
 %defattr(644,root,root,755)
