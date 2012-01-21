@@ -6,7 +6,7 @@
 # - freexl (http://www.gaia-gis.it/FreeXL/)
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
 # - armadillo (--with-armadillo; http://arma.sourceforge.net/)
-# - openjpeg (? 1.4? needs opj_decode_tile_data symbol)
+# - openjpeg (unreleased 1.5 or 2? needs opj_decode_tile_data symbol, not available in 1.3-1.4)
 # - libjpeg12 (needs patching to use system one)
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
