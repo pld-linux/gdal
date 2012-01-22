@@ -1,5 +1,5 @@
 # TODO:
-# - epsilon (--with-epsilon; BR: epsilon-devel from Enlightenment)
+# - epsilon (--with-epsilon; http://sourceforge.net/projects/epsilon-project/)
 # - libgta (http://gta.nongnu.org/libgta.html)
 # - spatialite (--with-spatialite; libspatialite: http://www.gaia-gis.it/gaia-sins/)
 # - freexl (http://www.gaia-gis.it/FreeXL/)
