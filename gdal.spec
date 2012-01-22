@@ -1,5 +1,4 @@
 # TODO:
-# - podofo (--with-podofo)
 # - epsilon (--with-epsilon; BR: epsilon-devel from Enlightenment)
 # - libgta (http://gta.nongnu.org/libgta.html)
 # - spatialite (--with-spatialite; libspatialite: http://www.gaia-gis.it/gaia-sins/)
@@ -27,11 +26,16 @@
 #
 # Conditional build:
 %bcond_without	odbc	# disable odbc support
+%bcond_with	podofo	# PDF support via podofo instead of poppler
+%bcond_without	poppler	# PDF support via poppler
 %bcond_without	xerces	# disable xerces support
 %bcond_without	java	# disable Java and MDB support
 %bcond_without	php	# disable PHP bindind
 %bcond_without	ruby	# disable ruby binding
 #
+%if %{with podofo}
+%undefine	with_poppler
+%endif
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
@@ -77,7 +81,8 @@ BuildRequires:	ogdi-devel >= 3.1
 #BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	perl-devel
 %{?with_php:BuildRequires:	php-devel}
-BuildRequires:	poppler-devel
+%{?with_podofo:BuildRequires:	podofo-devel}
+%{?with_poppler:BuildRequires:	poppler-devel}
 # ensure it's compiled with PQescapeStringConn support
 BuildRequires:	postgresql-backend-devel >= 8.1.4
 BuildRequires:	postgresql-devel >= 8.1.4
@@ -249,7 +254,8 @@ osr.
 	%{?with_java:--with-mdb} \
 	--with-perl \
 	%{?with_php:--with-php} \
-	--with-poppler \
+	%{?with_podofo:--with-podofo} \
+	%{?with_poppler:--with-poppler} \
 	--with-python \
 	%{?with_ruby:--with-ruby} \
 	--with-sqlite3 \
