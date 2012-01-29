@@ -25,12 +25,13 @@
 #   - OpenCL (--with-opencl; no free Linux implementation yet?)
 #
 # Conditional build:
-%bcond_without	odbc	# disable odbc support
+%bcond_without	gta	# GTA format support
+%bcond_without	odbc	# disable ODBC DB support
 %bcond_with	podofo	# PDF support via podofo instead of poppler
 %bcond_without	poppler	# PDF support via poppler
 %bcond_without	xerces	# disable xerces support
 %bcond_without	java	# disable Java and MDB support
-%bcond_without	php	# disable PHP bindind
+%bcond_without	php	# disable PHP binding
 %bcond_without	ruby	# disable ruby binding
 #
 %if %{with podofo}
@@ -67,6 +68,7 @@ BuildRequires:	jasper-devel
 BuildRequires:	libcsf-devel
 BuildRequires:	libdap-devel >= 3.10
 BuildRequires:	libgeotiff-devel >= 1.2.1
+%{?with_gta:BuildRequires:	libgta-devel}
 BuildRequires:	libjpeg-devel >= 6b
 #BuildRequires:	libkml-devel >= 1.3.0
 BuildRequires:	libpng-devel >= 2:1.2.8
@@ -93,6 +95,7 @@ BuildRequires:	python-setuptools
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.344
 %{?with_ruby:BuildRequires:	ruby-devel}
+BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	swig-perl
 BuildRequires:	swig-python >= 1.3
@@ -240,6 +243,8 @@ osr.
 
 %{__rm} -r man
 
+%{__sed} -i -e 's,DODS_INC="-I.*,DODS_INC="$(pkg-config --cflags libdap)",' configure.in
+
 %build
 %{__libtoolize}
 %{__aclocal} -I m4
@@ -248,6 +253,7 @@ osr.
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
+	%{!?with_gta:--without-gta} \
 	--with-hide-internal-symbols \
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
