@@ -1,6 +1,4 @@
 # TODO:
-# - epsilon (--with-epsilon; http://sourceforge.net/projects/epsilon-project/)
-# - libgta (http://gta.nongnu.org/libgta.html)
 # - spatialite (--with-spatialite; libspatialite: http://www.gaia-gis.it/gaia-sins/)
 # - freexl (http://www.gaia-gis.it/FreeXL/)
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
@@ -25,6 +23,7 @@
 #   - OpenCL (--with-opencl; no free Linux implementation yet?)
 #
 # Conditional build:
+%bcond_without	epsilon	# EPSILON wavelet compression support
 %bcond_without	gta	# GTA format support
 %bcond_without	odbc	# disable ODBC DB support
 %bcond_with	podofo	# PDF support via podofo instead of poppler
@@ -57,6 +56,7 @@ BuildRequires:	automake
 BuildRequires:	cfitsio-devel
 BuildRequires:	curl-devel
 BuildRequires:	doxygen >= 1.4.2
+%{?with_epsilon:BuildRequires:	epsilon-compressor-devel}
 BuildRequires:	expat-devel >= 1.95.0
 BuildRequires:	geos-devel >= 2.2.0
 BuildRequires:	giflib-devel >= 4.0
@@ -139,26 +139,38 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	cfitsio-devel
+Requires:	curl-devel
+%{?with_epsilon:Requires:	epsilon-compressor-devel}
 Requires:	expat-devel >= 1.95.0
 Requires:	geos-devel >= 2.2.0
-Requires:	giflib-devel
+Requires:	giflib-devel >= 4.0
 Requires:	hdf-devel >= 4.0
 Requires:	hdf5-devel
 Requires:	jasper-devel
+%{?with_java:Requires:	jdk}
 Requires:	libcsf-devel
 Requires:	libdap-devel >= 3.10
 Requires:	libgeotiff-devel >= 1.2.1
-Requires:	libjpeg-devel
+%{?with_gta:Requires:	libgta-devel}
+Requires:	libjpeg-devel >= 6b
 Requires:	libpng-devel >= 2:1.2.8
 Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 4.0
+Requires:	libuuid-devel
+Requires:	libwebp-devel
+Requires:	libxml2-devel
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
 #Requires:	pcidsk-devel > 0.3
+%{?with_podofo:Requires:	podofo-devel}
+%{?with_poppler:Requires:	poppler-devel}
 Requires:	postgresql-devel
+Requires:	proj-devel >= 4
 Requires:	sqlite3-devel >= 3.0.0
 %{?with_odbc:Requires:	unixODBC-devel}
 %{?with_xerces:Requires:	xerces-c-devel >= 2.7.0}
+Requires:	xz-devel
+Requires:	zlib-devel >= 1.1.4
 
 %description devel
 GDAL library header files.
@@ -253,11 +265,12 @@ osr.
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
+	%{?with_epsilon:--with-epsilon} \
 	%{!?with_gta:--without-gta} \
 	--with-hide-internal-symbols \
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
-	%{?with_java:--with-mdb} \
+	%{?with_java:--with-mdb --with-jvm-lib-add-rpath} \
 	--with-perl \
 	%{?with_php:--with-php} \
 	%{?with_podofo:--with-podofo} \
