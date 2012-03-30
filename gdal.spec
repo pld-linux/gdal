@@ -1,4 +1,6 @@
 # TODO:
+# - be reasonable about devel dependencies - you do not need all of them to
+#   use gdal
 # - spatialite (--with-spatialite; libspatialite: http://www.gaia-gis.it/gaia-sins/)
 # - freexl (http://www.gaia-gis.it/FreeXL/)
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
@@ -40,7 +42,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.9.0
-Release:	4
+Release:	5
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
@@ -148,7 +150,6 @@ Requires:	giflib-devel >= 4.0
 Requires:	hdf-devel >= 4.0
 Requires:	hdf5-devel
 Requires:	jasper-devel
-%{?with_java:Requires:	jdk}
 Requires:	libcsf-devel
 Requires:	libdap-devel >= 3.10
 Requires:	libgeotiff-devel >= 1.2.1
