@@ -1,6 +1,7 @@
 # TODO:
 # - be reasonable about devel dependencies - you do not need all of them to
-#   use gdal (probably a gdal module does not imply devel dependency)
+#   use gdal (probably a gdal module or driver shall not imply devel
+#   dependency)
 # - spatialite (--with-spatialite; libspatialite: http://www.gaia-gis.it/gaia-sins/)
 # - freexl (http://www.gaia-gis.it/FreeXL/)
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
