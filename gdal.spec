@@ -82,7 +82,7 @@ BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libwebp-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	netcdf-devel >= 4
+BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
 #BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	perl-devel
