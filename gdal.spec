@@ -104,13 +104,8 @@ BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	swig-perl
 BuildRequires:	swig-python >= 1.3
 %{?with_ruby:BuildRequires:	swig-ruby}
-%if "%{pld_release}" == "ti"
-BuildRequires:	tetex-format-latex
-BuildRequires:	tetex-dvips
-%else
 BuildRequires:	texlive-dvips
 BuildRequires:	texlive-latex
-%endif
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.2.15}
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.7.0}
 BuildRequires:	xz-devel
