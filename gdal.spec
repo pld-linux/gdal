@@ -2,8 +2,6 @@
 # - be reasonable about devel dependencies - you do not need all of them to
 #   use gdal (probably a gdal module or driver shall not imply devel
 #   dependency)
-# - spatialite (--with-spatialite; libspatialite: http://www.gaia-gis.it/gaia-sins/)
-# - freexl (http://www.gaia-gis.it/FreeXL/)
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
 # - armadillo (--with-armadillo; http://arma.sourceforge.net/)
 # - openjpeg (unreleased post-1.5 or 2? needs opj_decode_tile_data symbol, not available in 1.3-1.5)
@@ -26,15 +24,16 @@
 #   - OpenCL (--with-opencl; no free Linux implementation yet?)
 #
 # Conditional build:
-%bcond_without	epsilon	# EPSILON wavelet compression support
-%bcond_without	gta	# GTA format support
-%bcond_without	odbc	# disable ODBC DB support
-%bcond_with	podofo	# PDF support via podofo instead of poppler
-%bcond_without	poppler	# PDF support via poppler
-%bcond_without	xerces	# disable xerces support
-%bcond_without	java	# disable Java and MDB support
-%bcond_without	php	# disable PHP binding
-%bcond_without	ruby	# disable ruby binding
+%bcond_without	epsilon		# EPSILON wavelet compression support
+%bcond_without	gta		# GTA format support
+%bcond_without	odbc		# disable ODBC DB support
+%bcond_with	podofo		# PDF support via podofo instead of poppler
+%bcond_without	poppler		# PDF support via poppler
+%bcond_without	spatialite	# SpatiaLite support
+%bcond_without	xerces		# disable xerces support
+%bcond_without	java		# disable Java and MDB support
+%bcond_without	php		# disable PHP binding
+%bcond_without	ruby		# disable ruby binding
 #
 %if %{with podofo}
 %undefine	with_poppler
@@ -62,6 +61,7 @@ BuildRequires:	curl-devel
 BuildRequires:	doxygen >= 1.4.2
 %{?with_epsilon:BuildRequires:	epsilon-compressor-devel}
 BuildRequires:	expat-devel >= 1.95.0
+BuildRequires:	freexl-devel >= 1.0
 BuildRequires:	geos-devel >= 2.2.0
 BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.0
@@ -76,6 +76,7 @@ BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
 #BuildRequires:	libkml-devel >= 1.3.0
 BuildRequires:	libpng-devel >= 2:1.2.8
+%{?with_spatialite:BuildRequires:	libspatialite-devel}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 4.0
 BuildRequires:	libtool
@@ -110,6 +111,7 @@ BuildRequires:	texlive-latex
 %{?with_xerces:BuildRequires:	xerces-c-devel >= 2.7.0}
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel >= 1.1.4
+Requires:	freexl >= 1.0
 Requires:	geos >= 2.2.0
 Requires:	libgeotiff >= 1.2.1
 Requires:	libpng >= 2:1.2.8
@@ -141,6 +143,7 @@ Requires:	cfitsio-devel
 Requires:	curl-devel
 %{?with_epsilon:Requires:	epsilon-compressor-devel}
 Requires:	expat-devel >= 1.95.0
+Requires:	freexl-devel >= 1.0
 Requires:	geos-devel >= 2.2.0
 Requires:	giflib-devel >= 4.0
 Requires:	hdf-devel >= 4.0
@@ -152,6 +155,7 @@ Requires:	libgeotiff-devel >= 1.2.1
 %{?with_gta:Requires:	libgta-devel}
 Requires:	libjpeg-devel >= 6b
 Requires:	libpng-devel >= 2:1.2.8
+%{?with_spatialite:Requires:	libspatialite-devel}
 Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 4.0
 Requires:	libuuid-devel
@@ -276,6 +280,7 @@ osr.
 	%{?with_poppler:--with-poppler} \
 	--with-python \
 	%{?with_ruby:--with-ruby} \
+	%{?with_spatialite:--with-spatialite} \
 	--with-sqlite3 \
 	--with-webp \
 	%{?with_xerces:--with-xerces} \
