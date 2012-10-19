@@ -5,7 +5,7 @@
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
 # - armadillo (--with-armadillo; http://arma.sourceforge.net/)
 # - openjpeg (unreleased post-1.5 or 2? needs opj_decode_tile_data symbol, not available in 1.3-1.5)
-# - libjpeg12 (needs patching to use system one)
+# - libjpeg12 (check if still needs patching to use system one, maybe --with-jpeg12 is sufficied now)
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
 # - csharp, java, mysql
@@ -41,18 +41,16 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.9.1
-Release:	6
+Version:	1.9.2
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
-# Source0-md5:	c5cf09b92dac1f5775db056e165b34f5
+# Source0-md5:	3f39db89f4710269b3a8bf94178e07aa
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-python_install.patch
-Patch2:		gdal-1.9.1-poppler020.patch
-
-Patch4:		%{name}-php.patch
-Patch5:		%{name}-fpic.patch
+Patch2:		%{name}-php.patch
+Patch3:		%{name}-fpic.patch
 URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
@@ -248,10 +246,8 @@ osr.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p4
-
-%patch4 -p1
-%patch5 -p1
+%patch2 -p1
+%patch3 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
