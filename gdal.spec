@@ -3,12 +3,11 @@
 #   use gdal (probably a gdal module or driver shall not imply devel
 #   dependency)
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
-# - armadillo (--with-armadillo; http://arma.sourceforge.net/)
 # - openjpeg (unreleased post-1.5 or 2? needs opj_decode_tile_data symbol, not available in 1.3-1.5)
-# - libjpeg12 (check if still needs patching to use system one, maybe --with-jpeg12 is sufficied now)
+# - libjpeg12 (needs patching to use system one, --with-jpeg12 is not sufficient as of 1.9.2)
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
-# - csharp, java, mysql
+# - csharp, java
 # - additional, proprietary(?) formats support:
 #   - FMEObjects (http://www.safe.com/support/support-resources/fme-downloads/)
 #   - ESRI FileGDBAPI (http://resources.arcgis.com/content/geodatabases/10.0/file-gdb-api)
@@ -21,19 +20,21 @@
 #   - Informix DB
 #   - DWGdirect (members only? http://www.opendwg.org/)
 #   - ESRI SDE (http://www.esri.com/software/arcgis/arcsde/index.html)
-#   - OpenCL (--with-opencl; no free Linux implementation yet?)
 #
 # Conditional build:
+%bcond_without	armadillo	# Armadillo support for faster TPS transform
 %bcond_without	epsilon		# EPSILON wavelet compression support
 %bcond_without	gta		# GTA format support
-%bcond_without	odbc		# disable ODBC DB support
+%bcond_without	mysql		# MySQL DB support
+%bcond_without	odbc		# ODBC DB support
+%bcond_without	opencl		# OpenCL (GPU) support
 %bcond_with	podofo		# PDF support via podofo instead of poppler
 %bcond_without	poppler		# PDF support via poppler
 %bcond_without	spatialite	# SpatiaLite support
-%bcond_without	xerces		# disable xerces support
-%bcond_without	java		# disable Java and MDB support
-%bcond_without	php		# disable PHP binding
-%bcond_without	ruby		# disable ruby binding
+%bcond_without	xerces		# Xerces support
+%bcond_without	java		# Java and MDB support
+%bcond_without	php		# PHP binding
+%bcond_without	ruby		# ruby binding
 #
 %if %{with podofo}
 %undefine	with_poppler
@@ -52,6 +53,8 @@ Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
 Patch3:		%{name}-fpic.patch
 URL:		http://www.gdal.org/
+%{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
+%{?with_armadillo:BuildRequires:	armadillo-devel}
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
@@ -81,6 +84,7 @@ BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libwebp-devel
 BuildRequires:	libxml2-devel
+%{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
 #BuildRequires:	pcidsk-devel > 0.3
@@ -137,6 +141,8 @@ Summary:	GDAL library header files
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+%{?with_opencl:Requires:	OpenCL-devel >= 1.0}
+%{?with_armadillo:Requires:	armadillo-devel}
 Requires:	cfitsio-devel
 Requires:	curl-devel
 %{?with_epsilon:Requires:	epsilon-compressor-devel}
@@ -159,6 +165,7 @@ Requires:	libtiff-devel >= 4.0
 Requires:	libuuid-devel
 Requires:	libwebp-devel
 Requires:	libxml2-devel
+%{?with_mysql:Requires:	mysql-devel}
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
 #Requires:	pcidsk-devel > 0.3
@@ -264,12 +271,15 @@ osr.
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
+	%{?with_armadillo:--with-armadillo} \
 	%{?with_epsilon:--with-epsilon} \
 	%{!?with_gta:--without-gta} \
 	--with-hide-internal-symbols \
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
 	%{?with_java:--with-mdb --with-jvm-lib-add-rpath} \
+	%{?with_mysql:--with-mysql} \
+	%{?with_opencl:--with-opencl} \
 	--with-perl \
 	%{?with_php:--with-php} \
 	%{?with_podofo:--with-podofo} \
@@ -284,6 +294,7 @@ osr.
 	--with-xerces-lib="-lxerces-c" \
 	--without-grass \
 	--without-libgrass
+#	--with-rasdaman
 #	--with-pcidsk=/usr (needs > 0.3)
 # csharp builds, but has no configure option
 
