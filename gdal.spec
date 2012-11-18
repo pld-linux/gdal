@@ -302,7 +302,7 @@ osr.
 # regenerate where needed
 %{__make} -j1 -C swig/perl generate
 %if %{with ruby}
-%{__make} -j1 -C swig/ruby generate}
+%{__make} -j1 -C swig/ruby generate
 %patch4 -p1
 %endif
 
