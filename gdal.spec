@@ -28,6 +28,7 @@
 %bcond_without	mysql		# MySQL DB support
 %bcond_without	odbc		# ODBC DB support
 %bcond_without	opencl		# OpenCL (GPU) support
+%bcond_without	openjpeg	# OpenJPEG 2 (JPEG2000) support
 %bcond_with	podofo		# PDF support via podofo instead of poppler
 %bcond_without	poppler		# PDF support via poppler
 %bcond_without	spatialite	# SpatiaLite support
@@ -53,6 +54,8 @@ Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
 Patch3:		%{name}-fpic.patch
 Patch4:		%{name}-format-security.patch
+Patch5:		%{name}-openjpeg2.patch
+Patch6:		%{name}-hdf4-eos.patch
 URL:		http://www.gdal.org/
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:BuildRequires:	armadillo-devel}
@@ -88,6 +91,7 @@ BuildRequires:	libxml2-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
+%{?with_openjpeg:BuildRequires:	openjpeg2-devel >= 2.0.0-2}
 #BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	perl-devel
 %{?with_php:BuildRequires:	php-devel}
@@ -169,6 +173,7 @@ Requires:	libxml2-devel
 %{?with_mysql:Requires:	mysql-devel}
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
+%{?with_openjpeg:Requires:	openjpeg2-devel >= 2.0.0-2}
 #Requires:	pcidsk-devel > 0.3
 %{?with_podofo:Requires:	podofo-devel}
 %{?with_poppler:Requires:	poppler-devel}
@@ -256,6 +261,9 @@ osr.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
@@ -303,7 +311,6 @@ osr.
 %{__make} -j1 -C swig/perl generate
 %if %{with ruby}
 %{__make} -j1 -C swig/ruby generate
-%patch4 -p1
 %endif
 
 %{__make} -j1

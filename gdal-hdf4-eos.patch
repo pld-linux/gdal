@@ -1,0 +1,11 @@
+--- gdal-1.9.2/frmts/hdf4/GNUmakefile.orig	2012-10-09 02:58:26.000000000 +0200
++++ gdal-1.9.2/frmts/hdf4/GNUmakefile	2013-01-06 21:13:02.687487717 +0100
+@@ -12,7 +12,7 @@
+ HDFEOS_OPTS :=	-Ihdf-eos $(HDFEOS_OPTS)
+ endif
+ 
+-CPPFLAGS	:=	-I../pds $(GDAL_INCLUDE) $(HDF4_INCLUDE) $(HDFEOS_OPTS) $(CPPFLAGS)
++CPPFLAGS	:=	-I../pds $(GDAL_INCLUDE) $(HDFEOS_OPTS) $(HDF4_INCLUDE) $(CPPFLAGS)
+ 
+ default:	$(OBJ:.o=.$(OBJ_EXT)) $(SUBLIBS)
+ 
