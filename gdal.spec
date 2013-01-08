@@ -3,7 +3,6 @@
 #   use gdal (probably a gdal module or driver shall not imply devel
 #   dependency)
 # - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
-# - openjpeg (unreleased post-1.5 or 2? needs opj_decode_tile_data symbol, not available in 1.3-1.5)
 # - libjpeg12 (needs patching to use system one, --with-jpeg12 is not sufficient as of 1.9.2)
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
@@ -44,7 +43,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.9.2
-Release:	6
+Release:	7
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
