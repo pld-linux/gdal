@@ -34,8 +34,8 @@
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
 %bcond_without	php		# PHP binding
-%bcond_without	ruby		# ruby binding
-#
+%bcond_without	ruby		# Ruby binding
+
 %if %{with podofo}
 %undefine	with_poppler
 %endif
@@ -43,7 +43,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.9.2
-Release:	8
+Release:	9
 License:	BSD-like
 Group:		Libraries
 Source0:	ftp://ftp.remotesensing.org/gdal/%{name}-%{version}.tar.gz
@@ -104,6 +104,7 @@ BuildRequires:	python-devel >= 1:2.5
 BuildRequires:	python-numpy-devel >= 1:1.0.0
 BuildRequires:	python-setuptools
 BuildRequires:	rpm-pythonprov
+%{?with_ruby:BuildRequires:	rpm-rubyprov}
 BuildRequires:	rpmbuild(macros) >= 1.344
 %{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sed >= 4.0
@@ -232,7 +233,7 @@ Summary:	GDAL Python module
 Summary(pl.UTF-8):	Moduł Pythona GDAL
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
-%pyrequires_eq	python-libs
+Requires:	python-libs
 
 %description -n python-gdal
 GDAL Python module.
@@ -245,7 +246,6 @@ Summary:	Ruby bindings for GDAL
 Summary(pl.UTF-8):	Wiązania języka Ruby do pakietu GDAL
 Group:		Development/Languages
 Requires:	%{name} = %{version}-%{release}
-%{?ruby_mod_ver_requires_eq}
 
 %description -n ruby-gdal
 Ruby bindings for GDAL - gdal, gdalconst, ogr and osr modules.
@@ -266,6 +266,17 @@ osr.
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
+
+# Build with fPIC to allow Ruby bindings
+# Xcompiler should normally achieve that -- http://trac.osgeo.org/gdal/ticket/3978
+# http://trac.osgeo.org/gdal/ticket/1994
+sed -i 's|\$(CFLAGS)|$(CFLAGS) -fPIC|g' swig/ruby/RubyMakefile.mk
+# Install Ruby bindings to distribution specific directory
+sed -i 's|RUBY_EXTENSIONS_DIR :=.*|RUBY_EXTENSIONS_DIR := %{ruby_vendorarchdir}|' swig/ruby/RubyMakefile.mk
+
+# Install Ruby bindings into the proper place
+sed -i -e 's|^$(INSTALL_DIR):|$(DESTDIR)$(INSTALL_DIR):|' swig/ruby/RubyMakefile.mk
+sed -i -e 's|^install: $(INSTALL_DIR)|install: $(DESTDIR)$(INSTALL_DIR)|' swig/ruby/RubyMakefile.mk
 
 %{__rm} -r man
 
@@ -510,9 +521,9 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with ruby}
 %files -n ruby-gdal
 %defattr(644,root,root,755)
-%dir %{ruby_sitearchdir}/gdal
-%attr(755,root,root) %{ruby_sitearchdir}/gdal/gdal.so
-%attr(755,root,root) %{ruby_sitearchdir}/gdal/gdalconst.so
-%attr(755,root,root) %{ruby_sitearchdir}/gdal/ogr.so
-%attr(755,root,root) %{ruby_sitearchdir}/gdal/osr.so
+%dir %{ruby_vendorarchdir}/gdal
+%attr(755,root,root) %{ruby_vendorarchdir}/gdal/gdal.so
+%attr(755,root,root) %{ruby_vendorarchdir}/gdal/gdalconst.so
+%attr(755,root,root) %{ruby_vendorarchdir}/gdal/ogr.so
+%attr(755,root,root) %{ruby_vendorarchdir}/gdal/osr.so
 %endif
