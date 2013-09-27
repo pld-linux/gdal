@@ -55,6 +55,7 @@ Patch3:		%{name}-fpic.patch
 Patch4:		%{name}-format-security.patch
 Patch5:		%{name}-openjpeg2.patch
 Patch6:		%{name}-hdf4-eos.patch
+Patch7:		%{name}-poppler.patch
 URL:		http://www.gdal.org/
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:BuildRequires:	armadillo-devel}
@@ -95,7 +96,7 @@ BuildRequires:	ogdi-devel >= 3.1
 BuildRequires:	perl-devel
 %{?with_php:BuildRequires:	php-devel}
 %{?with_podofo:BuildRequires:	podofo-devel}
-%{?with_poppler:BuildRequires:	poppler-devel}
+%{?with_poppler:BuildRequires:	poppler-devel >= 0.24}
 # ensure it's compiled with PQescapeStringConn support
 BuildRequires:	postgresql-backend-devel >= 8.1.4
 BuildRequires:	postgresql-devel >= 8.1.4
@@ -176,7 +177,7 @@ Requires:	ogdi-devel >= 3.1
 %{?with_openjpeg:Requires:	openjpeg2-devel >= 2.0.0-2}
 #Requires:	pcidsk-devel > 0.3
 %{?with_podofo:Requires:	podofo-devel}
-%{?with_poppler:Requires:	poppler-devel}
+%{?with_poppler:Requires:	poppler-devel >= 0.24}
 Requires:	postgresql-devel
 Requires:	proj-devel >= 4
 Requires:	sqlite3-devel >= 3.0.0
@@ -263,6 +264,7 @@ osr.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
