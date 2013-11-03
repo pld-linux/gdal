@@ -43,7 +43,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.10.1
-Release:	0.1
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
@@ -53,6 +53,7 @@ Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
 Patch3:		%{name}-fpic.patch
 Patch4:		%{name}-format-security.patch
+Patch5:		gdal-bug-5284.patch
 URL:		http://www.gdal.org/
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:BuildRequires:	armadillo-devel}
@@ -254,11 +255,14 @@ osr.
 
 %prep
 %setup -q
+%{__aclocal}
+%{__autoconf}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p3
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
@@ -273,6 +277,9 @@ sed -i 's|RUBY_EXTENSIONS_DIR :=.*|RUBY_EXTENSIONS_DIR := %{ruby_vendorarchdir}|
 # Install Ruby bindings into the proper place
 sed -i -e 's|^$(INSTALL_DIR):|$(DESTDIR)$(INSTALL_DIR):|' swig/ruby/RubyMakefile.mk
 sed -i -e 's|^install: $(INSTALL_DIR)|install: $(DESTDIR)$(INSTALL_DIR)|' swig/ruby/RubyMakefile.mk
+
+# our man path
+sed -i -e 's#^mandir=.*##g' configure.in
 
 %{__rm} -r man
 
@@ -362,9 +369,8 @@ EOF
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OSR/.packlist
 
 # some doxygen trash
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/{GDAL.dox,GDAL/Const.dox,OGR.dox,OSR.dox}
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/Geo/check_dox.pl
-%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal_{fillnodata,sieve}.dox
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdalmove.dox
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal_{edit,fillnodata,polygonize,proximity,sieve}.dox
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -381,8 +387,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gcps2wld.py
 %attr(755,root,root) %{_bindir}/gdal2tiles.py
 %attr(755,root,root) %{_bindir}/gdal2xyz.py
+%attr(755,root,root) %{_bindir}/gdal_auth.py
 %attr(755,root,root) %{_bindir}/gdal_contour
 %attr(755,root,root) %{_bindir}/gdal_calc.py
+%attr(755,root,root) %{_bindir}/gdal_edit.py
 %attr(755,root,root) %{_bindir}/gdal_fillnodata.py
 %attr(755,root,root) %{_bindir}/gdal_grid
 %attr(755,root,root) %{_bindir}/gdal_merge.py
@@ -402,6 +410,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdalinfo
 %attr(755,root,root) %{_bindir}/gdallocationinfo
 %attr(755,root,root) %{_bindir}/gdalmanage
+%attr(755,root,root) %{_bindir}/gdalmove.py
+%attr(755,root,root) %{_bindir}/gdalserver
 %attr(755,root,root) %{_bindir}/gdalsrsinfo
 %attr(755,root,root) %{_bindir}/gdaltindex
 %attr(755,root,root) %{_bindir}/gdaltransform
@@ -419,9 +429,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
 %{_mandir}/man1/gdal_contour.1*
+%{_mandir}/man1/gdal_edit.1*
 %{_mandir}/man1/gdal_fillnodata.1*
 %{_mandir}/man1/gdal_grid.1*
 %{_mandir}/man1/gdal_merge.1*
+%{_mandir}/man1/gdal_polygonize.1*
+%{_mandir}/man1/gdal_proximity.1*
 %{_mandir}/man1/gdal_rasterize.1*
 %{_mandir}/man1/gdal_retile.1*
 %{_mandir}/man1/gdal_sieve.1*
@@ -432,6 +445,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/gdaldem.1*
 %{_mandir}/man1/gdalinfo.1*
 %{_mandir}/man1/gdallocationinfo.1*
+%{_mandir}/man1/gdalmanage.1*
+%{_mandir}/man1/gdalmove.1*
 %{_mandir}/man1/gdalsrsinfo.1*
 %{_mandir}/man1/gdaltindex.1*
 %{_mandir}/man1/gdaltransform.1*
