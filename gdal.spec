@@ -33,7 +33,7 @@
 %bcond_without	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
-%bcond_without	php		# PHP binding
+%bcond_with	php		# PHP binding
 %bcond_without	ruby		# Ruby binding
 
 %if %{with podofo}
