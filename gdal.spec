@@ -7,6 +7,8 @@
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
 # - csharp, java
+# - DDS (--with-dds, BR [lib]crunch: http://code.google.com/p/crunch/)
+# - SOSI (--with-sosi, BR: libfyba libfygm libfyut: https://github.com/kartverket/fyba)
 # - additional, proprietary(?) formats support:
 #   - FMEObjects (http://www.safe.com/support/support-resources/fme-downloads/)
 #   - ESRI FileGDBAPI (http://resources.arcgis.com/content/geodatabases/10.0/file-gdb-api)
@@ -16,15 +18,17 @@
 #   - MSG/EUMETSAT (http://www.eumetsat.int/Home/Main/DataAccess/SupportSoftwareTools/index.htm)
 #   - Oracle/OCI >= 10.0.1 (for georaster); Oracle/OCI >= 8.1.7 (as DB)
 #   - Ingres (--with-ingres=/path)
-#   - Informix DB
+#   - Informix DB (--with-idb)
 #   - DWGdirect (members only? http://www.opendwg.org/)
 #   - ESRI SDE (http://www.esri.com/software/arcgis/arcsde/index.html)
 #
 # Conditional build:
 %bcond_without	armadillo	# Armadillo support for faster TPS transform
 %bcond_without	epsilon		# EPSILON wavelet compression support
+%bcond_with	grass		# GRASS support (note: dependency loop)
 %bcond_without	gta		# GTA format support
 %bcond_without	mysql		# MySQL DB support
+%bcond_with	oci		# ORACLE OCI DB and Georaster support
 %bcond_without	odbc		# ODBC DB support
 %bcond_without	opencl		# OpenCL (GPU) support
 %bcond_without	openjpeg	# OpenJPEG 2 (JPEG2000) support
@@ -33,7 +37,7 @@
 %bcond_without	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
-%bcond_with	php		# PHP binding
+%bcond_without	php		# PHP binding
 %bcond_without	ruby		# Ruby binding
 
 %if %{with podofo}
@@ -42,18 +46,20 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.10.1
-Release:	6
+Version:	1.11.0
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	f354c614aea76e5630e4edbf06e5c292
+# Source0-md5:	31f2c4a7230b40e5fdc3cf12a100f96b
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
 Patch3:		%{name}-fpic.patch
 Patch4:		%{name}-format-security.patch
-Patch5:		gdal-bug-5284.patch
+Patch5:		%{name}-grass.patch
+Patch6:		%{name}-sse.patch
+Patch7:		%{name}-link.patch
 URL:		http://www.gdal.org/
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:BuildRequires:	armadillo-devel}
@@ -65,13 +71,16 @@ BuildRequires:	doxygen >= 1.4.2
 %{?with_epsilon:BuildRequires:	epsilon-compressor-devel}
 BuildRequires:	expat-devel >= 1.95.0
 BuildRequires:	freexl-devel >= 1.0
-BuildRequires:	geos-devel >= 2.2.0
+BuildRequires:	gcc >= 6:4.1
+BuildRequires:	geos-devel >= 3.1.0
 BuildRequires:	giflib-devel >= 4.0
+%{?with_grass:BuildRequires:	grass-devel >= 5.7}
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
 %{?with_java:BuildRequires:	jdk}
 %{?with_java:BuildRequires:	jpackage-utils}
+BuildRequires:	json-c-devel >= 0.11
 BuildRequires:	libcsf-devel
 BuildRequires:	libdap-devel >= 3.10
 BuildRequires:	libgeotiff-devel >= 1.2.1
@@ -85,11 +94,13 @@ BuildRequires:	libtiff-devel >= 4.0
 BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libwebp-devel
-BuildRequires:	libxml2-devel
+BuildRequires:	libxml2-devel >= 2
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
 %{?with_openjpeg:BuildRequires:	openjpeg2-devel >= 2.0.0-2}
+# 8.1.7 for DB support, 10.0.1 for georaster
+%{?with_oci:BuildRequires:	oracle-instantclient-devel >= 10.0.1}
 #BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	perl-devel
 %{?with_php:BuildRequires:	php-devel}
@@ -109,6 +120,7 @@ BuildRequires:	rpmbuild(macros) >= 1.344
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	swig-perl
+BuildRequires:	swig-php >= 2.0.12-2
 BuildRequires:	swig-python >= 1.3
 %{?with_ruby:BuildRequires:	swig-ruby}
 BuildRequires:	texlive-dvips
@@ -118,7 +130,7 @@ BuildRequires:	texlive-latex
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel >= 1.1.4
 Requires:	freexl >= 1.0
-Requires:	geos >= 2.2.0
+Requires:	geos >= 3.1.0
 Requires:	libgeotiff >= 1.2.1
 Requires:	libpng >= 2:1.2.8
 Requires:	libtiff >= 4.0
@@ -152,11 +164,12 @@ Requires:	curl-devel
 %{?with_epsilon:Requires:	epsilon-compressor-devel}
 Requires:	expat-devel >= 1.95.0
 Requires:	freexl-devel >= 1.0
-Requires:	geos-devel >= 2.2.0
+Requires:	geos-devel >= 3.1.0
 Requires:	giflib-devel >= 4.0
 Requires:	hdf-devel >= 4.0
 Requires:	hdf5-devel
 Requires:	jasper-devel
+Requires:	json-c-devel >= 0.11
 Requires:	libcsf-devel
 Requires:	libdap-devel >= 3.10
 Requires:	libgeotiff-devel >= 1.2.1
@@ -168,7 +181,7 @@ Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 4.0
 Requires:	libuuid-devel
 Requires:	libwebp-devel
-Requires:	libxml2-devel
+Requires:	libxml2-devel >= 2
 %{?with_mysql:Requires:	mysql-devel}
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
@@ -255,18 +268,24 @@ osr.
 
 %prep
 %setup -q
-%{__aclocal}
-%{__autoconf}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p3
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
-# need to regenerate (old ones don't support perl 5.10)
-%{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
+# need to regenerate (old ones don't support perl 5.10 or php 5.5)
+%{__rm} swig/{perl,php}/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
 
+%{__sed} -i \
+	-e 's/^CC=gcc/CC=%{__cc}/' \
+	-e 's/^CXX=g++/CXX=%{__cxx}/' \
+	-e 's/^CFLAGS=-fpic/CFLAGS=%{rpmcflags} -fPIC/' \
+	-e 's/^LDFLAGS=-shared/LDFLAGS=%{rpmldflags} -shared/' \
+	swig/php/GNUmakefile
 # Build with fPIC to allow Ruby bindings
 # Xcompiler should normally achieve that -- http://trac.osgeo.org/gdal/ticket/3978
 # http://trac.osgeo.org/gdal/ticket/1994
@@ -295,12 +314,14 @@ sed -i -e 's#^mandir=.*##g' configure.in
 	--with-dods-root=/usr \
 	%{?with_armadillo:--with-armadillo} \
 	%{?with_epsilon:--with-epsilon} \
+	%{?with_grass:--with-grass} \
 	%{!?with_gta:--without-gta} \
 	--with-hide-internal-symbols \
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
 	%{?with_java:--with-mdb --with-jvm-lib-add-rpath} \
 	%{?with_mysql:--with-mysql} \
+	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
 	%{?with_opencl:--with-opencl} \
 	--with-perl \
 	%{?with_php:--with-php} \
@@ -314,7 +335,6 @@ sed -i -e 's#^mandir=.*##g' configure.in
 	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
-	--without-grass \
 	--without-libgrass
 #	--with-rasdaman
 #	--with-pcidsk=/usr (needs > 0.3)
@@ -369,8 +389,8 @@ EOF
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OSR/.packlist
 
 # some doxygen trash
-%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdalmove.dox
-%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal_{edit,fillnodata,polygonize,proximity,sieve}.dox
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal{compare,move}.dox
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal_{calc,edit,fillnodata,polygonize,proximity,sieve}.dox
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -403,6 +423,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdaladdo
 %attr(755,root,root) %{_bindir}/gdalbuildvrt
 %attr(755,root,root) %{_bindir}/gdalchksum.py
+%attr(755,root,root) %{_bindir}/gdalcompare.py
 %attr(755,root,root) %{_bindir}/gdaldem
 %attr(755,root,root) %{_bindir}/gdalenhance
 %attr(755,root,root) %{_bindir}/gdalident.py
@@ -420,6 +441,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/nearblack
 %attr(755,root,root) %{_bindir}/ogr2ogr
 %attr(755,root,root) %{_bindir}/ogrinfo
+%attr(755,root,root) %{_bindir}/ogrlineref
 %attr(755,root,root) %{_bindir}/ogrtindex
 %attr(755,root,root) %{_bindir}/pct2rgb.py
 %attr(755,root,root) %{_bindir}/rgb2pct.py
@@ -428,6 +450,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgdal.so.1
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
+%{_mandir}/man1/gdal_calc.1*
 %{_mandir}/man1/gdal_contour.1*
 %{_mandir}/man1/gdal_edit.1*
 %{_mandir}/man1/gdal_fillnodata.1*
@@ -442,6 +465,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/gdal_utilities.1*
 %{_mandir}/man1/gdaladdo.1*
 %{_mandir}/man1/gdalbuildvrt.1*
+%{_mandir}/man1/gdalcompare.1*
 %{_mandir}/man1/gdaldem.1*
 %{_mandir}/man1/gdalinfo.1*
 %{_mandir}/man1/gdallocationinfo.1*
@@ -455,6 +479,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/ogr2ogr.1*
 %{_mandir}/man1/ogr_utilities.1*
 %{_mandir}/man1/ogrinfo.1*
+%{_mandir}/man1/ogrlineref.1*
 %{_mandir}/man1/ogrtindex.1*
 %{_mandir}/man1/pct2rgb.1*
 %{_mandir}/man1/rgb2pct.1*
@@ -465,6 +490,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so
 %{_libdir}/libgdal.la
+%{_pkgconfigdir}/gdal.pc
 %{_includedir}/cpl_*.h
 %{_includedir}/cplkeywordparser.h
 %{_includedir}/gdal*.h
