@@ -1,0 +1,14 @@
+--- gdal-1.11.0/configure.in.orig	2014-05-18 11:22:22.873992206 +0200
++++ gdal-1.11.0/configure.in	2014-05-18 12:20:58.637252259 +0200
+@@ -941,6 +941,11 @@
+ 
+   echo "dds support disabled."
+ 
++elif test "$with_dds" = "yes"; then
++  DDS_SETTING=yes
++  CRUNCHDIR="/usr"
++  LIBS="-lcrunch $LIBS"
++  echo "using libcrunch in default location."
+ else
+ 
+   DDS_SETTING=yes

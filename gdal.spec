@@ -7,8 +7,6 @@
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
 # - csharp, java
-# - DDS (--with-dds, BR [lib]crunch: http://code.google.com/p/crunch/)
-# - SOSI (--with-sosi, BR: libfyba libfygm libfyut: https://github.com/kartverket/fyba)
 # - additional, proprietary(?) formats support:
 #   - FMEObjects (http://www.safe.com/support/support-resources/fme-downloads/)
 #   - ESRI FileGDBAPI (http://resources.arcgis.com/content/geodatabases/10.0/file-gdb-api)
@@ -24,7 +22,9 @@
 #
 # Conditional build:
 %bcond_without	armadillo	# Armadillo support for faster TPS transform
+%bcond_without	crnlib		# DDS support via crunch/crnlib
 %bcond_without	epsilon		# EPSILON wavelet compression support
+%bcond_without	fyba		# SOSI geodata support using FYBA
 %bcond_with	grass		# GRASS support (note: dependency loop)
 %bcond_without	gta		# GTA format support
 %bcond_without	mysql		# MySQL DB support
@@ -34,6 +34,7 @@
 %bcond_without	openjpeg	# OpenJPEG 2 (JPEG2000) support
 %bcond_with	podofo		# PDF support via podofo instead of poppler
 %bcond_without	poppler		# PDF support via poppler
+%bcond_without	rasdaman	# Rasdaman support
 %bcond_without	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
@@ -60,21 +61,29 @@ Patch4:		%{name}-format-security.patch
 Patch5:		%{name}-grass.patch
 Patch6:		%{name}-sse.patch
 Patch7:		%{name}-link.patch
+Patch8:		%{name}-fyba.patch
+Patch9:		%{name}-dds.patch
+Patch10:	%{name}-gif.patch
+Patch11:	%{name}-armadillo.patch
+Patch12:	%{name}-oci.patch
+Patch13:	%{name}-rasdaman.patch
 URL:		http://www.gdal.org/
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:BuildRequires:	armadillo-devel}
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
+%{?with_dds:BuildRequires:	crnlib-devel}
 BuildRequires:	curl-devel
 BuildRequires:	doxygen >= 1.4.2
 %{?with_epsilon:BuildRequires:	epsilon-compressor-devel}
 BuildRequires:	expat-devel >= 1.95.0
+%{?with_fyba:BuildRequires:	fyba-devel}
 BuildRequires:	freexl-devel >= 1.0
 BuildRequires:	gcc >= 6:4.1
 BuildRequires:	geos-devel >= 3.1.0
 BuildRequires:	giflib-devel >= 4.0
-%{?with_grass:BuildRequires:	grass-devel >= 5.7}
+%{?with_grass:BuildRequires:	grass-devel >= 6.4}
 BuildRequires:	hdf-devel >= 4.0
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
@@ -113,6 +122,7 @@ BuildRequires:	proj-devel >= 4
 BuildRequires:	python-devel >= 1:2.5
 BuildRequires:	python-numpy-devel >= 1:1.0.0
 BuildRequires:	python-setuptools
+%{?with_rasdaman:BuildRequires:	rasdaman-devel}
 BuildRequires:	rpm-pythonprov
 %{?with_ruby:BuildRequires:	rpm-rubyprov}
 BuildRequires:	rpmbuild(macros) >= 1.344
@@ -160,8 +170,10 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_opencl:Requires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:Requires:	armadillo-devel}
 Requires:	cfitsio-devel
+%{?with_dds:Requires:	crnlib-devel}
 Requires:	curl-devel
 %{?with_epsilon:Requires:	epsilon-compressor-devel}
+%{?with_fyba:Requires:	fyba-devel}
 Requires:	expat-devel >= 1.95.0
 Requires:	freexl-devel >= 1.0
 Requires:	geos-devel >= 3.1.0
@@ -191,6 +203,7 @@ Requires:	ogdi-devel >= 3.1
 %{?with_poppler:Requires:	poppler-devel >= 0.24}
 Requires:	postgresql-devel
 Requires:	proj-devel >= 4
+%{?with_rasdaman:Requires:	rasdaman-devel}
 Requires:	sqlite3-devel >= 3.0.0
 %{?with_odbc:Requires:	unixODBC-devel}
 %{?with_xerces:Requires:	xerces-c-devel >= 2.7.0}
@@ -276,6 +289,12 @@ osr.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
 
 # need to regenerate (old ones don't support perl 5.10 or php 5.5)
 %{__rm} swig/{perl,php}/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
@@ -308,11 +327,11 @@ sed -i -e 's#^mandir=.*##g' configure.in
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
-# disable grass/libgrass here, it can be built from separate gdal-grass package
 %configure \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
 	%{?with_armadillo:--with-armadillo} \
+	%{?with_crnlib:--with-dds} \
 	%{?with_epsilon:--with-epsilon} \
 	%{?with_grass:--with-grass} \
 	%{!?with_gta:--without-gta} \
@@ -328,7 +347,9 @@ sed -i -e 's#^mandir=.*##g' configure.in
 	%{?with_podofo:--with-podofo} \
 	%{?with_poppler:--with-poppler} \
 	--with-python \
+	%{?with_rasdaman:--with-rasdaman=%{_libdir}/rasdaman} \
 	%{?with_ruby:--with-ruby} \
+	%{?with_fyba:--with-sosi} \
 	%{?with_spatialite:--with-spatialite} \
 	--with-sqlite3 \
 	--with-webp \
@@ -336,9 +357,8 @@ sed -i -e 's#^mandir=.*##g' configure.in
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
 	--without-libgrass
-#	--with-rasdaman
 #	--with-pcidsk=/usr (needs > 0.3)
-# csharp builds, but has no configure option
+# csharp builds, but has no configure option nor install target
 
 # regenerate where needed
 %{__make} -j1 -C swig/perl generate
@@ -346,7 +366,9 @@ sed -i -e 's#^mandir=.*##g' configure.in
 %{__make} -j1 -C swig/ruby generate
 %endif
 
-%{__make} -j1
+%{__make} -j1 \
+	%{?with_grass:GRASS_INCLUDE="-I/usr/include/grass64"} \
+	%{?with_fyba:SOSI_INC="-I/usr/include/fyba"}
 
 %{__make} -j1 docs
 

@@ -1,0 +1,36 @@
+--- gdal-1.11.0/m4/ax_oracle_oci.m4.orig	2014-04-16 22:04:00.000000000 +0200
++++ gdal-1.11.0/m4/ax_oracle_oci.m4	2014-06-14 17:01:57.071611368 +0200
+@@ -156,12 +156,14 @@
+         dnl Depending on later Oracle version detection,
+         dnl -lnnz10 flag might be removed for older Oracle < 10.x
+         saved_LDFLAGS="$LDFLAGS"
++        saved_LIBS="$LIBS"
+ 	if test -n "$oracle_include_dir" ; then
+-          oci_ldflags="-L$oracle_lib_dir -lclntsh"
++          oci_ldflags="-L$oracle_lib_dir"
+         else
+-          oci_ldflags="-L$oracle_lib_dir -L$oracle_lib_dir2 -lclntsh"
++          oci_ldflags="-L$oracle_lib_dir -L$oracle_lib_dir2"
+         fi
+         LDFLAGS="$LDFLAGS $oci_ldflags"
++	LIBS="$LIBS -lclntsh"
+ 
+         dnl
+         dnl Check OCI headers
+@@ -231,7 +233,7 @@
+                     ]]
+                 )],
+                 [
+-                ORACLE_OCI_LDFLAGS="$oci_ldflags"
++                ORACLE_OCI_LDFLAGS="$oci_ldflags -lclntsh"
+                 oci_lib_found="yes"
+                 AC_MSG_RESULT([yes])
+                 ],
+@@ -245,6 +247,7 @@
+ 
+         CPPFLAGS="$saved_CPPFLAGS"
+         LDFLAGS="$saved_LDFLAGS"
++        LIBS="$saved_LIBS"
+     fi
+ 
+     dnl
