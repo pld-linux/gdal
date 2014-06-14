@@ -44,11 +44,12 @@
 %if %{with podofo}
 %undefine	with_poppler
 %endif
+%define		php_name	php55
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.11.0
-Release:	1
+Release:	3
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
@@ -68,6 +69,7 @@ Patch11:	%{name}-armadillo.patch
 Patch12:	%{name}-oci.patch
 Patch13:	%{name}-rasdaman.patch
 URL:		http://www.gdal.org/
+%{?with_php:BuildRequires:	%{php_name}-devel}
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:BuildRequires:	armadillo-devel}
 BuildRequires:	autoconf >= 2.52
@@ -112,7 +114,6 @@ BuildRequires:	ogdi-devel >= 3.1
 %{?with_oci:BuildRequires:	oracle-instantclient-devel >= 10.0.1}
 #BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	perl-devel
-%{?with_php:BuildRequires:	php-devel}
 %{?with_podofo:BuildRequires:	podofo-devel}
 %{?with_poppler:BuildRequires:	poppler-devel >= 0.24}
 # ensure it's compiled with PQescapeStringConn support
@@ -240,17 +241,17 @@ Perl bindings for GDAL - Geo::GDAL, Geo::OGR and Geo::OSR modules.
 %description -n perl-gdal -l pl.UTF-8
 Wiązania Perla do pakietu GDAL - moduły Geo::GDAL, Geo::OGR, Geo::OSR.
 
-%package -n php-gdal
+%package -n %{php_name}-gdal
 Summary:	PHP bindings for GDAL library
 Summary(pl.UTF-8):	Wiązania PHP do biblioteki GDAL
 Group:		Development/Languages/PHP
 Requires:	%{name} = %{version}-%{release}
 %{?requires_php_extension}
 
-%description -n php-gdal
+%description -n %{php_name}-gdal
 PHP bindings for GDAL library
 
-%description -n php-gdal -l pl.UTF-8
+%description -n %{php_name}-gdal -l pl.UTF-8
 Wiązania PHP do biblioteki GDAL.
 
 %package -n python-gdal
@@ -386,13 +387,14 @@ cp -a ogr/html _html/ogr
 
 %if %{with php}
 # missing in make install
-install -D swig/php/php_gdal.so $RPM_BUILD_ROOT%{php_extensiondir}/gdal.so
-install -D swig/php/php_gdalconst.so $RPM_BUILD_ROOT%{php_extensiondir}/gdalconst.so
-install -D swig/php/php_ogr.so $RPM_BUILD_ROOT%{php_extensiondir}/ogr.so
-install -D swig/php/php_osr.so $RPM_BUILD_ROOT%{php_extensiondir}/osr.so
+install -d $RPM_BUILD_ROOT%{php_extensiondir}
+install -p swig/php/php_gdal.so $RPM_BUILD_ROOT%{php_extensiondir}/gdal.so
+install -p swig/php/php_gdalconst.so $RPM_BUILD_ROOT%{php_extensiondir}/gdalconst.so
+install -p swig/php/php_ogr.so $RPM_BUILD_ROOT%{php_extensiondir}/ogr.so
+install -p swig/php/php_osr.so $RPM_BUILD_ROOT%{php_extensiondir}/osr.so
 install -d $RPM_BUILD_ROOT%{php_sysconfdir}/conf.d
 cat <<'EOF' >$RPM_BUILD_ROOT%{php_sysconfdir}/conf.d/gdal.ini
-; Enable gdal extension module
+; Enable gdal extension modules
 extension=gdal.so
 extension=gdalconst.so
 extension=ogr.so
@@ -552,7 +554,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
 
 %if %{with php}
-%files -n php-gdal
+%files -n %{php_name}-gdal
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{php_sysconfdir}/conf.d/gdal.ini
 %attr(755,root,root) %{php_extensiondir}/gdal.so
