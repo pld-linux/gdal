@@ -2,7 +2,6 @@
 # - be reasonable about devel dependencies - you do not need all of them to
 #   use gdal (probably a gdal module or driver shall not imply devel
 #   dependency)
-# - rasdaman (--with-rasdaman; http://rasdaman.eecs.jacobs-university.de/trac/rasdaman/wiki/Download)
 # - libjpeg12 (needs patching to use system one, --with-jpeg12 is not sufficient as of 1.9.2)
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
@@ -14,7 +13,6 @@
 #   - Kakadu/JPEG2000 (http://www.kakadusoftware.com/)
 #   - MrSID (http://www.lizardtech.com/developer/)
 #   - MSG/EUMETSAT (http://www.eumetsat.int/Home/Main/DataAccess/SupportSoftwareTools/index.htm)
-#   - Oracle/OCI >= 10.0.1 (for georaster); Oracle/OCI >= 8.1.7 (as DB)
 #   - Ingres (--with-ingres=/path)
 #   - Informix DB (--with-idb)
 #   - DWGdirect (members only? http://www.opendwg.org/)
@@ -44,7 +42,9 @@
 %if %{with podofo}
 %undefine	with_poppler
 %endif
+%if 0%{!?php_name:1}
 %define		php_name	php55
+%endif
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
