@@ -75,7 +75,7 @@ URL:		http://www.gdal.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
-%{?with_dds:BuildRequires:	crnlib-devel}
+%{?with_crnlib:BuildRequires:	crnlib-devel}
 BuildRequires:	curl-devel
 BuildRequires:	doxygen >= 1.4.2
 %{?with_epsilon:BuildRequires:	epsilon-compressor-devel}
@@ -171,7 +171,7 @@ Requires:	%{name} = %{version}-%{release}
 %{?with_opencl:Requires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:Requires:	armadillo-devel}
 Requires:	cfitsio-devel
-%{?with_dds:Requires:	crnlib-devel}
+%{?with_crnlib:Requires:	crnlib-devel}
 Requires:	curl-devel
 %{?with_epsilon:Requires:	epsilon-compressor-devel}
 %{?with_fyba:Requires:	fyba-devel}
