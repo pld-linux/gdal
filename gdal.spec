@@ -541,16 +541,12 @@ rm -rf $RPM_BUILD_ROOT
 %{perl_vendorarch}/Geo/OSR.pm
 %dir %{perl_vendorarch}/auto/Geo
 %dir %{perl_vendorarch}/auto/Geo/GDAL
-%{perl_vendorarch}/auto/Geo/GDAL/GDAL.bs
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/GDAL.so
 %dir %{perl_vendorarch}/auto/Geo/GDAL/Const
-%{perl_vendorarch}/auto/Geo/GDAL/Const/Const.bs
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/Const/Const.so
 %dir %{perl_vendorarch}/auto/Geo/OGR
-%{perl_vendorarch}/auto/Geo/OGR/OGR.bs
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OGR/OGR.so
 %dir %{perl_vendorarch}/auto/Geo/OSR
-%{perl_vendorarch}/auto/Geo/OSR/OSR.bs
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
 
 %if %{with php}
