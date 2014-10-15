@@ -49,7 +49,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.11.0
-Release:	5
+Release:	6
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
@@ -329,6 +329,7 @@ sed -i -e 's#^mandir=.*##g' configure.in
 %{__aclocal} -I m4
 %{__autoconf}
 %configure \
+	--includedir=%{_includedir}/gdal \
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
 	%{?with_armadillo:--with-armadillo} \
@@ -515,16 +516,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgdal.so
 %{_libdir}/libgdal.la
 %{_pkgconfigdir}/gdal.pc
-%{_includedir}/cpl_*.h
-%{_includedir}/cplkeywordparser.h
-%{_includedir}/gdal*.h
-%{_includedir}/gvgcpfit.h
-%{_includedir}/memdataset.h
-%{_includedir}/ogr_*.h
-%{_includedir}/ogrsf_frmts.h
-%{_includedir}/rawdataset.h
-%{_includedir}/thinplatespline.h
-%{_includedir}/vrtdataset.h
+%{_includedir}/gdal
 %{_mandir}/man1/gdal-config.1*
 
 %files static
