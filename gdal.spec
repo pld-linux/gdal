@@ -48,12 +48,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.11.0
-Release:	9
+Version:	1.11.1
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	31f2c4a7230b40e5fdc3cf12a100f96b
+# Source0-md5:	2e126d7c6605691d38f3e71b945f5c73
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
@@ -64,7 +64,6 @@ Patch6:		%{name}-sse.patch
 Patch7:		%{name}-link.patch
 Patch8:		%{name}-fyba.patch
 Patch9:		%{name}-dds.patch
-Patch10:	%{name}-gif.patch
 Patch11:	%{name}-armadillo.patch
 Patch12:	%{name}-oci.patch
 Patch13:	%{name}-rasdaman.patch
@@ -292,7 +291,6 @@ osr.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
-%patch10 -p1
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1

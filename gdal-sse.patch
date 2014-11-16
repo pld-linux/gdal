@@ -102,9 +102,9 @@
 +GDALGridInverseDistanceToAPower2NoSmoothingNoSearchSSE(
 +                                        const void *poOptions,
 +                                        GUInt32 nPoints,
-+                                        const double *unused_padfX,
-+                                        const double *unused_padfY,
-+                                        const double *unused_padfZ,
++                                        CPL_UNUSED const double *unused_padfX,
++                                        CPL_UNUSED const double *unused_padfY,
++                                        CPL_UNUSED const double *unused_padfZ,
 +                                        double dfXPoint, double dfYPoint,
 +                                        double *pdfValue,
 +                                        void* hExtraParamsIn )
@@ -245,7 +245,7 @@
 -#include <xmmintrin.h>
 -#endif
 -
- CPL_CVSID("$Id: gdalgrid.cpp 27110 2014-03-28 21:29:20Z rouault $");
+ CPL_CVSID("$Id: gdalgrid.cpp 27729 2014-09-24 00:40:16Z goatbar $");
  
  #define TO_RADIANS (3.14159265358979323846 / 180.0)
 @@ -53,74 +49,6 @@
@@ -336,9 +336,9 @@
 -GDALGridInverseDistanceToAPower2NoSmoothingNoSearchSSE(
 -                                        const void *poOptions,
 -                                        GUInt32 nPoints,
--                                        const double *unused_padfX,
--                                        const double *unused_padfY,
--                                        const double *unused_padfZ,
+-                                        CPL_UNUSED const double *unused_padfX,
+-                                        CPL_UNUSED const double *unused_padfY,
+-                                        CPL_UNUSED const double *unused_padfZ,
 -                                        double dfXPoint, double dfYPoint,
 -                                        double *pdfValue,
 -                                        void* hExtraParamsIn )
@@ -472,16 +472,6 @@
  /*                        GDALGridMovingAverage()                       */
  /************************************************************************/
  
-@@ -1766,7 +1552,9 @@
-                             pabyX = pabyY = pabyZ = NULL;
-                         }
-                     }
-+#  ifdef HAVE_SSE_AT_COMPILE_TIME
-                     else
-+#  endif
- #endif
- 
- #ifdef HAVE_SSE_AT_COMPILE_TIME
 --- gdal-1.11.0/alg/GNUmakefile.orig	2014-04-16 22:04:48.000000000 +0200
 +++ gdal-1.11.0/alg/GNUmakefile	2014-05-11 21:56:55.699137906 +0200
 @@ -16,6 +16,10 @@
