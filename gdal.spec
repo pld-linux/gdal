@@ -23,7 +23,7 @@
 %bcond_without	crnlib		# DDS support via crunch/crnlib
 %bcond_without	epsilon		# EPSILON wavelet compression support
 %bcond_without	fyba		# SOSI geodata support using FYBA
-%bcond_with	grass		# GRASS support (note: dependency loop)
+%bcond_with	grass		# GRASS support (note: dependency loop; use gdal-grass.spec instead)
 %bcond_without	gta		# GTA format support
 %bcond_without	mysql		# MySQL DB support
 %bcond_with	oci		# ORACLE OCI DB and Georaster support
@@ -66,6 +66,7 @@ Patch8:		%{name}-fyba.patch
 Patch9:		%{name}-dds.patch
 Patch11:	%{name}-armadillo.patch
 Patch12:	%{name}-rasdaman.patch
+Patch13:	%{name}-pluginsdir.patch
 URL:		http://www.gdal.org/
 %{?with_php:BuildRequires:	%{php_name}-devel}
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
@@ -292,6 +293,7 @@ osr.
 %patch9 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 # need to regenerate (old ones don't support perl 5.10 or php 5.5)
 %{__rm} swig/{perl,php}/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
@@ -324,6 +326,7 @@ sed -i -e 's#^mandir=.*##g' configure.in
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
 %configure \
 	--includedir=%{_includedir}/gdal \
 	--datadir=%{_datadir}/gdal \
@@ -469,6 +472,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/testepsg
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgdal.so.1
+%dir %{_libdir}/gdalplugins
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
 %{_mandir}/man1/gdal_calc.1*

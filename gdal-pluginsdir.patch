@@ -1,0 +1,53 @@
+--- gdal-1.11.2/ogr/ogrsf_frmts/generic/ogrsfdriverregistrar.cpp.orig	2015-02-10 13:11:16.000000000 +0100
++++ gdal-1.11.2/ogr/ogrsf_frmts/generic/ogrsfdriverregistrar.cpp	2015-03-01 21:09:07.960962291 +0100
+@@ -815,12 +815,12 @@
+     }
+     else
+     {
+-#ifdef GDAL_PREFIX
++#if 1
+         papszSearchPath = CSLAddString( papszSearchPath,
+     #ifdef MACOSX_FRAMEWORK
+                                         GDAL_PREFIX "/PlugIns");
+     #else
+-                                        GDAL_PREFIX "/lib/gdalplugins" );
++                                        GDAL_LIBDIR "/gdalplugins" );
+     #endif
+ #else
+         char szExecPath[1024];
+--- gdal-1.11.2/gcore/gdaldrivermanager.cpp.orig	2015-02-10 13:12:08.000000000 +0100
++++ gdal-1.11.2/gcore/gdaldrivermanager.cpp	2015-03-01 21:11:24.537623226 +0100
+@@ -686,12 +686,12 @@
+     }
+     else
+     {
+-#ifdef GDAL_PREFIX
++#if 1
+         papszSearchPath = CSLAddString( papszSearchPath, 
+     #ifdef MACOSX_FRAMEWORK
+                                         GDAL_PREFIX "/PlugIns");
+     #else
+-                                        GDAL_PREFIX "/lib/gdalplugins" );
++                                        GDAL_LIBDIR "/gdalplugins" );
+     #endif
+ #else
+         char szExecPath[1024];
+--- gdal-1.11.2/configure.in.orig	2015-03-01 09:07:33.069445871 +0100
++++ gdal-1.11.2/configure.in	2015-03-01 21:13:55.727616880 +0100
+@@ -3812,12 +3812,16 @@
+ 
+ if test "$prefix" = "NONE" ; then 
+   GDAL_PREFIX=/usr/local
++  GDAL_LIBDIR=${GDAL_PREFIX}/lib
+ else
+   GDAL_PREFIX=${prefix}
++  eval eval GDAL_LIBDIR="${libdir}"
+ fi
+ 
+ export GDAL_PREFIX
++export GDAL_LIBDIR
+ AC_DEFINE_UNQUOTED(GDAL_PREFIX,["]$GDAL_PREFIX["], [--prefix directory for GDAL install])
++AC_DEFINE_UNQUOTED(GDAL_LIBDIR,["]$GDAL_LIBDIR["], [--prefix directory for GDAL install])
+ 
+ dnl ---------------------------------------------------------------------------
+ dnl Perl bindings.
