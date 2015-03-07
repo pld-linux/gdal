@@ -49,7 +49,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	1.11.2
-Release:	1
+Release:	1.1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
@@ -323,6 +323,16 @@ sed -i -e 's#^mandir=.*##g' configure.in
 %{__sed} -i -e 's,DODS_INC="-I.*,DODS_INC="$(pkg-config --cflags libdap)",' configure.in
 
 %build
+%ifarch %{x8664}
+jvm_arch=amd64
+%endif
+%ifarch %{ix86}
+jvm_arch=i386
+%endif
+%ifarch x32
+jvm_arch=x32
+%endif
+
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -339,7 +349,7 @@ sed -i -e 's#^mandir=.*##g' configure.in
 	--with-hide-internal-symbols \
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
-	%{?with_java:--with-mdb --with-jvm-lib-add-rpath} \
+	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib=$JAVA_HOME/jre/lib/$jvm_arch/server} \
 	%{?with_mysql:--with-mysql} \
 	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
 	%{?with_opencl:--with-opencl} \
