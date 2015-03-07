@@ -349,7 +349,7 @@ jvm_arch=x32
 	--with-hide-internal-symbols \
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
-	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib=$JAVA_HOME/jre/lib/$jvm_arch/server} \
+	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib=%{java_home}/jre/lib/$jvm_arch/server} \
 	%{?with_mysql:--with-mysql} \
 	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
 	%{?with_opencl:--with-opencl} \
