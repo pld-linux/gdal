@@ -1,6 +1,6 @@
 --- gdal-1.11.0/configure.in.orig	2014-05-12 21:49:57.910679098 +0200
 +++ gdal-1.11.0/configure.in	2014-05-18 11:22:22.873992206 +0200
-@@ -1480,23 +1480,10 @@
+@@ -1480,23 +1480,11 @@
  
  elif test "$with_sosi" = "yes" -o "$with_sosi" = "" ; then
  
@@ -22,6 +22,7 @@
 -    else
 -        AC_MSG_ERROR([not found.])
 -    fi
++        SOSI_INC="-I/usr/include/fyba"
 +        SOSI_LIB="-lfyba -lfygm -lfyut"
 +    ], [AC_MSG_ERROR([not found.])])
  

@@ -6,8 +6,7 @@ Kill warnings in Armadillo detection code to make compiler output empty
      rm -f testarmadillo
      echo '#include <armadillo>' > testarmadillo.cpp
 -    echo 'int main(int argc, char** argv) { arma::mat matInput(2,2); const arma::mat& matInv = arma::inv(matInput); return 0; } ' >> testarmadillo.cpp
--    if test -z "`${CXX} ${CPPFLAGS} testarmadillo.cpp -o testarmadillo -larmadillo ${LIBS} 2>&1`" ; then
 +    echo 'int main(int, char**) { arma::mat matInput(2,2); const arma::mat& matInv = arma::inv(matInput); (void)matInv; return 0; } ' >> testarmadillo.cpp
-+    if test -z "`${CXX} ${CPPFLAGS} testarmadillo.cpp -o testarmadillo -larmadillo 2>&1`" ; then
+     if test -z "`${CXX} ${CPPFLAGS} testarmadillo.cpp -o testarmadillo -larmadillo 2>&1`" ; then
          HAVE_ARMADILLO=yes
          LIBS="-larmadillo ${LIBS}"

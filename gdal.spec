@@ -37,7 +37,7 @@
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
 %bcond_without	php		# PHP binding
-%bcond_without	ruby		# Ruby binding
+%bcond_with	ruby		# Ruby binding
 
 %if %{with podofo}
 %undefine	with_poppler
@@ -48,26 +48,23 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	1.11.2
-Release:	11
+Version:	2.0.1
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	90221810dd9ca656ee23d434d4266ef6
+# Source0-md5:	27022cc4a3e0819ab02a69c2d0867437
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
 Patch3:		%{name}-fpic.patch
-Patch4:		%{name}-format-security.patch
 Patch5:		%{name}-grass.patch
-Patch6:		%{name}-sse.patch
 Patch7:		%{name}-link.patch
 Patch8:		%{name}-fyba.patch
 Patch9:		%{name}-dds.patch
 Patch11:	%{name}-armadillo.patch
 Patch12:	%{name}-rasdaman.patch
 Patch13:	%{name}-pluginsdir.patch
-Patch14:	poppler-0.31.patch
 URL:		http://www.gdal.org/
 %{?with_php:BuildRequires:	%{php_name}-devel}
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
@@ -286,16 +283,13 @@ osr.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 %patch5 -p1
-%patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%patch14 -p1
 
 # need to regenerate (old ones don't support perl 5.10 or php 5.5)
 %{__rm} swig/{perl,php}/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
@@ -369,6 +363,7 @@ jvm_arch=x32
 	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
+	--with-autoload=%{_libdir}/gdalplugins \
 	--without-libgrass
 #	--with-pcidsk=/usr (needs > 0.3)
 # csharp builds, but has no configure option nor install target
@@ -395,7 +390,6 @@ rm -rf $RPM_BUILD_ROOT
 
 rm -rf _html
 cp -a html _html
-cp -a ogr/html _html/ogr
 
 %if %{with php}
 # missing in make install
@@ -483,7 +477,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rgb2pct.py
 %attr(755,root,root) %{_bindir}/testepsg
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgdal.so.1
+%attr(755,root,root) %ghost %{_libdir}/libgdal.so.20
 %dir %{_libdir}/gdalplugins
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
@@ -552,6 +546,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OGR/OGR.so
 %dir %{perl_vendorarch}/auto/Geo/OSR
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
+%{_mandir}/man3/Geo::GDAL.3pm*
 
 %if %{with php}
 %files -n %{php_name}-gdal
