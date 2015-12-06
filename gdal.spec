@@ -89,7 +89,7 @@ BuildRequires:	jasper-devel
 %{?with_java:BuildRequires:	jdk}
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	json-c-devel >= 0.11
-BuildRequires:	libcsf-devel
+BuildRequires:	libcsf-devel >= 2.0-0.041111.6
 BuildRequires:	libdap-devel >= 3.10
 BuildRequires:	libgeotiff-devel >= 1.2.1
 %{?with_gta:BuildRequires:	libgta-devel}
