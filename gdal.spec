@@ -25,6 +25,7 @@
 %bcond_without	fyba		# SOSI geodata support using FYBA
 %bcond_with	grass		# GRASS support (note: dependency loop; use gdal-grass.spec instead)
 %bcond_without	gta		# GTA format support
+%bcond_without	kea		# KEA format support
 %bcond_without	mysql		# MySQL DB support
 %bcond_with	oci		# ORACLE OCI DB and Georaster support
 %bcond_without	odbc		# ODBC DB support
@@ -36,8 +37,8 @@
 %bcond_without	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
-%bcond_without	php		# PHP binding
-%bcond_with	ruby		# Ruby binding
+%bcond_without	php		# PHP binding [PHP 7 not supported by swig 3.0.x]
+%bcond_with	ruby		# Ruby binding [not available as of 2.0.2]
 
 %if %{with podofo}
 %undefine	with_poppler
@@ -48,12 +49,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	2.0.1
-Release:	5
+Version:	2.0.2
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	27022cc4a3e0819ab02a69c2d0867437
+# Source0-md5:	940208e737c87d31a90eaae43d0efd65
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
@@ -89,6 +90,7 @@ BuildRequires:	jasper-devel
 %{?with_java:BuildRequires:	jdk}
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	json-c-devel >= 0.11
+%{?with_kea:BuildRequires:	kealib-devel}
 BuildRequires:	libcsf-devel >= 2.0-0.041111.6
 BuildRequires:	libdap-devel >= 3.10
 BuildRequires:	libgeotiff-devel >= 1.2.1
@@ -180,6 +182,7 @@ Requires:	hdf-devel >= 4.0
 Requires:	hdf5-devel
 Requires:	jasper-devel
 Requires:	json-c-devel >= 0.11
+%{?with_kea:Requires:	kealib-devel}
 Requires:	libcsf-devel
 Requires:	libdap-devel >= 3.10
 Requires:	libgeotiff-devel >= 1.2.1
@@ -345,6 +348,7 @@ jvm_arch=x32
 	--with-hide-internal-symbols \
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
+	%{!?with_kea:--without-kea} \
 	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib=%{java_home}/jre/lib/$jvm_arch/server} \
 	%{?with_mysql:--with-mysql} \
 	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
@@ -363,7 +367,6 @@ jvm_arch=x32
 	%{?with_xerces:--with-xerces} \
 	--with-xerces-inc=/usr/include/xercesc \
 	--with-xerces-lib="-lxerces-c" \
-	--with-autoload=%{_libdir}/gdalplugins \
 	--without-libgrass
 #	--with-pcidsk=/usr (needs > 0.3)
 # csharp builds, but has no configure option nor install target
