@@ -37,7 +37,7 @@
 %bcond_without	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
-%bcond_without	php		# PHP binding [PHP 7 not supported by swig 3.0.x]
+%bcond_with	php		# PHP binding [PHP 7 not supported by swig 3.0.x]
 %bcond_with	ruby		# Ruby binding [not available as of 2.0.2]
 
 %if %{with podofo}
@@ -50,7 +50,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	2.0.2
-Release:	5
+Release:	6
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
