@@ -107,7 +107,7 @@ BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libwebp-devel
 BuildRequires:	libxml2-devel >= 2
-%{?with_mysql:BuildRequires:	/usr/bin/mysql_config}
+%{?with_mysql:BuildRequires:	percona-server-devel}
 BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
 %{?with_openjpeg:BuildRequires:	openjpeg2-devel >= 2.0.0-2}
@@ -197,7 +197,7 @@ Requires:	libtiff-devel >= 4.0
 Requires:	libuuid-devel
 Requires:	libwebp-devel
 Requires:	libxml2-devel >= 2
-%{?with_mysql:Requires:	/usr/bin/mysql_config}
+%{?with_mysql:Requires:	percona-server-devel}
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
 %{?with_openjpeg:Requires:	openjpeg2-devel >= 2.0.0-2}
