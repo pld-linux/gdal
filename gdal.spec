@@ -50,7 +50,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	2.0.2
-Release:	16
+Release:	17
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
@@ -107,7 +107,7 @@ BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libwebp-devel
 BuildRequires:	libxml2-devel >= 2
-%{?with_mysql:BuildRequires:	mysql-devel}
+%{?with_mysql:BuildRequires:	/usr/bin/mysql_config}
 BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
 %{?with_openjpeg:BuildRequires:	openjpeg2-devel >= 2.0.0-2}
@@ -197,7 +197,7 @@ Requires:	libtiff-devel >= 4.0
 Requires:	libuuid-devel
 Requires:	libwebp-devel
 Requires:	libxml2-devel >= 2
-%{?with_mysql:Requires:	mysql-devel}
+%{?with_mysql:Requires:	/usr/bin/mysql_config}
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
 %{?with_openjpeg:Requires:	openjpeg2-devel >= 2.0.0-2}
