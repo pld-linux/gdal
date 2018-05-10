@@ -285,7 +285,7 @@ osr.
 %patch9 -p1
 %patch11 -p1
 %patch12 -p1
-#%patch13 -p1
+%patch13 -p1
 %patch15 -p1
 
 # need to regenerate (old ones don't support perl 5.10 or php 5.5)
@@ -335,7 +335,7 @@ jvm_arch=x32
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
 	%{?with_armadillo:--with-armadillo} \
-	%{?with_crnlib:--with-dds=/usr} \
+	%{?with_crnlib:--with-dds} \
 	%{?with_epsilon:--with-epsilon} \
 	%{?with_grass:--with-grass} \
 	%{!?with_gta:--without-gta} \
@@ -415,10 +415,6 @@ EOF
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OGR/.packlist
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OSR/.packlist
 
-# some doxygen trash
-%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal{compare,move}.dox
-%{__rm} $RPM_BUILD_ROOT%{_bindir}/gdal_{calc,edit,fillnodata,polygonize,proximity,sieve}.dox
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -434,41 +430,45 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gcps2wld.py
 %attr(755,root,root) %{_bindir}/gdal2tiles.py
 %attr(755,root,root) %{_bindir}/gdal2xyz.py
-%attr(755,root,root) %{_bindir}/gdal_auth.py
-%attr(755,root,root) %{_bindir}/gdal_contour
-%attr(755,root,root) %{_bindir}/gdal_calc.py
-%attr(755,root,root) %{_bindir}/gdal_edit.py
-%attr(755,root,root) %{_bindir}/gdal_fillnodata.py
-%attr(755,root,root) %{_bindir}/gdal_grid
-%attr(755,root,root) %{_bindir}/gdal_merge.py
-%attr(755,root,root) %{_bindir}/gdal_polygonize.py
-%attr(755,root,root) %{_bindir}/gdal_proximity.py
-%attr(755,root,root) %{_bindir}/gdal_rasterize
-%attr(755,root,root) %{_bindir}/gdal_retile.py
-%attr(755,root,root) %{_bindir}/gdal_sieve.py
-%attr(755,root,root) %{_bindir}/gdal_translate
 %attr(755,root,root) %{_bindir}/gdaladdo
+%attr(755,root,root) %{_bindir}/gdal_auth.py
 %attr(755,root,root) %{_bindir}/gdalbuildvrt
+%attr(755,root,root) %{_bindir}/gdal_calc.py
 %attr(755,root,root) %{_bindir}/gdalchksum.py
 %attr(755,root,root) %{_bindir}/gdalcompare.py
+%attr(755,root,root) %{_bindir}/gdal_contour
 %attr(755,root,root) %{_bindir}/gdaldem
+%attr(755,root,root) %{_bindir}/gdal_edit.py
 %attr(755,root,root) %{_bindir}/gdalenhance
+%attr(755,root,root) %{_bindir}/gdal_fillnodata.py
+%attr(755,root,root) %{_bindir}/gdal_grid
 %attr(755,root,root) %{_bindir}/gdalident.py
 %attr(755,root,root) %{_bindir}/gdalimport.py
 %attr(755,root,root) %{_bindir}/gdalinfo
 %attr(755,root,root) %{_bindir}/gdallocationinfo
 %attr(755,root,root) %{_bindir}/gdalmanage
+%attr(755,root,root) %{_bindir}/gdal_merge.py
 %attr(755,root,root) %{_bindir}/gdalmove.py
+%attr(755,root,root) %{_bindir}/gdal_pansharpen.py
+%attr(755,root,root) %{_bindir}/gdal_polygonize.py
+%attr(755,root,root) %{_bindir}/gdal_proximity.py
+%attr(755,root,root) %{_bindir}/gdal_rasterize
+%attr(755,root,root) %{_bindir}/gdal_retile.py
 %attr(755,root,root) %{_bindir}/gdalserver
+%attr(755,root,root) %{_bindir}/gdal_sieve.py
 %attr(755,root,root) %{_bindir}/gdalsrsinfo
 %attr(755,root,root) %{_bindir}/gdaltindex
 %attr(755,root,root) %{_bindir}/gdaltransform
+%attr(755,root,root) %{_bindir}/gdal_translate
 %attr(755,root,root) %{_bindir}/gdalwarp
+%attr(755,root,root) %{_bindir}/gnmanalyse
+%attr(755,root,root) %{_bindir}/gnmmanage
 %attr(755,root,root) %{_bindir}/mkgraticule.py
 %attr(755,root,root) %{_bindir}/nearblack
 %attr(755,root,root) %{_bindir}/ogr2ogr
 %attr(755,root,root) %{_bindir}/ogrinfo
 %attr(755,root,root) %{_bindir}/ogrlineref
+%attr(755,root,root) %{_bindir}/ogrmerge.py
 %attr(755,root,root) %{_bindir}/ogrtindex
 %attr(755,root,root) %{_bindir}/pct2rgb.py
 %attr(755,root,root) %{_bindir}/rgb2pct.py
@@ -511,6 +511,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/ogrtindex.1*
 %{_mandir}/man1/pct2rgb.1*
 %{_mandir}/man1/rgb2pct.1*
+%{_mandir}/man1/gdal_pansharpen.1*
+%{_mandir}/man1/gnm_utilities.1*
+%{_mandir}/man1/gnmanalyse.1*
+%{_mandir}/man1/gnmmanage.1*
+%{_mandir}/man1/ogrmerge.1*
 
 %files devel
 %defattr(644,root,root,755)
@@ -539,11 +544,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/GDAL.so
 %dir %{perl_vendorarch}/auto/Geo/GDAL/Const
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/Const/Const.so
+%dir %{perl_vendorarch}/auto/Geo/GNM
+%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GNM/GNM.so
 %dir %{perl_vendorarch}/auto/Geo/OGR
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OGR/OGR.so
 %dir %{perl_vendorarch}/auto/Geo/OSR
 %attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
 %{_mandir}/man3/Geo::GDAL.3pm*
+%{perl_vendorarch}/Geo/GNM.pm
 
 %if %{with php}
 %files -n %{php_name}-gdal
@@ -560,6 +568,7 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/gdal.py[co]
 %{py_sitedir}/gdalconst.py[co]
 %{py_sitedir}/gdalnumeric.py[co]
+%{py_sitedir}/gnm.py[co]
 %{py_sitedir}/ogr.py[co]
 %{py_sitedir}/osr.py[co]
 %{py_sitedir}/GDAL-*.egg-info
@@ -567,6 +576,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{py_sitedir}/osgeo/_gdal.so
 %attr(755,root,root) %{py_sitedir}/osgeo/_gdal_array.so
 %attr(755,root,root) %{py_sitedir}/osgeo/_gdalconst.so
+%attr(755,root,root) %{py_sitedir}/osgeo/_gnm.so
 %attr(755,root,root) %{py_sitedir}/osgeo/_ogr.so
 %attr(755,root,root) %{py_sitedir}/osgeo/_osr.so
 %{py_sitedir}/osgeo/*.py[co]

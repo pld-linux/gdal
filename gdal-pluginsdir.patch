@@ -6,7 +6,7 @@
      {
 -#ifdef GDAL_PREFIX
 +#if 1
-         papszSearchPath = CSLAddString( papszSearchPath, 
+         papszSearchPath = CSLAddString( papszSearchPath,
      #ifdef MACOSX_FRAMEWORK
                                          GDAL_PREFIX "/PlugIns");
      #else
