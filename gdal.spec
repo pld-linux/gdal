@@ -49,12 +49,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	2.0.2
-Release:	17
+Version:	2.2.4
+Release:	0.1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	940208e737c87d31a90eaae43d0efd65
+# Source0-md5:	51b1df61dbdf81473689fab3075e7a5e
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
@@ -285,17 +285,17 @@ osr.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch5 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
+#%patch5 -p1
+#%patch7 -p1
+#%patch8 -p1
+#%patch9 -p1
+#%patch11 -p1
+#%patch12 -p1
+#%patch13 -p1
+#%patch14 -p1
 %patch15 -p1
 
 # need to regenerate (old ones don't support perl 5.10 or php 5.5)
@@ -319,11 +319,11 @@ sed -i -e 's|^$(INSTALL_DIR):|$(DESTDIR)$(INSTALL_DIR):|' swig/ruby/RubyMakefile
 sed -i -e 's|^install: $(INSTALL_DIR)|install: $(DESTDIR)$(INSTALL_DIR)|' swig/ruby/RubyMakefile.mk
 
 # our man path
-sed -i -e 's#^mandir=.*##g' configure.in
+sed -i -e 's#^mandir=.*##g' configure.ac
 
 %{__rm} -r man
 
-%{__sed} -i -e 's,DODS_INC="-I.*,DODS_INC="$(pkg-config --cflags libdap)",' configure.in
+%{__sed} -i -e 's,DODS_INC="-I.*,DODS_INC="$(pkg-config --cflags libdap)",' configure.ac
 
 %build
 %ifarch %{x8664}
@@ -345,7 +345,7 @@ jvm_arch=x32
 	--datadir=%{_datadir}/gdal \
 	--with-dods-root=/usr \
 	%{?with_armadillo:--with-armadillo} \
-	%{?with_crnlib:--with-dds} \
+	%{?with_crnlib:--with-dds=/usr} \
 	%{?with_epsilon:--with-epsilon} \
 	%{?with_grass:--with-grass} \
 	%{!?with_gta:--without-gta} \
