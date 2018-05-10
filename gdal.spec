@@ -56,17 +56,12 @@ Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
 # Source0-md5:	51b1df61dbdf81473689fab3075e7a5e
 Patch0:		%{name}-perl.patch
-Patch1:		%{name}-python_install.patch
 Patch2:		%{name}-php.patch
 Patch3:		%{name}-fpic.patch
-Patch5:		%{name}-grass.patch
-Patch7:		%{name}-link.patch
-Patch8:		%{name}-fyba.patch
 Patch9:		%{name}-dds.patch
 Patch11:	%{name}-armadillo.patch
 Patch12:	%{name}-rasdaman.patch
 Patch13:	%{name}-pluginsdir.patch
-Patch14:	%{name}-uchar.patch
 Patch15:	libx32.patch
 URL:		http://www.gdal.org/
 %{?with_php:BuildRequires:	%{php_name}-devel}
@@ -285,17 +280,12 @@ osr.
 %prep
 %setup -q
 %patch0 -p1
-#%patch1 -p1
 %patch2 -p1
 %patch3 -p1
-#%patch5 -p1
-#%patch7 -p1
-#%patch8 -p1
-#%patch9 -p1
-#%patch11 -p1
-#%patch12 -p1
+%patch9 -p1
+%patch11 -p1
+%patch12 -p1
 #%patch13 -p1
-#%patch14 -p1
 %patch15 -p1
 
 # need to regenerate (old ones don't support perl 5.10 or php 5.5)

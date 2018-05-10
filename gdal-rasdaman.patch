@@ -1,5 +1,5 @@
---- gdal-1.11.0/configure.in.orig	2014-06-14 20:12:03.704706951 +0200
-+++ gdal-1.11.0/configure.in	2014-06-14 20:53:44.987988150 +0200
+--- gdal-1.11.0/configure.ac.orig	2014-06-14 20:12:03.704706951 +0200
++++ gdal-1.11.0/configure.ac	2014-06-14 20:53:44.987988150 +0200
 @@ -4182,7 +4182,7 @@
    AC_CHECK_LIB(raslib,main,RASDAMAN_ENABLED=yes,,,)
  

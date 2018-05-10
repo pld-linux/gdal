@@ -15,8 +15,8 @@
      #endif
  #else
          char szExecPath[1024];
---- gdal-1.11.2/configure.in.orig	2015-03-01 09:07:33.069445871 +0100
-+++ gdal-1.11.2/configure.in	2015-03-01 21:13:55.727616880 +0100
+--- gdal-1.11.2/configure.ac.orig	2015-03-01 09:07:33.069445871 +0100
++++ gdal-1.11.2/configure.ac	2015-03-01 21:13:55.727616880 +0100
 @@ -3812,12 +3812,16 @@
  
  if test "$prefix" = "NONE" ; then 

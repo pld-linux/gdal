@@ -1,5 +1,5 @@
---- gdal-1.9.0/configure.in.orig	2012-01-04 08:03:42.000000000 +0100
-+++ gdal-1.9.0/configure.in	2012-01-19 20:50:08.902476176 +0100
+--- gdal-1.9.0/configure.ac.orig	2012-01-04 08:03:42.000000000 +0100
++++ gdal-1.9.0/configure.ac	2012-01-19 20:50:08.902476176 +0100
 @@ -1493,7 +1493,7 @@
        AC_MSG_CHECKING([libnetcdf version with $ncdump]) 
        netcdf_version=`$ncdump 2>&1 | grep "netcdf library version" | awk '{gsub(/"/,"");print $4}'`
