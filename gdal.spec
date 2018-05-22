@@ -56,6 +56,7 @@ Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
 # Source0-md5:	51b1df61dbdf81473689fab3075e7a5e
 Patch0:		%{name}-perl.patch
+Patch1:		%{name}-poppler.patch
 Patch2:		%{name}-php.patch
 Patch3:		%{name}-fpic.patch
 Patch9:		%{name}-dds.patch
@@ -280,6 +281,7 @@ osr.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p2
 %patch2 -p1
 %patch3 -p1
 %patch9 -p1
