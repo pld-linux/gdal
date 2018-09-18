@@ -33,7 +33,7 @@
 %bcond_without	openjpeg	# OpenJPEG 2 (JPEG2000) support
 %bcond_with	podofo		# PDF support via podofo instead of poppler
 %bcond_without	poppler		# PDF support via poppler
-%bcond_without	rasdaman	# Rasdaman support
+%bcond_with	rasdaman	# Rasdaman support
 %bcond_without	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
@@ -50,7 +50,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	2.2.4
-Release:	7
+Release:	8
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
