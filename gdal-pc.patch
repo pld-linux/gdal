@@ -1,0 +1,20 @@
+--- gdal-2.4.0/GNUmakefile.orig	2018-12-14 22:34:19.000000000 +0100
++++ gdal-2.4.0/GNUmakefile	2018-12-29 19:15:29.433390410 +0100
+@@ -314,6 +314,7 @@
+ 	rm -f gdal.pc
+ 	echo 'CONFIG_VERSION='`cat ./VERSION`'' >> gdal.pc
+ 	echo 'CONFIG_INST_PREFIX=$(INST_PREFIX)' >> gdal.pc
++	echo 'CONFIG_INST_LIBDIR=$(INST_LIB)' >> gdal.pc
+ 	echo 'CONFIG_INST_LIBS=$(CONFIG_LIBS_INS)' >> gdal.pc
+ 	echo 'CONFIG_INST_CFLAGS=-I$(INST_INCLUDE)' >> gdal.pc
+ 	echo 'CONFIG_INST_DATA=$(INST_DATA)' >> gdal.pc
+--- gdal-2.4.0/gdal.pc.in.orig	2018-12-14 22:34:20.000000000 +0100
++++ gdal-2.4.0/gdal.pc.in	2018-12-29 19:15:47.330056870 +0100
+@@ -1,6 +1,6 @@
+ prefix=${CONFIG_INST_PREFIX}
+ exec_prefix=${prefix}
+-libdir=${exec_prefix}/lib
++libdir=${CONFIG_INST_LIBDIR}
+ includedir=${exec_prefix}/include
+ datadir=${CONFIG_INST_DATA}
+ 

@@ -1,9 +1,9 @@
---- gdal-1.8.0/swig/perl/GNUmakefile.orig	2011-01-14 06:19:06.000000000 +0100
-+++ gdal-1.8.0/swig/perl/GNUmakefile	2011-01-26 17:16:08.978356589 +0100
-@@ -26,7 +26,7 @@
- gdal_wrap.cc: generate
+--- gdal-2.4.0/swig/perl/GNUmakefile.orig	2018-12-26 21:34:07.219588369 +0100
++++ gdal-2.4.0/swig/perl/GNUmakefile	2018-12-26 21:35:04.292921051 +0100
+@@ -28,7 +28,7 @@
+ 	if [ -f Makefile_Geo__GNM ]; then $(MAKE) -f Makefile_Geo__GNM; fi
  
- Makefile_Geo__GDAL:
+ Makefile_Geo__GDAL: ${WRAPPERS} Makefile.PL
 -	perl Makefile.PL INSTALL_BASE=$(INST_PREFIX)
 +	perl Makefile.PL INSTALLDIRS=vendor
  

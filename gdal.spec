@@ -2,6 +2,9 @@
 # - be reasonable about devel dependencies - you do not need all of them to
 #   use gdal (probably a gdal module or driver shall not imply devel
 #   dependency)
+# - MongoCXX (mongo/client/dbclient.h, -lmongoclient -lboost_system -lboost_thread -lboost_regex)
+# - rasterlite2
+# - sfcgal >= 1.2.2
 # - libjpeg12 (needs patching to use system one, --with-jpeg12 is not sufficient as of 1.9.2)
 # - libkml (1.3.0 needed, not released yet)
 # - wait for newer pcidsk, switch to external again
@@ -12,11 +15,13 @@
 #   - ECW (http://www.erdas.com/products/ecw/ERDASECWJPEG2000SDK/Details.aspx)
 #   - Kakadu/JPEG2000 (http://www.kakadusoftware.com/)
 #   - MrSID (http://www.lizardtech.com/developer/)
+#   - LuraTech JP2Lura 
 #   - MSG/EUMETSAT (http://www.eumetsat.int/Home/Main/DataAccess/SupportSoftwareTools/index.htm)
 #   - Ingres (--with-ingres=/path)
 #   - Informix DB (--with-idb)
 #   - DWGdirect (members only? http://www.opendwg.org/)
 #   - ESRI SDE (http://www.esri.com/software/arcgis/arcsde/index.html)
+#   - Teigha DWG/DGN (https://www.opendesign.com/products/drawings?)
 #
 # Conditional build:
 %bcond_without	armadillo	# Armadillo support for faster TPS transform
@@ -37,41 +42,36 @@
 %bcond_without	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
-%bcond_with	php		# PHP binding [PHP 7 not supported by swig 3.0.x]
-%bcond_with	ruby		# Ruby binding [not available as of 2.0.2]
 
 %if %{with podofo}
 %undefine	with_poppler
 %endif
-%if 0%{!?php_name:1}
-%define		php_name	php55
-%endif
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	2.2.4
-Release:	9
+Version:	2.4.0
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	51b1df61dbdf81473689fab3075e7a5e
+# Source0-md5:	794096364a50df4bc7c5b710d997b6b4
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-poppler.patch
-Patch2:		%{name}-php.patch
-Patch3:		%{name}-fpic.patch
+Patch2:		%{name}-pc.patch
 Patch9:		%{name}-dds.patch
-Patch11:	%{name}-armadillo.patch
 Patch12:	%{name}-rasdaman.patch
 Patch13:	%{name}-pluginsdir.patch
 Patch15:	libx32.patch
 URL:		http://www.gdal.org/
-%{?with_php:BuildRequires:	%{php_name}-devel}
+# 1.x or 2.x supported
+BuildRequires:	CharLS-devel
 %{?with_opencl:BuildRequires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:BuildRequires:	armadillo-devel}
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
 %{?with_crnlib:BuildRequires:	crnlib-devel}
+BuildRequires:	cryptopp-devel
 BuildRequires:	curl-devel
 BuildRequires:	doxygen >= 1.4.2
 %{?with_epsilon:BuildRequires:	epsilon-compressor-devel}
@@ -82,7 +82,7 @@ BuildRequires:	gcc >= 6:4.1
 BuildRequires:	geos-devel >= 3.1.0
 BuildRequires:	giflib-devel >= 4.0
 %{?with_grass:BuildRequires:	grass-devel >= 6.4}
-BuildRequires:	hdf-devel >= 4.0
+BuildRequires:	hdf-devel >= 4.2.5
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
 %{?with_java:BuildRequires:	jdk}
@@ -103,14 +103,17 @@ BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libwebp-devel
 BuildRequires:	libxml2-devel >= 2
+#%{?with_mysql:BuildRequires:	mysql-devel >= 4}
 %{?with_mysql:BuildRequires:	/usr/bin/mysql_config}
 BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
-%{?with_openjpeg:BuildRequires:	openjpeg2-devel >= 2.0.0-2}
+%{?with_openjpeg:BuildRequires:	openjpeg2-devel >= 2.1.0}
 # 8.1.7 for DB support, 10.0.1 for georaster
 %{?with_oci:BuildRequires:	oracle-instantclient-devel >= 10.0.1}
 #BuildRequires:	pcidsk-devel > 0.3
+BuildRequires:	pcre-devel
 BuildRequires:	perl-devel
+BuildRequires:	pkgconfig >= 1:0.21
 %{?with_podofo:BuildRequires:	podofo-devel}
 %{?with_poppler:BuildRequires:	poppler-devel >= 0.24}
 # ensure it's compiled with PQescapeStringConn support
@@ -120,28 +123,31 @@ BuildRequires:	proj-devel >= 4
 BuildRequires:	python-devel >= 1:2.5
 BuildRequires:	python-numpy-devel >= 1:1.0.0
 BuildRequires:	python-setuptools
+BuildRequires:	qhull-devel >= 2012
 %{?with_rasdaman:BuildRequires:	rasdaman-devel}
 BuildRequires:	rpm-pythonprov
-%{?with_ruby:BuildRequires:	rpm-rubyprov}
 BuildRequires:	rpmbuild(macros) >= 1.344
-%{?with_ruby:BuildRequires:	ruby-devel}
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	swig-perl
-BuildRequires:	swig-php >= 2.0.12-2
 BuildRequires:	swig-python >= 1.3
-%{?with_ruby:BuildRequires:	swig-ruby}
 BuildRequires:	texlive-dvips
 BuildRequires:	texlive-latex
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.2.15}
-%{?with_xerces:BuildRequires:	xerces-c-devel >= 2.7.0}
+%{?with_xerces:BuildRequires:	xerces-c-devel >= 3.1.0}
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel >= 1.1.4
+# for ZSTD compression in TIFF
+BuildRequires:	zstd-devel
 Requires:	freexl >= 1.0
 Requires:	geos >= 3.1.0
+Requires:	hdf >= 4.2.5
 Requires:	libgeotiff >= 1.2.1
 Requires:	libpng >= 2:1.2.8
 Requires:	libtiff >= 4.0
+%{?with_openjpeg:Requires:	openjpeg2 >= 2.1.0}
+Requires:	qhull >= 2012
+%{?with_xerces:Requires:	xerces-c >= 3.1.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -165,10 +171,12 @@ Summary:	GDAL library header files
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GDAL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	CharLS-devel
 %{?with_opencl:Requires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:Requires:	armadillo-devel}
 Requires:	cfitsio-devel
 %{?with_crnlib:Requires:	crnlib-devel}
+Requires:	cryptopp-devel
 Requires:	curl-devel
 %{?with_epsilon:Requires:	epsilon-compressor-devel}
 %{?with_fyba:Requires:	fyba-devel}
@@ -176,7 +184,7 @@ Requires:	expat-devel >= 1.95.0
 Requires:	freexl-devel >= 1.0
 Requires:	geos-devel >= 3.1.0
 Requires:	giflib-devel >= 4.0
-Requires:	hdf-devel >= 4.0
+Requires:	hdf-devel >= 4.2.5
 Requires:	hdf5-devel
 Requires:	jasper-devel
 Requires:	json-c-devel >= 0.11
@@ -196,18 +204,21 @@ Requires:	libxml2-devel >= 2
 %{?with_mysql:Requires:	/usr/bin/mysql_config}
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
-%{?with_openjpeg:Requires:	openjpeg2-devel >= 2.0.0-2}
+%{?with_openjpeg:Requires:	openjpeg2-devel >= 2.1.0}
 #Requires:	pcidsk-devel > 0.3
+Requires:	pcre-devel
 %{?with_podofo:Requires:	podofo-devel}
 %{?with_poppler:Requires:	poppler-devel >= 0.24}
 Requires:	postgresql-devel
 Requires:	proj-devel >= 4
+Requires:	qhull-devel >= 2012
 %{?with_rasdaman:Requires:	rasdaman-devel}
 Requires:	sqlite3-devel >= 3.0.0
 %{?with_odbc:Requires:	unixODBC-devel}
-%{?with_xerces:Requires:	xerces-c-devel >= 2.7.0}
+%{?with_xerces:Requires:	xerces-c-devel >= 3.1.0}
 Requires:	xz-devel
 Requires:	zlib-devel >= 1.1.4
+Requires:	zstd-devel
 
 %description devel
 GDAL library header files.
@@ -239,19 +250,6 @@ Perl bindings for GDAL - Geo::GDAL, Geo::OGR and Geo::OSR modules.
 %description -n perl-gdal -l pl.UTF-8
 Wiązania Perla do pakietu GDAL - moduły Geo::GDAL, Geo::OGR, Geo::OSR.
 
-%package -n %{php_name}-gdal
-Summary:	PHP bindings for GDAL library
-Summary(pl.UTF-8):	Wiązania PHP do biblioteki GDAL
-Group:		Development/Languages/PHP
-Requires:	%{name} = %{version}-%{release}
-%{?requires_php_extension}
-
-%description -n %{php_name}-gdal
-PHP bindings for GDAL library
-
-%description -n %{php_name}-gdal -l pl.UTF-8
-Wiązania PHP do biblioteki GDAL.
-
 %package -n python-gdal
 Summary:	GDAL Python module
 Summary(pl.UTF-8):	Moduł Pythona GDAL
@@ -265,50 +263,18 @@ GDAL Python module.
 %description -n python-gdal -l pl.UTF-8
 Moduł Pythona GDAL.
 
-%package -n ruby-gdal
-Summary:	Ruby bindings for GDAL
-Summary(pl.UTF-8):	Wiązania języka Ruby do pakietu GDAL
-Group:		Development/Languages
-Requires:	%{name} = %{version}-%{release}
-
-%description -n ruby-gdal
-Ruby bindings for GDAL - gdal, gdalconst, ogr and osr modules.
-
-%description -n ruby-gdal -l pl.UTF-8
-Wiązania języka Ruby do pakietu GDAL - moduły gdal, gdalconst, ogr i
-osr.
-
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p2
+%patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %patch9 -p1
-%patch11 -p1
 %patch12 -p1
 %patch13 -p1
 %patch15 -p1
 
-# need to regenerate (old ones don't support perl 5.10 or php 5.5)
-%{__rm} swig/{perl,php}/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
-
-%{__sed} -i \
-	-e 's/^CC=gcc/CC=%{__cc}/' \
-	-e 's/^CXX=g++/CXX=%{__cxx}/' \
-	-e 's/^CFLAGS=-fpic/CFLAGS=%{rpmcflags} -fPIC/' \
-	-e 's/^LDFLAGS=-shared/LDFLAGS=%{rpmldflags} -shared/' \
-	swig/php/GNUmakefile
-# Build with fPIC to allow Ruby bindings
-# Xcompiler should normally achieve that -- http://trac.osgeo.org/gdal/ticket/3978
-# http://trac.osgeo.org/gdal/ticket/1994
-sed -i 's|\$(CFLAGS)|$(CFLAGS) -fPIC|g' swig/ruby/RubyMakefile.mk
-# Install Ruby bindings to distribution specific directory
-sed -i 's|RUBY_EXTENSIONS_DIR :=.*|RUBY_EXTENSIONS_DIR := %{ruby_vendorarchdir}|' swig/ruby/RubyMakefile.mk
-
-# Install Ruby bindings into the proper place
-sed -i -e 's|^$(INSTALL_DIR):|$(DESTDIR)$(INSTALL_DIR):|' swig/ruby/RubyMakefile.mk
-sed -i -e 's|^install: $(INSTALL_DIR)|install: $(DESTDIR)$(INSTALL_DIR)|' swig/ruby/RubyMakefile.mk
+# need to regenerate (old ones don't support perl 5.10)
+%{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
 
 # our man path
 sed -i -e 's#^mandir=.*##g' configure.ac
@@ -350,18 +316,16 @@ jvm_arch=x32
 	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
 	%{?with_opencl:--with-opencl} \
 	--with-perl \
-	%{?with_php:--with-php} \
 	%{?with_podofo:--with-podofo} \
 	%{?with_poppler:--with-poppler} \
 	--with-python \
 	%{?with_rasdaman:--with-rasdaman=%{_libdir}/rasdaman} \
-	%{?with_ruby:--with-ruby} \
 	%{?with_fyba:--with-sosi} \
 	%{?with_spatialite:--with-spatialite} \
 	--with-sqlite3 \
 	--with-webp \
 	%{?with_xerces:--with-xerces} \
-	--with-xerces-inc=/usr/include/xercesc \
+	--with-xerces-inc=/usr/include \
 	--with-xerces-lib="-lxerces-c" \
 	--without-libgrass
 #	--with-pcidsk=/usr (needs > 0.3)
@@ -369,9 +333,6 @@ jvm_arch=x32
 
 # regenerate where needed
 %{__make} -j1 -C swig/perl generate
-%if %{with ruby}
-%{__make} -j1 -C swig/ruby generate
-%endif
 
 %{__make} -j1 \
 	%{?with_grass:GRASS_INCLUDE="-I/usr/include/grass64"} \
@@ -387,25 +348,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} -j1 install install-man \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# TODO: remove libgdal.la when gdal.pc gets maintained Requires.private/Libs.private list
+
 rm -rf _html
 cp -a html _html
-
-%if %{with php}
-# missing in make install
-install -d $RPM_BUILD_ROOT%{php_extensiondir}
-install -p swig/php/php_gdal.so $RPM_BUILD_ROOT%{php_extensiondir}/gdal.so
-install -p swig/php/php_gdalconst.so $RPM_BUILD_ROOT%{php_extensiondir}/gdalconst.so
-install -p swig/php/php_ogr.so $RPM_BUILD_ROOT%{php_extensiondir}/ogr.so
-install -p swig/php/php_osr.so $RPM_BUILD_ROOT%{php_extensiondir}/osr.so
-install -d $RPM_BUILD_ROOT%{php_sysconfdir}/conf.d
-cat <<'EOF' >$RPM_BUILD_ROOT%{php_sysconfdir}/conf.d/gdal.ini
-; Enable gdal extension modules
-extension=gdal.so
-extension=gdalconst.so
-extension=ogr.so
-extension=osr.so
-EOF
-%endif
 
 %py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
@@ -555,22 +501,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/Geo::GDAL.3pm*
 %{perl_vendorarch}/Geo/GNM.pm
 
-%if %{with php}
-%files -n %{php_name}-gdal
-%defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) %{php_sysconfdir}/conf.d/gdal.ini
-%attr(755,root,root) %{php_extensiondir}/gdal.so
-%attr(755,root,root) %{php_extensiondir}/gdalconst.so
-%attr(755,root,root) %{php_extensiondir}/ogr.so
-%attr(755,root,root) %{php_extensiondir}/osr.so
-%endif
-
 %files -n python-gdal
 %defattr(644,root,root,755)
 %{py_sitedir}/gdal.py[co]
 %{py_sitedir}/gdalconst.py[co]
 %{py_sitedir}/gdalnumeric.py[co]
-%{py_sitedir}/gnm.py[co]
 %{py_sitedir}/ogr.py[co]
 %{py_sitedir}/osr.py[co]
 %{py_sitedir}/GDAL-*.egg-info
@@ -582,13 +517,3 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{py_sitedir}/osgeo/_ogr.so
 %attr(755,root,root) %{py_sitedir}/osgeo/_osr.so
 %{py_sitedir}/osgeo/*.py[co]
-
-%if %{with ruby}
-%files -n ruby-gdal
-%defattr(644,root,root,755)
-%dir %{ruby_vendorarchdir}/gdal
-%attr(755,root,root) %{ruby_vendorarchdir}/gdal/gdal.so
-%attr(755,root,root) %{ruby_vendorarchdir}/gdal/gdalconst.so
-%attr(755,root,root) %{ruby_vendorarchdir}/gdal/ogr.so
-%attr(755,root,root) %{ruby_vendorarchdir}/gdal/osr.so
-%endif
