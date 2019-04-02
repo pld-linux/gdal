@@ -39,7 +39,7 @@
 %bcond_with	podofo		# PDF support via podofo instead of poppler
 %bcond_without	poppler		# PDF support via poppler
 %bcond_with	rasdaman	# Rasdaman support
-%bcond_without	spatialite	# SpatiaLite support
+%bcond_with	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
 
@@ -334,7 +334,7 @@ jvm_arch=x32
 # regenerate where needed
 %{__make} -j1 -C swig/perl generate
 
-%{__make} -j1 \
+%{__make} \
 	%{?with_grass:GRASS_INCLUDE="-I/usr/include/grass64"} \
 	%{?with_fyba:SOSI_INC="-I/usr/include/fyba"}
 
