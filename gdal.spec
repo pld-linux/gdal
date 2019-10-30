@@ -49,14 +49,13 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	2.4.0
-Release:	11
+Version:	3.0.1
+Release:	1
 License:	BSD-like
 Group:		Libraries
-Source0:	http://download.osgeo.org/gdal/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	794096364a50df4bc7c5b710d997b6b4
+Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	2b397c041e6b0b10ec7c49fd76e9fa99
 Patch0:		%{name}-perl.patch
-Patch1:		%{name}-poppler.patch
 Patch2:		%{name}-pc.patch
 Patch9:		%{name}-dds.patch
 Patch12:	%{name}-rasdaman.patch
@@ -266,7 +265,6 @@ Moduł Pythona GDAL.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 %patch2 -p1
 %patch9 -p1
 %patch12 -p1
@@ -422,7 +420,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rgb2pct.py
 %attr(755,root,root) %{_bindir}/testepsg
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgdal.so.20
+%attr(755,root,root) %ghost %{_libdir}/libgdal.so.26
 %dir %{_libdir}/gdalplugins
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
