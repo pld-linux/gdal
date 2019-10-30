@@ -56,11 +56,12 @@ Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	2b397c041e6b0b10ec7c49fd76e9fa99
 Patch0:		%{name}-perl.patch
-Patch2:		%{name}-pc.patch
-Patch9:		%{name}-dds.patch
-Patch12:	%{name}-rasdaman.patch
-Patch13:	%{name}-pluginsdir.patch
-Patch15:	libx32.patch
+Patch1:		%{name}-pc.patch
+Patch2:		%{name}-dds.patch
+Patch3:		%{name}-rasdaman.patch
+Patch4:		%{name}-pluginsdir.patch
+Patch5:		libx32.patch
+Patch6:		poppler-0.82.patch
 URL:		http://www.gdal.org/
 # 1.x or 2.x supported
 BuildRequires:	CharLS-devel
@@ -98,6 +99,7 @@ BuildRequires:	libpng-devel >= 2:1.2.8
 %{?with_spatialite:BuildRequires:	libspatialite-devel}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 4.0
+BuildRequires:	libtirpc-devel
 BuildRequires:	libtool
 BuildRequires:	libuuid-devel
 BuildRequires:	libwebp-devel
@@ -265,11 +267,12 @@ Moduł Pythona GDAL.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 %patch2 -p1
-%patch9 -p1
-%patch12 -p1
-%patch13 -p1
-%patch15 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
