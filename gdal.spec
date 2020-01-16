@@ -50,7 +50,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	3.0.1
-Release:	5
+Release:	6
 License:	BSD-like
 Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
@@ -285,6 +285,35 @@ sed -i -e 's#^mandir=.*##g' configure.ac
 %{__rm} -r man
 
 %{__sed} -i -e 's,DODS_INC="-I.*,DODS_INC="$(pkg-config --cflags libdap)",' configure.ac
+
+sed -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python}\1,' \
+	  -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
+	  -e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python}\1,' \
+      swig/python/scripts/epsg_tr.py \
+      swig/python/scripts/esri2wkt.py \
+      swig/python/scripts/gcps2vec.py \
+      swig/python/scripts/gcps2wld.py \
+      swig/python/scripts/gdal2tiles.py \
+      swig/python/scripts/gdal2xyz.py \
+      swig/python/scripts/gdal_auth.py \
+      swig/python/scripts/gdal_calc.py \
+      swig/python/scripts/gdal_edit.py \
+      swig/python/scripts/gdal_fillnodata.py \
+      swig/python/scripts/gdal_merge.py \
+      swig/python/scripts/gdal_pansharpen.py \
+      swig/python/scripts/gdal_polygonize.py \
+      swig/python/scripts/gdal_proximity.py \
+      swig/python/scripts/gdal_retile.py \
+      swig/python/scripts/gdal_sieve.py \
+      swig/python/scripts/gdalchksum.py \
+      swig/python/scripts/gdalcompare.py \
+      swig/python/scripts/gdalident.py \
+      swig/python/scripts/gdalimport.py \
+      swig/python/scripts/gdalmove.py \
+      swig/python/scripts/mkgraticule.py \
+      swig/python/scripts/ogrmerge.py \
+      swig/python/scripts/pct2rgb.py \
+      swig/python/scripts/rgb2pct.py
 
 %build
 %ifarch %{x8664}
