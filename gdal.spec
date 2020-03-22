@@ -49,19 +49,18 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	3.0.1
-Release:	6
+Version:	3.0.4
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	2b397c041e6b0b10ec7c49fd76e9fa99
+# Source0-md5:	c6bbb5caca06e96bd97a32918e0aa9aa
 Patch0:		%{name}-perl.patch
 Patch1:		%{name}-pc.patch
 Patch2:		%{name}-dds.patch
 Patch3:		%{name}-rasdaman.patch
 Patch4:		%{name}-pluginsdir.patch
 Patch5:		libx32.patch
-Patch6:		poppler-0.82.patch
 Patch7:		decl.patch
 URL:		http://www.gdal.org/
 # 1.x or 2.x supported
@@ -273,7 +272,6 @@ Moduł Pythona GDAL.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p2
 %patch7 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
