@@ -62,6 +62,7 @@ Patch3:		%{name}-rasdaman.patch
 Patch4:		%{name}-pluginsdir.patch
 Patch5:		libx32.patch
 Patch7:		decl.patch
+Patch8:		%{name}_tirpcinc.patch
 URL:		http://www.gdal.org/
 # 1.x or 2.x supported
 BuildRequires:	CharLS-devel
@@ -273,6 +274,7 @@ Moduł Pythona GDAL.
 %patch4 -p1
 %patch5 -p1
 %patch7 -p1
+%patch8 -p1
 
 # need to regenerate (old ones don't support perl 5.10)
 %{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
