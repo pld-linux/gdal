@@ -1,25 +1,9 @@
---- gdal-1.11.2/gcore/gdaldrivermanager.cpp.orig	2015-02-10 13:12:08.000000000 +0100
-+++ gdal-1.11.2/gcore/gdaldrivermanager.cpp	2015-03-01 21:11:24.537623226 +0100
-@@ -686,12 +686,12 @@
-     }
-     else
-     {
--#ifdef GDAL_PREFIX
-+#if 1
-         papszSearchPath = CSLAddString( papszSearchPath,
-     #ifdef MACOSX_FRAMEWORK
-                                         GDAL_PREFIX "/PlugIns");
-     #else
--                                        GDAL_PREFIX "/lib/gdalplugins" );
-+                                        GDAL_LIBDIR "/gdalplugins" );
-     #endif
- #else
-         char szExecPath[1024];
---- gdal-1.11.2/configure.ac.orig	2015-03-01 09:07:33.069445871 +0100
-+++ gdal-1.11.2/configure.ac	2015-03-01 21:13:55.727616880 +0100
-@@ -3812,12 +3812,16 @@
+diff -urNp -x '*.orig' gdal-3.0.4.org/configure.ac gdal-3.0.4/configure.ac
+--- gdal-3.0.4.org/configure.ac	2021-04-02 16:52:15.663388370 +0200
++++ gdal-3.0.4/configure.ac	2021-04-02 16:52:16.026721386 +0200
+@@ -5219,12 +5219,16 @@ dnl ------------------------------------
  
- if test "$prefix" = "NONE" ; then 
+ if test "$prefix" = "NONE" ; then
    GDAL_PREFIX=/usr/local
 +  GDAL_LIBDIR=${GDAL_PREFIX}/lib
  else
@@ -34,3 +18,21 @@
  
  dnl ---------------------------------------------------------------------------
  dnl Perl bindings.
+diff -urNp -x '*.orig' gdal-3.0.4.org/gcore/gdaldrivermanager.cpp gdal-3.0.4/gcore/gdaldrivermanager.cpp
+--- gdal-3.0.4.org/gcore/gdaldrivermanager.cpp	2020-01-28 11:18:44.000000000 +0100
++++ gdal-3.0.4/gcore/gdaldrivermanager.cpp	2021-04-02 16:52:16.026721386 +0200
+@@ -745,12 +745,12 @@ void GDALDriverManager::AutoLoadDrivers(
+     }
+     else
+     {
+-#ifdef GDAL_PREFIX
++#if 1
+         papszSearchPath = CSLAddString( papszSearchPath,
+     #ifdef MACOSX_FRAMEWORK
+                                         GDAL_PREFIX "/PlugIns");
+     #else
+-                                        GDAL_PREFIX "/lib/gdalplugins" );
++                                        GDAL_LIBDIR "/gdalplugins" );
+     #endif
+ #else
+         char szExecPath[1024];
