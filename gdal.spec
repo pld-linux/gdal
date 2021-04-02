@@ -318,6 +318,8 @@ sed -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python}\1,' \
       swig/python/scripts/rgb2pct.py
 
 %build
+cp -f /usr/share/gettext/config.rpath .
+
 %ifarch %{x8664}
 jvm_arch=amd64
 %endif
