@@ -50,7 +50,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	3.0.4
-Release:	10
+Release:	11
 License:	BSD-like
 Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
@@ -88,7 +88,7 @@ BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.2.5
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
-%{?with_java:BuildRequires:	jdk}
+%{?with_java:BuildRequires:	jdk >= 11}
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	json-c-devel >= 0.11
 %{?with_kea:BuildRequires:	kealib-devel}
@@ -349,7 +349,7 @@ jvm_arch=x32
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
 	%{!?with_kea:--without-kea} \
-	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib=%{java_home}/jre/lib/$jvm_arch/server} \
+	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib=%{java_home}/lib/server} \
 	%{?with_mysql:--with-mysql} \
 	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
 	%{?with_opencl:--with-opencl} \
