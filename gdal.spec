@@ -46,6 +46,9 @@
 %if %{with podofo}
 %undefine	with_poppler
 %endif
+
+%{?use_default_jdk}
+
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
@@ -89,7 +92,7 @@ BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.2.5
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
-%{?with_java:BuildRequires:	jdk >= 11}
+%{?with_java:%{?use_jdk:%buildrequires_jdk}%{!?use_jdk:BuildRequires:	jdk}}
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	json-c-devel >= 0.11
 %{?with_kea:BuildRequires:	kealib-devel}
@@ -131,7 +134,7 @@ BuildRequires:	python-setuptools
 BuildRequires:	qhull-devel >= 2012
 %{?with_rasdaman:BuildRequires:	rasdaman-devel}
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.344
+BuildRequires:	rpmbuild(macros) >= 2.021
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	swig-perl
@@ -144,6 +147,7 @@ BuildRequires:	xz-devel
 BuildRequires:	zlib-devel >= 1.1.4
 # for ZSTD compression in TIFF
 BuildRequires:	zstd-devel
+%{?with_java:Requires:	 %{use_jdk}-jre-base}
 Requires:	freexl >= 1.0
 Requires:	geos >= 3.1.0
 Requires:	hdf >= 4.2.5
@@ -324,6 +328,7 @@ sed -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python}\1,' \
 %build
 cp -f /usr/share/gettext/config.rpath .
 
+%if %{with java}
 %ifarch %{x8664}
 jvm_arch=amd64
 %endif
@@ -332,6 +337,20 @@ jvm_arch=i386
 %endif
 %ifarch x32
 jvm_arch=x32
+%endif
+%ifarch aarch64
+jvm_arch=aarch64
+%endif
+%ifarch %{arm}
+jvm_arch=aarch32
+%endif
+for jvm_type in server client; do
+	for dir in lib jre/lib/$jvm_arch; do
+		if [ -f "%{java_home}/$dir/$jvm_type/libjvm.so" ]; then
+			jvm_lib="%{java_home}/$dir/$jvm_type"
+		fi
+	done
+done
 %endif
 
 %{__libtoolize}
@@ -351,7 +370,7 @@ jvm_arch=x32
 	%{?with_java:--with-java=%{java_home}} \
 	--with-liblzma \
 	%{!?with_kea:--without-kea} \
-	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib=%{java_home}/lib/server} \
+	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib="$jvm_lib"} \
 	%{?with_mysql:--with-mysql} \
 	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
 	%{?with_opencl:--with-opencl} \
