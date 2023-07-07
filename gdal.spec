@@ -92,7 +92,7 @@ BuildRequires:	giflib-devel >= 4.0
 BuildRequires:	hdf-devel >= 4.2.5
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
-%{?with_java:%{?use_jdk:%buildrequires_jdk}%{!?use_jdk:BuildRequires:	jdk}}
+%{?with_java:%buildrequires_jdk}
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	json-c-devel >= 0.11
 %{?with_kea:BuildRequires:	kealib-devel}
