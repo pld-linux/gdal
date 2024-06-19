@@ -1,0 +1,22 @@
+--- gdal-3.0.4/port/cpl_xml_validate.cpp.orig	2020-01-28 11:18:54.000000000 +0100
++++ gdal-3.0.4/port/cpl_xml_validate.cpp	2024-06-19 06:20:46.477418699 +0200
+@@ -920,7 +920,7 @@ static void CPLLibXMLWarningErrorCallbac
+ 
+     if( strstr(pszStr, "since this namespace was already imported") == nullptr )
+     {
+-        xmlErrorPtr pErrorPtr = xmlGetLastError();
++        const xmlError* pErrorPtr = xmlGetLastError();
+         const char* pszFilename = static_cast<char *>(ctx);
+         char* pszStrDup = CPLStrdup(pszStr);
+         int nLen = static_cast<int>(strlen(pszStrDup));
+--- gdal-3.0.4/gcore/gdaljp2metadatagenerator.cpp.orig	2020-01-28 11:18:45.000000000 +0100
++++ gdal-3.0.4/gcore/gdaljp2metadatagenerator.cpp	2024-06-19 06:20:34.962346526 +0200
+@@ -335,7 +335,7 @@ static CPLString GDALGMLJP2EvalExpr(cons
+ /************************************************************************/
+ 
+ static void GDALGMLJP2XPathErrorHandler( void * /* userData */,
+-                                         xmlErrorPtr error)
++                                         const xmlError *error)
+ {
+     if( error->domain == XML_FROM_XPATH &&
+         error->str1 != nullptr &&
