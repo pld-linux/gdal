@@ -1,13 +1,11 @@
 # TODO:
 # - be reasonable about devel dependencies - you do not need all of them to
-#   use gdal (probably a gdal module or driver shall not imply devel
-#   dependency)
+#   use gdal (probably a gdal module or driver shall not imply devel dependency)
 # - MongoCXX (mongo/client/dbclient.h, -lmongoclient -lboost_system -lboost_thread -lboost_regex)
 # - rasterlite2
 # - sfcgal >= 1.2.2
 # - libjpeg12 (needs patching to use system one, --with-jpeg12 is not sufficient as of 1.9.2)
 # - libkml (1.3.0 needed, not released yet)
-# - wait for newer pcidsk, switch to external again
 # - csharp, java
 # - additional, proprietary(?) formats support:
 #   - FMEObjects (http://www.safe.com/support/support-resources/fme-downloads/)
@@ -25,21 +23,15 @@
 #
 # Conditional build:
 %bcond_without	armadillo	# Armadillo support for faster TPS transform
-%bcond_without	crnlib		# DDS support via crunch/crnlib
-%bcond_without	epsilon		# EPSILON wavelet compression support
 %bcond_without	fyba		# SOSI geodata support using FYBA
-%bcond_with	grass		# GRASS support (note: dependency loop; use gdal-grass.spec instead)
 %bcond_without	gta		# GTA format support
 %bcond_without	kea		# KEA format support
 %bcond_without	mysql		# MySQL DB support
-%bcond_with	oci		# ORACLE OCI DB and Georaster support
 %bcond_without	odbc		# ODBC DB support
 %bcond_without	opencl		# OpenCL (GPU) support
 %bcond_without	openjpeg	# OpenJPEG 2 (JPEG2000) support
 %bcond_with	podofo		# PDF support via podofo instead of poppler
 %bcond_without	poppler		# PDF support via poppler
-%bcond_with	rasdaman	# Rasdaman support
-%bcond_with	spatialite	# SpatiaLite support
 %bcond_without	xerces		# Xerces support
 %bcond_without	java		# Java and MDB support
 
@@ -66,18 +58,15 @@ BuildRequires:	CharLS-devel
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake
 BuildRequires:	cfitsio-devel
-%{?with_crnlib:BuildRequires:	crnlib-devel}
 BuildRequires:	cryptopp-devel
 BuildRequires:	curl-devel
 BuildRequires:	doxygen >= 1.4.2
-%{?with_epsilon:BuildRequires:	epsilon-compressor-devel}
 BuildRequires:	expat-devel >= 1.95.0
 %{?with_fyba:BuildRequires:	fyba-devel}
 BuildRequires:	freexl-devel >= 1.0
 BuildRequires:	gcc >= 6:4.1
 BuildRequires:	geos-devel >= 3.1.0
 BuildRequires:	giflib-devel >= 4.0
-%{?with_grass:BuildRequires:	grass-devel >= 6.4}
 BuildRequires:	hdf-devel >= 4.2.5
 BuildRequires:	hdf5-devel
 BuildRequires:	jasper-devel
@@ -92,7 +81,6 @@ BuildRequires:	libgeotiff-devel >= 1.2.1
 BuildRequires:	libjpeg-devel >= 6b
 #BuildRequires:	libkml-devel >= 1.3.0
 BuildRequires:	libpng-devel >= 2:1.2.8
-%{?with_spatialite:BuildRequires:	libspatialite-devel}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 4.0
 BuildRequires:	libtirpc-devel
@@ -106,8 +94,6 @@ BuildRequires:	netcdf-devel >= 4.1
 BuildRequires:	ogdi-devel >= 3.1
 %{?with_openjpeg:BuildRequires:	openjpeg2-devel >= 2.1.0}
 # 8.1.7 for DB support, 10.0.1 for georaster
-%{?with_oci:BuildRequires:	oracle-instantclient-devel >= 10.0.1}
-#BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	pcre-devel
 BuildRequires:	pkgconfig >= 1:0.21
 %{?with_podofo:BuildRequires:	podofo-devel}
@@ -120,7 +106,6 @@ BuildRequires:	python-devel >= 1:2.5
 BuildRequires:	python-numpy-devel >= 1:1.0.0
 BuildRequires:	python-setuptools
 BuildRequires:	qhull-devel >= 2012
-%{?with_rasdaman:BuildRequires:	rasdaman-devel}
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.021
 BuildRequires:	sed >= 4.0
@@ -174,10 +159,8 @@ Requires:	CharLS-devel
 %{?with_opencl:Requires:	OpenCL-devel >= 1.0}
 %{?with_armadillo:Requires:	armadillo-devel}
 Requires:	cfitsio-devel
-%{?with_crnlib:Requires:	crnlib-devel}
 Requires:	cryptopp-devel
 Requires:	curl-devel
-%{?with_epsilon:Requires:	epsilon-compressor-devel}
 %{?with_fyba:Requires:	fyba-devel}
 Requires:	expat-devel >= 1.95.0
 Requires:	freexl-devel >= 1.0
@@ -194,7 +177,6 @@ Requires:	libgeotiff-devel >= 1.2.1
 %{?with_gta:Requires:	libgta-devel}
 Requires:	libjpeg-devel >= 6b
 Requires:	libpng-devel >= 2:1.2.8
-%{?with_spatialite:Requires:	libspatialite-devel}
 Requires:	libstdc++-devel
 Requires:	libtiff-devel >= 4.0
 Requires:	libuuid-devel
@@ -204,14 +186,12 @@ Requires:	libxml2-devel >= 2
 Requires:	netcdf-devel >= 4
 Requires:	ogdi-devel >= 3.1
 %{?with_openjpeg:Requires:	openjpeg2-devel >= 2.1.0}
-#Requires:	pcidsk-devel > 0.3
 Requires:	pcre-devel
 %{?with_podofo:Requires:	podofo-devel}
 %{?with_poppler:Requires:	poppler-devel >= 0.24}
 Requires:	postgresql-devel
 Requires:	proj-devel >= 4
 Requires:	qhull-devel >= 2012
-%{?with_rasdaman:Requires:	rasdaman-devel}
 Requires:	sqlite3-devel >= 3.0.0
 %{?with_odbc:Requires:	unixODBC-devel}
 %{?with_xerces:Requires:	xerces-c-devel >= 3.1.0}
@@ -249,6 +229,15 @@ GDAL Python module.
 
 %description -n python3-gdal -l pl.UTF-8
 Moduł Pythona GDAL.
+
+%package -n bash-completion-gdal
+Summary:	Bash completion for GDAL command line programs
+Group:		Applications/Shells
+Requires:	%{name} = %{version}-%{release}
+Requires:	bash-completion >= 2.0
+
+%description -n bash-completion-gdal
+Bash completion for GDAL command line programs.
 
 %prep
 %setup -q
@@ -304,56 +293,35 @@ done
 %endif
 
 %cmake ../ \
-	-DCMAKE_INSTALL_INCLUDEDIR:PATH=%{_includedir}/gdal
-
-#	PYTHON=%{__python3} \
-#	--includedir=%{_includedir}/gdal \
-#	--datadir=%{_datadir}/gdal \
-#	--with-dods-root=/usr \
-#	%{?with_armadillo:--with-armadillo} \
-#	%{?with_crnlib:--with-dds} \
-#	%{?with_epsilon:--with-epsilon} \
-#	%{?with_grass:--with-grass} \
-#	%{!?with_gta:--without-gta} \
-#	--with-hide-internal-symbols \
-#	%{?with_java:--with-java=%{java_home}} \
-#	--with-liblzma \
-#	%{!?with_kea:--without-kea} \
-#	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib="$jvm_lib"} \
-#	%{?with_mysql:--with-mysql} \
-#	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
-#	%{?with_opencl:--with-opencl} \
-#	--with-perl \
-#	%{?with_podofo:--with-podofo} \
-#	%{?with_poppler:--with-poppler} \
-#	--with-python \
-#	%{?with_rasdaman:--with-rasdaman=%{_libdir}/rasdaman} \
-#	%{?with_fyba:--with-sosi} \
-#	%{?with_spatialite:--with-spatialite} \
-#	--with-sqlite3 \
-#	--with-webp \
-#	%{?with_xerces:--with-xerces} \
-#	--with-xerces-inc=/usr/include \
-#	--with-xerces-lib="-lxerces-c" \
-#	--without-libgrass
-##	--with-pcidsk=/usr (needs > 0.3)
-## csharp builds, but has no configure option nor install target
+	-DPython_EXECUTABLE=%{__python3} \
+	-DCMAKE_INSTALL_INCLUDEDIR:PATH=%{_includedir}/gdal \
+	-DGDAL_HIDE_INTERNAL_SYMBOLS:BOOL=ON \
+	-DBUILD_PYTHON_BINDINGS:BOOL=ON \
+	-DGDAL_USE_LIBLZMA:BOOL=ON \
+	-DGDAL_USE_SQLITE3:BOOL=ON \
+	-DGDAL_USE_WEBP:BOOL=ON \
+%if %{with java}
+	-DBUILD_JAVA_BINDINGS:BOOL=ON \
+	-DJAVA_HOME=%{java_home} \
+	-DJAVA_JVM_LIBRARY:FILEPATH="$jvm_lib" \
+%endif
+	%{cmake_on_off armadillo GDAL_USE_ARMADILLO} \
+	%{cmake_on_off gta GDAL_USE_GTA} \
+	%{cmake_on_off kea GDAL_USE_KEA} \
+	%{cmake_on_off mysql GDAL_USE_MYSQL} \
+	%{cmake_on_off opencl GDAL_USE_OPENCL} \
+	%{cmake_on_off podofo GDAL_USE_PODOFO} \
+	%{cmake_on_off poppler GDAL_USE_POPPLER} \
+	%{cmake_on_off fyba GDAL_USE_FYBA} \
+	%{cmake_on_off xerces GDAL_USE_XERCESC}
 
 %{__make}
-#	%{?with_grass:GRASS_INCLUDE="-I/usr/include/grass64"} \
-#	%{?with_fyba:SOSI_INC="-I/usr/include/fyba"}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-# TODO: remove libgdal.la when gdal.pc gets maintained Requires.private/Libs.private list
-
-#py_comp $RPM_BUILD_ROOT%{py_sitedir}
-#py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-#py_postclean
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -364,61 +332,92 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc NEWS.md PROVENANCE.TXT
+%attr(755,root,root) %{_bindir}/gdal2tiles
 %attr(755,root,root) %{_bindir}/gdal2tiles.py
+%attr(755,root,root) %{_bindir}/gdal2xyz
 %attr(755,root,root) %{_bindir}/gdal2xyz.py
 %attr(755,root,root) %{_bindir}/gdaladdo
+%attr(755,root,root) %{_bindir}/gdalattachpct
+%attr(755,root,root) %{_bindir}/gdalattachpct.py
 %attr(755,root,root) %{_bindir}/gdalbuildvrt
+%attr(755,root,root) %{_bindir}/gdal_calc
 %attr(755,root,root) %{_bindir}/gdal_calc.py
+%attr(755,root,root) %{_bindir}/gdalcompare
 %attr(755,root,root) %{_bindir}/gdalcompare.py
 %attr(755,root,root) %{_bindir}/gdal_contour
+%attr(755,root,root) %{_bindir}/gdal_create
 %attr(755,root,root) %{_bindir}/gdaldem
+%attr(755,root,root) %{_bindir}/gdal_edit
 %attr(755,root,root) %{_bindir}/gdal_edit.py
 %attr(755,root,root) %{_bindir}/gdalenhance
+%attr(755,root,root) %{_bindir}/gdal_fillnodata
 %attr(755,root,root) %{_bindir}/gdal_fillnodata.py
+%attr(755,root,root) %{_bindir}/gdal_footprint
 %attr(755,root,root) %{_bindir}/gdal_grid
 %attr(755,root,root) %{_bindir}/gdalinfo
 %attr(755,root,root) %{_bindir}/gdallocationinfo
 %attr(755,root,root) %{_bindir}/gdalmanage
+%attr(755,root,root) %{_bindir}/gdalmdiminfo
+%attr(755,root,root) %{_bindir}/gdalmdimtranslate
+%attr(755,root,root) %{_bindir}/gdal_merge
 %attr(755,root,root) %{_bindir}/gdal_merge.py
+%attr(755,root,root) %{_bindir}/gdalmove
 %attr(755,root,root) %{_bindir}/gdalmove.py
+%attr(755,root,root) %{_bindir}/gdal_pansharpen
 %attr(755,root,root) %{_bindir}/gdal_pansharpen.py
+%attr(755,root,root) %{_bindir}/gdal_polygonize
 %attr(755,root,root) %{_bindir}/gdal_polygonize.py
+%attr(755,root,root) %{_bindir}/gdal_proximity
 %attr(755,root,root) %{_bindir}/gdal_proximity.py
 %attr(755,root,root) %{_bindir}/gdal_rasterize
+%attr(755,root,root) %{_bindir}/gdal_retile
 %attr(755,root,root) %{_bindir}/gdal_retile.py
+%attr(755,root,root) %{_bindir}/gdal_sieve
 %attr(755,root,root) %{_bindir}/gdal_sieve.py
 %attr(755,root,root) %{_bindir}/gdalsrsinfo
 %attr(755,root,root) %{_bindir}/gdaltindex
 %attr(755,root,root) %{_bindir}/gdaltransform
 %attr(755,root,root) %{_bindir}/gdal_translate
+%attr(755,root,root) %{_bindir}/gdal_viewshed
 %attr(755,root,root) %{_bindir}/gdalwarp
 %attr(755,root,root) %{_bindir}/gnmanalyse
 %attr(755,root,root) %{_bindir}/gnmmanage
 %attr(755,root,root) %{_bindir}/nearblack
 %attr(755,root,root) %{_bindir}/ogr2ogr
 %attr(755,root,root) %{_bindir}/ogrinfo
+%attr(755,root,root) %{_bindir}/ogr_layer_algebra
+%attr(755,root,root) %{_bindir}/ogr_layer_algebra.py
 %attr(755,root,root) %{_bindir}/ogrlineref
+%attr(755,root,root) %{_bindir}/ogrmerge
 %attr(755,root,root) %{_bindir}/ogrmerge.py
 %attr(755,root,root) %{_bindir}/ogrtindex
+%attr(755,root,root) %{_bindir}/pct2rgb
 %attr(755,root,root) %{_bindir}/pct2rgb.py
+%attr(755,root,root) %{_bindir}/rgb2pct
 %attr(755,root,root) %{_bindir}/rgb2pct.py
+%attr(755,root,root) %{_bindir}/sozip
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgdal.so.36
 %dir %{_libdir}/gdalplugins
+%{_libdir}/gdalplugins/drivers.ini
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
 %{_mandir}/man1/gdal_calc.1*
 %{_mandir}/man1/gdal_contour.1*
+%{_mandir}/man1/gdal_create.1*
 %{_mandir}/man1/gdal_edit.1*
 %{_mandir}/man1/gdal_fillnodata.1*
+%{_mandir}/man1/gdal_footprint.1*
 %{_mandir}/man1/gdal_grid.1*
 %{_mandir}/man1/gdal_merge.1*
+%{_mandir}/man1/gdal_pansharpen.1*
 %{_mandir}/man1/gdal_polygonize.1*
 %{_mandir}/man1/gdal_proximity.1*
 %{_mandir}/man1/gdal_rasterize.1*
 %{_mandir}/man1/gdal_retile.1*
 %{_mandir}/man1/gdal_sieve.1*
 %{_mandir}/man1/gdal_translate.1*
+%{_mandir}/man1/gdal_viewshed.1*
 %{_mandir}/man1/gdaladdo.1*
 %{_mandir}/man1/gdalbuildvrt.1*
 %{_mandir}/man1/gdalcompare.1*
@@ -426,22 +425,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/gdalinfo.1*
 %{_mandir}/man1/gdallocationinfo.1*
 %{_mandir}/man1/gdalmanage.1*
+%{_mandir}/man1/gdalmdiminfo.1*
+%{_mandir}/man1/gdalmdimtranslate.1*
 %{_mandir}/man1/gdalmove.1*
 %{_mandir}/man1/gdalsrsinfo.1*
 %{_mandir}/man1/gdaltindex.1*
 %{_mandir}/man1/gdaltransform.1*
 %{_mandir}/man1/gdalwarp.1*
+%{_mandir}/man1/gnmanalyse.1*
+%{_mandir}/man1/gnmmanage.1*
 %{_mandir}/man1/nearblack.1*
 %{_mandir}/man1/ogr2ogr.1*
 %{_mandir}/man1/ogrinfo.1*
+%{_mandir}/man1/ogr_layer_algebra.1*
 %{_mandir}/man1/ogrlineref.1*
+%{_mandir}/man1/ogrmerge.1*
 %{_mandir}/man1/ogrtindex.1*
 %{_mandir}/man1/pct2rgb.1*
 %{_mandir}/man1/rgb2pct.1*
-%{_mandir}/man1/gdal_pansharpen.1*
-%{_mandir}/man1/gnmanalyse.1*
-%{_mandir}/man1/gnmmanage.1*
-%{_mandir}/man1/ogrmerge.1*
+%{_mandir}/man1/sozip.1*
 
 %files devel
 %defattr(644,root,root,755)
@@ -450,16 +452,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/gdal.pc
 %{_includedir}/gdal
 %{_mandir}/man1/gdal-config.1*
+%{_libdir}/cmake/gdal
 
 %files -n python3-gdal
 %defattr(644,root,root,755)
 %{py3_sitedir}/GDAL-*.egg-info
 %dir %{py3_sitedir}/osgeo
+%{py3_sitedir}/osgeo/__pycache__
+%{py3_sitedir}/osgeo/*.py
 %attr(755,root,root) %{py3_sitedir}/osgeo/_gdal.*.so
 %attr(755,root,root) %{py3_sitedir}/osgeo/_gdal_array.*.so
 %attr(755,root,root) %{py3_sitedir}/osgeo/_gdalconst.*.so
 %attr(755,root,root) %{py3_sitedir}/osgeo/_gnm.*.so
 %attr(755,root,root) %{py3_sitedir}/osgeo/_ogr.*.so
 %attr(755,root,root) %{py3_sitedir}/osgeo/_osr.*.so
-%{py3_sitedir}/osgeo/*.py
-%{py3_sitedir}/osgeo_utils/*.py
+%{py3_sitedir}/osgeo_utils/
+
+%files -n bash-completion-gdal
+%defattr(644,root,root,755)
+%{bash_compdir}/*
