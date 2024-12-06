@@ -52,25 +52,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	3.0.4
-Release:	24
+Version:	3.10.0
+Release:	0.1
 License:	BSD-like
 Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	c6bbb5caca06e96bd97a32918e0aa9aa
-Patch0:		%{name}-perl.patch
-Patch1:		%{name}-pc.patch
-Patch2:		%{name}-dds.patch
-Patch3:		%{name}-rasdaman.patch
-Patch4:		%{name}-pluginsdir.patch
-Patch5:		libx32.patch
-Patch6:		%{name}-poppler.patch
-Patch7:		decl.patch
-Patch8:		%{name}_tirpcinc.patch
-Patch9:		jasper.patch
-Patch10:	gcc11.patch
-Patch11:	%{name}-libxml2.patch
-Patch12:	detect_poppler.patch
+# Source0-md5:	7d199cbd2e95dfb7ccdacd0cd7fb8597
 URL:		http://www.gdal.org/
 # 1.x or 2.x supported
 BuildRequires:	CharLS-devel
@@ -122,7 +109,6 @@ BuildRequires:	ogdi-devel >= 3.1
 %{?with_oci:BuildRequires:	oracle-instantclient-devel >= 10.0.1}
 #BuildRequires:	pcidsk-devel > 0.3
 BuildRequires:	pcre-devel
-BuildRequires:	perl-devel
 BuildRequires:	pkgconfig >= 1:0.21
 %{?with_podofo:BuildRequires:	podofo-devel}
 %{?with_poppler:BuildRequires:	poppler-devel >= 0.24}
@@ -139,7 +125,6 @@ BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 2.021
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0.0
-BuildRequires:	swig-perl
 BuildRequires:	swig-python >= 1.3
 BuildRequires:	texlive-dvips
 BuildRequires:	texlive-latex
@@ -159,6 +144,9 @@ Requires:	libtiff >= 4.0
 %{?with_openjpeg:Requires:	openjpeg2 >= 2.1.0}
 Requires:	qhull >= 2012
 %{?with_xerces:Requires:	xerces-c >= 3.1.0}
+Obsoletes:	gdal-static < 3.10.0
+Obsoletes:	perl-gdal < 3.10.0
+Obsoletes:	python-gdal < 3.10.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -249,88 +237,45 @@ GDAL static libraries.
 %description static -l pl.UTF-8
 Statyczne biblioteki GDAL.
 
-%package -n perl-gdal
-Summary:	Perl bindings for GDAL
-Summary(pl.UTF-8):	Wiązania Perla do pakietu GDAL
-Group:		Development/Languages/Perl
-Requires:	%{name} = %{version}-%{release}
-
-%description -n perl-gdal
-Perl bindings for GDAL - Geo::GDAL, Geo::OGR and Geo::OSR modules.
-
-%description -n perl-gdal -l pl.UTF-8
-Wiązania Perla do pakietu GDAL - moduły Geo::GDAL, Geo::OGR, Geo::OSR.
-
-%package -n python-gdal
+%package -n python3-gdal
 Summary:	GDAL Python module
 Summary(pl.UTF-8):	Moduł Pythona GDAL
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
-Requires:	python-libs
+Requires:	python3-libs
 
-%description -n python-gdal
+%description -n python3-gdal
 GDAL Python module.
 
-%description -n python-gdal -l pl.UTF-8
+%description -n python3-gdal -l pl.UTF-8
 Moduł Pythona GDAL.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p2
-%patch10 -p2
-%patch11 -p1
-%patch12 -p1
 
-# need to regenerate (old ones don't support perl 5.10)
-%{__rm} swig/perl/{gdal_wrap.cpp,gdalconst_wrap.c,ogr_wrap.cpp,osr_wrap.cpp}
-
-# our man path
-sed -i -e 's#^mandir=.*##g' configure.ac
-
-%{__rm} -r man
-
-%{__sed} -i -e 's,DODS_INC="-I.*,DODS_INC="$(pkg-config --cflags libdap)",' configure.ac
-
-sed -E -i -e '1s,#!\s*/usr/bin/env\s+python2(\s|$),#!%{__python}\1,' \
-	  -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python}\1,' \
-	  -e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python}\1,' \
-      swig/python/scripts/epsg_tr.py \
-      swig/python/scripts/esri2wkt.py \
-      swig/python/scripts/gcps2vec.py \
-      swig/python/scripts/gcps2wld.py \
-      swig/python/scripts/gdal2tiles.py \
-      swig/python/scripts/gdal2xyz.py \
-      swig/python/scripts/gdal_auth.py \
-      swig/python/scripts/gdal_calc.py \
-      swig/python/scripts/gdal_edit.py \
-      swig/python/scripts/gdal_fillnodata.py \
-      swig/python/scripts/gdal_merge.py \
-      swig/python/scripts/gdal_pansharpen.py \
-      swig/python/scripts/gdal_polygonize.py \
-      swig/python/scripts/gdal_proximity.py \
-      swig/python/scripts/gdal_retile.py \
-      swig/python/scripts/gdal_sieve.py \
-      swig/python/scripts/gdalchksum.py \
-      swig/python/scripts/gdalcompare.py \
-      swig/python/scripts/gdalident.py \
-      swig/python/scripts/gdalimport.py \
-      swig/python/scripts/gdalmove.py \
-      swig/python/scripts/mkgraticule.py \
-      swig/python/scripts/ogrmerge.py \
-      swig/python/scripts/pct2rgb.py \
-      swig/python/scripts/rgb2pct.py
+sed -E -i -e '1s,#!\s*/usr/bin/env\s+python3(\s|$),#!%{__python3}\1,' \
+	  -e '1s,#!\s*/usr/bin/env\s+python(\s|$),#!%{__python3}\1,' \
+	  -e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python3}\1,' \
+      swig/python/gdal-utils/scripts/gdal2tiles.py \
+      swig/python/gdal-utils/scripts/gdal2xyz.py \
+      swig/python/gdal-utils/scripts/gdal_calc.py \
+      swig/python/gdal-utils/scripts/gdal_edit.py \
+      swig/python/gdal-utils/scripts/gdal_fillnodata.py \
+      swig/python/gdal-utils/scripts/gdal_merge.py \
+      swig/python/gdal-utils/scripts/gdal_pansharpen.py \
+      swig/python/gdal-utils/scripts/gdal_polygonize.py \
+      swig/python/gdal-utils/scripts/gdal_proximity.py \
+      swig/python/gdal-utils/scripts/gdal_retile.py \
+      swig/python/gdal-utils/scripts/gdal_sieve.py \
+      swig/python/gdal-utils/scripts/gdalcompare.py \
+      swig/python/gdal-utils/scripts/gdalmove.py \
+      swig/python/gdal-utils/scripts/ogrmerge.py \
+      swig/python/gdal-utils/scripts/pct2rgb.py \
+      swig/python/gdal-utils/scripts/rgb2pct.py
 
 %build
-cp -f /usr/share/gettext/config.rpath .
+mkdir -p build
+cd build
 
 %if %{with java}
 %ifarch %{x8664}
@@ -358,77 +303,57 @@ for jvm_type in server client; do
 done
 %endif
 
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%configure \
-	PYTHON=%{__python} \
-	--includedir=%{_includedir}/gdal \
-	--datadir=%{_datadir}/gdal \
-	--with-dods-root=/usr \
-	%{?with_armadillo:--with-armadillo} \
-	%{?with_crnlib:--with-dds} \
-	%{?with_epsilon:--with-epsilon} \
-	%{?with_grass:--with-grass} \
-	%{!?with_gta:--without-gta} \
-	--with-hide-internal-symbols \
-	%{?with_java:--with-java=%{java_home}} \
-	--with-liblzma \
-	%{!?with_kea:--without-kea} \
-	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib="$jvm_lib"} \
-	%{?with_mysql:--with-mysql} \
-	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
-	%{?with_opencl:--with-opencl} \
-	--with-perl \
-	%{?with_podofo:--with-podofo} \
-	%{?with_poppler:--with-poppler} \
-	--with-python \
-	%{?with_rasdaman:--with-rasdaman=%{_libdir}/rasdaman} \
-	%{?with_fyba:--with-sosi} \
-	%{?with_spatialite:--with-spatialite} \
-	--with-sqlite3 \
-	--with-webp \
-	%{?with_xerces:--with-xerces} \
-	--with-xerces-inc=/usr/include \
-	--with-xerces-lib="-lxerces-c" \
-	--without-libgrass
-#	--with-pcidsk=/usr (needs > 0.3)
-# csharp builds, but has no configure option nor install target
+%cmake ../ \
+	-DCMAKE_INSTALL_INCLUDEDIR:PATH=%{_includedir}/gdal
 
-# regenerate where needed
-%{__make} -j1 -C swig/perl generate
+#	PYTHON=%{__python3} \
+#	--includedir=%{_includedir}/gdal \
+#	--datadir=%{_datadir}/gdal \
+#	--with-dods-root=/usr \
+#	%{?with_armadillo:--with-armadillo} \
+#	%{?with_crnlib:--with-dds} \
+#	%{?with_epsilon:--with-epsilon} \
+#	%{?with_grass:--with-grass} \
+#	%{!?with_gta:--without-gta} \
+#	--with-hide-internal-symbols \
+#	%{?with_java:--with-java=%{java_home}} \
+#	--with-liblzma \
+#	%{!?with_kea:--without-kea} \
+#	%{?with_java:--with-mdb --with-jvm-lib-add-rpath --with-jvm-lib="$jvm_lib"} \
+#	%{?with_mysql:--with-mysql} \
+#	%{?with_oci:--with-oci --with-oci-include=/usr/include/oracle/client --with-oci-lib=%{_libdir}} \
+#	%{?with_opencl:--with-opencl} \
+#	--with-perl \
+#	%{?with_podofo:--with-podofo} \
+#	%{?with_poppler:--with-poppler} \
+#	--with-python \
+#	%{?with_rasdaman:--with-rasdaman=%{_libdir}/rasdaman} \
+#	%{?with_fyba:--with-sosi} \
+#	%{?with_spatialite:--with-spatialite} \
+#	--with-sqlite3 \
+#	--with-webp \
+#	%{?with_xerces:--with-xerces} \
+#	--with-xerces-inc=/usr/include \
+#	--with-xerces-lib="-lxerces-c" \
+#	--without-libgrass
+##	--with-pcidsk=/usr (needs > 0.3)
+## csharp builds, but has no configure option nor install target
 
-%{__make} \
-        CFLAGS="%{rpmcflags}" \
-        CXXFLAGS="%{rpmcxxflags} -std=c++20" \
-	%{?with_grass:GRASS_INCLUDE="-I/usr/include/grass64"} \
-	%{?with_fyba:SOSI_INC="-I/usr/include/fyba"}
-
-%{__make} -j1 docs
-
-%{__make} -j1 man
+%{__make}
+#	%{?with_grass:GRASS_INCLUDE="-I/usr/include/grass64"} \
+#	%{?with_fyba:SOSI_INC="-I/usr/include/fyba"}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} -j1 install install-man \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # TODO: remove libgdal.la when gdal.pc gets maintained Requires.private/Libs.private list
 
-rm -rf _html
-cp -a html _html
-
-%py_comp $RPM_BUILD_ROOT%{py_sitedir}
-%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-%py_postclean
-
-%{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/GDAL/.packlist
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/GDAL/Const/.packlist
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OGR/.packlist
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Geo/OSR/.packlist
+#py_comp $RPM_BUILD_ROOT%{py_sitedir}
+#py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
+#py_postclean
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -438,18 +363,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS PROVENANCE.TXT
-%attr(755,root,root) %{_bindir}/epsg_tr.py
-%attr(755,root,root) %{_bindir}/esri2wkt.py
-%attr(755,root,root) %{_bindir}/gcps2vec.py
-%attr(755,root,root) %{_bindir}/gcps2wld.py
+%doc NEWS.md PROVENANCE.TXT
 %attr(755,root,root) %{_bindir}/gdal2tiles.py
 %attr(755,root,root) %{_bindir}/gdal2xyz.py
 %attr(755,root,root) %{_bindir}/gdaladdo
-%attr(755,root,root) %{_bindir}/gdal_auth.py
 %attr(755,root,root) %{_bindir}/gdalbuildvrt
 %attr(755,root,root) %{_bindir}/gdal_calc.py
-%attr(755,root,root) %{_bindir}/gdalchksum.py
 %attr(755,root,root) %{_bindir}/gdalcompare.py
 %attr(755,root,root) %{_bindir}/gdal_contour
 %attr(755,root,root) %{_bindir}/gdaldem
@@ -457,8 +376,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdalenhance
 %attr(755,root,root) %{_bindir}/gdal_fillnodata.py
 %attr(755,root,root) %{_bindir}/gdal_grid
-%attr(755,root,root) %{_bindir}/gdalident.py
-%attr(755,root,root) %{_bindir}/gdalimport.py
 %attr(755,root,root) %{_bindir}/gdalinfo
 %attr(755,root,root) %{_bindir}/gdallocationinfo
 %attr(755,root,root) %{_bindir}/gdalmanage
@@ -469,7 +386,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdal_proximity.py
 %attr(755,root,root) %{_bindir}/gdal_rasterize
 %attr(755,root,root) %{_bindir}/gdal_retile.py
-%attr(755,root,root) %{_bindir}/gdalserver
 %attr(755,root,root) %{_bindir}/gdal_sieve.py
 %attr(755,root,root) %{_bindir}/gdalsrsinfo
 %attr(755,root,root) %{_bindir}/gdaltindex
@@ -478,7 +394,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gdalwarp
 %attr(755,root,root) %{_bindir}/gnmanalyse
 %attr(755,root,root) %{_bindir}/gnmmanage
-%attr(755,root,root) %{_bindir}/mkgraticule.py
 %attr(755,root,root) %{_bindir}/nearblack
 %attr(755,root,root) %{_bindir}/ogr2ogr
 %attr(755,root,root) %{_bindir}/ogrinfo
@@ -487,9 +402,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/ogrtindex
 %attr(755,root,root) %{_bindir}/pct2rgb.py
 %attr(755,root,root) %{_bindir}/rgb2pct.py
-%attr(755,root,root) %{_bindir}/testepsg
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgdal.so.26
+%attr(755,root,root) %ghost %{_libdir}/libgdal.so.36
 %dir %{_libdir}/gdalplugins
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
@@ -505,7 +419,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/gdal_retile.1*
 %{_mandir}/man1/gdal_sieve.1*
 %{_mandir}/man1/gdal_translate.1*
-%{_mandir}/man1/gdal_utilities.1*
 %{_mandir}/man1/gdaladdo.1*
 %{_mandir}/man1/gdalbuildvrt.1*
 %{_mandir}/man1/gdalcompare.1*
@@ -520,67 +433,33 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/gdalwarp.1*
 %{_mandir}/man1/nearblack.1*
 %{_mandir}/man1/ogr2ogr.1*
-%{_mandir}/man1/ogr_utilities.1*
 %{_mandir}/man1/ogrinfo.1*
 %{_mandir}/man1/ogrlineref.1*
 %{_mandir}/man1/ogrtindex.1*
 %{_mandir}/man1/pct2rgb.1*
 %{_mandir}/man1/rgb2pct.1*
 %{_mandir}/man1/gdal_pansharpen.1*
-%{_mandir}/man1/gnm_utilities.1*
 %{_mandir}/man1/gnmanalyse.1*
 %{_mandir}/man1/gnmmanage.1*
 %{_mandir}/man1/ogrmerge.1*
 
 %files devel
 %defattr(644,root,root,755)
-%doc _html/*
 %attr(755,root,root) %{_bindir}/gdal-config
 %attr(755,root,root) %{_libdir}/libgdal.so
-%{_libdir}/libgdal.la
 %{_pkgconfigdir}/gdal.pc
 %{_includedir}/gdal
 %{_mandir}/man1/gdal-config.1*
 
-%files static
+%files -n python3-gdal
 %defattr(644,root,root,755)
-%{_libdir}/libgdal.a
-
-%files -n perl-gdal
-%defattr(644,root,root,755)
-%dir %{perl_vendorarch}/Geo
-%{perl_vendorarch}/Geo/GDAL.pm
-%dir %{perl_vendorarch}/Geo/GDAL
-%{perl_vendorarch}/Geo/GDAL/Const.pm
-%{perl_vendorarch}/Geo/OGR.pm
-%{perl_vendorarch}/Geo/OSR.pm
-%dir %{perl_vendorarch}/auto/Geo
-%dir %{perl_vendorarch}/auto/Geo/GDAL
-%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/GDAL.so
-%dir %{perl_vendorarch}/auto/Geo/GDAL/Const
-%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GDAL/Const/Const.so
-%dir %{perl_vendorarch}/auto/Geo/GNM
-%attr(755,root,root) %{perl_vendorarch}/auto/Geo/GNM/GNM.so
-%dir %{perl_vendorarch}/auto/Geo/OGR
-%attr(755,root,root) %{perl_vendorarch}/auto/Geo/OGR/OGR.so
-%dir %{perl_vendorarch}/auto/Geo/OSR
-%attr(755,root,root) %{perl_vendorarch}/auto/Geo/OSR/OSR.so
-%{_mandir}/man3/Geo::GDAL.3pm*
-%{perl_vendorarch}/Geo/GNM.pm
-
-%files -n python-gdal
-%defattr(644,root,root,755)
-%{py_sitedir}/gdal.py[co]
-%{py_sitedir}/gdalconst.py[co]
-%{py_sitedir}/gdalnumeric.py[co]
-%{py_sitedir}/ogr.py[co]
-%{py_sitedir}/osr.py[co]
-%{py_sitedir}/GDAL-*.egg-info
-%dir %{py_sitedir}/osgeo
-%attr(755,root,root) %{py_sitedir}/osgeo/_gdal.so
-%attr(755,root,root) %{py_sitedir}/osgeo/_gdal_array.so
-%attr(755,root,root) %{py_sitedir}/osgeo/_gdalconst.so
-%attr(755,root,root) %{py_sitedir}/osgeo/_gnm.so
-%attr(755,root,root) %{py_sitedir}/osgeo/_ogr.so
-%attr(755,root,root) %{py_sitedir}/osgeo/_osr.so
-%{py_sitedir}/osgeo/*.py[co]
+%{py3_sitedir}/GDAL-*.egg-info
+%dir %{py3_sitedir}/osgeo
+%attr(755,root,root) %{py3_sitedir}/osgeo/_gdal.*.so
+%attr(755,root,root) %{py3_sitedir}/osgeo/_gdal_array.*.so
+%attr(755,root,root) %{py3_sitedir}/osgeo/_gdalconst.*.so
+%attr(755,root,root) %{py3_sitedir}/osgeo/_gnm.*.so
+%attr(755,root,root) %{py3_sitedir}/osgeo/_ogr.*.so
+%attr(755,root,root) %{py3_sitedir}/osgeo/_osr.*.so
+%{py3_sitedir}/osgeo/*.py
+%{py3_sitedir}/osgeo_utils/*.py
