@@ -45,7 +45,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	3.10.0
-Release:	3
+Release:	4
 License:	BSD-like
 Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
@@ -74,6 +74,7 @@ BuildRequires:	jasper-devel
 %{?with_java:BuildRequires:	jpackage-utils}
 BuildRequires:	json-c-devel >= 0.11
 %{?with_kea:BuildRequires:	kealib-devel}
+BuildRequires:	libavif-devel
 BuildRequires:	libcsf-devel >= 2.0-0.041111.6
 BuildRequires:	libdap-devel >= 3.10
 BuildRequires:	libgeotiff-devel >= 1.2.1
@@ -470,4 +471,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n bash-completion-gdal
 %defattr(644,root,root,755)
-%{bash_compdir}/*
+%{bash_compdir}/gdal*
+%{bash_compdir}/ogr*
