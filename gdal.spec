@@ -44,12 +44,12 @@
 Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
-Version:	3.10.0
-Release:	9
+Version:	3.11.3
+Release:	1
 License:	BSD-like
 Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	7d199cbd2e95dfb7ccdacd0cd7fb8597
+# Source0-md5:	436c9e7e244613a1073738eeaec05600
 URL:		http://www.gdal.org/
 # 1.x or 2.x supported
 BuildRequires:	CharLS-devel
@@ -301,6 +301,7 @@ done
 	-DGDAL_USE_LIBLZMA:BOOL=ON \
 	-DGDAL_USE_SQLITE3:BOOL=ON \
 	-DGDAL_USE_WEBP:BOOL=ON \
+	-DGDAL_USE_TIFF_INTERNAL=OFF \
 %if %{with java}
 	-DBUILD_JAVA_BINDINGS:BOOL=ON \
 	-DJAVA_HOME=%{java_home} \
@@ -333,6 +334,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc NEWS.md PROVENANCE.TXT
+%attr(755,root,root) %{_bindir}/gdal
 %attr(755,root,root) %{_bindir}/gdal2tiles
 %attr(755,root,root) %{_bindir}/gdal2tiles.py
 %attr(755,root,root) %{_bindir}/gdal2xyz
@@ -398,11 +400,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rgb2pct.py
 %attr(755,root,root) %{_bindir}/sozip
 %attr(755,root,root) %{_libdir}/libgdal.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgdal.so.36
+%attr(755,root,root) %ghost %{_libdir}/libgdal.so.37
 %dir %{_libdir}/gdalplugins
 %{_libdir}/gdalplugins/drivers.ini
 %{_datadir}/gdal
 %{_mandir}/man1/gdal2tiles.1*
+%{_mandir}/man1/gdal.1*
+%{_mandir}/man1/gdal-convert.1*
+%{_mandir}/man1/gdal-info.1*
+%{_mandir}/man1/gdal-mdim*.1*
+%{_mandir}/man1/gdal-raster*.1*
+%{_mandir}/man1/gdal-vector*.1*
+%{_mandir}/man1/gdal-vsi*.1*
 %{_mandir}/man1/gdal_calc.1*
 %{_mandir}/man1/gdal_contour.1*
 %{_mandir}/man1/gdal_create.1*
