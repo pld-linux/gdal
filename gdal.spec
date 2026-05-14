@@ -45,7 +45,7 @@ Summary:	Geospatial Data Abstraction Library
 Summary(pl.UTF-8):	Biblioteka abstrakcji danych dotyczących powierzchni Ziemi
 Name:		gdal
 Version:	3.11.3
-Release:	5
+Release:	6
 License:	BSD-like
 Group:		Libraries
 Source0:	https://github.com/OSGeo/gdal/releases/download/v%{version}/%{name}-%{version}.tar.gz
@@ -120,7 +120,7 @@ BuildRequires:	xz-devel
 BuildRequires:	zlib-devel >= 1.1.4
 # for ZSTD compression in TIFF
 BuildRequires:	zstd-devel
-%{?with_java:Requires:	 %{?use_jdk:%{use_jdk}-jre-base}%{!?use_jdk:jre}}
+%{?with_java:Requires:	 %{?use_jdk:%{use_jdk}-jre}%{!?use_jdk:jre}}
 Requires:	freexl >= 1.0
 Requires:	geos >= 3.1.0
 Requires:	hdf >= 4.2.5
